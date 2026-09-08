@@ -1,0 +1,293 @@
+{
+  "version": 1,
+  "skills": {
+    "brandkit": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/brandkit/SKILL.md",
+      "computedHash": "735007879f5110aeae1e981a53fe74a12afde70347f9773dacd50e4697a091bf"
+    },
+    "dbs": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs/SKILL.md",
+      "computedHash": "4fc908c5e6aca45af45a187c49041cfa94808e8b466ad0d17de17c82ca59a383"
+    },
+    "dbs-action": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-action/SKILL.md",
+      "computedHash": "ba34f7c5ff10109258daccf3cc2bfcf62327237db71ab9ee7479c5a20692e422"
+    },
+    "dbs-agent-migration": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-agent-migration/SKILL.md",
+      "computedHash": "8ca9f97f2b4ca73df51631ce068e2c96ffb51beb32568d2ed4f28ce45340d7c8"
+    },
+    "dbs-ai-check": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-ai-check/SKILL.md",
+      "computedHash": "917a8f31dfd235d339c36fad8e52bf5f9132eb879de442a2c7f4678c5e59bde7"
+    },
+    "dbs-benchmark": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-benchmark/SKILL.md",
+      "computedHash": "9ba33ff6681aa66350e1abed1b29ce2a5bcd380ace65d22580a3f228705d0461"
+    },
+    "dbs-chatroom": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-chatroom/SKILL.md",
+      "computedHash": "7c0a636cef1b003d9c796f88cb1ccb8db7dc14d28cb5223c12861e632e02dc39"
+    },
+    "dbs-chatroom-austrian": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-chatroom-austrian/SKILL.md",
+      "computedHash": "1f4f8fbd1215f9ea11dba02c313e5b1645c5faace1419dc957298d18b2b783da"
+    },
+    "dbs-content": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-content/SKILL.md",
+      "computedHash": "aad8a4f0cdde782b631c25a28d4d5d00a771fd2f32d9bd72ad42ae9b374a6ea9"
+    },
+    "dbs-content-risk-check": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-content-risk-check/SKILL.md",
+      "computedHash": "1d86f6ef764c82122c658f177ba9fed455ef470c2724d47420b09d467a1114f5"
+    },
+    "dbs-content-system": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-content-system/SKILL.md",
+      "computedHash": "fffd0b7e47b1d9a53b01f0def3f7a07f32bd5a31c61fe5d07bb5cc2502533e79"
+    },
+    "dbs-decision": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-decision/SKILL.md",
+      "computedHash": "7ead1cad8d4d2f71845a9681f3cb08cca7f486509acfb21a48a3bacabf8fa21f"
+    },
+    "dbs-deconstruct": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-deconstruct/SKILL.md",
+      "computedHash": "7e29ee70df26969ee691362b5cb86456b173ca281590ea752b64651ec0b9f739"
+    },
+    "dbs-diagnosis": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-diagnosis/SKILL.md",
+      "computedHash": "c4801a09c7b3d9b0587a069931fd10be75d756ce301c6ec9c53d34eb1a942d62"
+    },
+    "dbs-goal": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-goal/SKILL.md",
+      "computedHash": "a1eedb34e18f21cfbb5ab69c460b84240d973288b6064292138fe2131428215d"
+    },
+    "dbs-good-question": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-good-question/SKILL.md",
+      "computedHash": "dcfb91b914c2502c7904e7bc4df1f60bd79ecf03e0b07dfa28fba902ea65f84a"
+    },
+    "dbs-hook": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-hook/SKILL.md",
+      "computedHash": "bd8774408ac4cacb1132752408c942cc065baf710ecf687056f14ee6f26404ba"
+    },
+    "dbs-install-skill": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-install-skill/SKILL.md",
+      "computedHash": "8a76960bbb00015b5abc826c0481fa547cf52d2a79bb5aa2208f6506db6fa98b"
+    },
+    "dbs-jtbd": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-jtbd/SKILL.md",
+      "computedHash": "b7dc1acd40d23ba9181e854f8938a001cb80d61afe10a47e1e0c65fbeddd058d"
+    },
+    "dbs-knowledge": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-knowledge/SKILL.md",
+      "computedHash": "383fcade37e81953050e0f078c0fd5ba3fca236426c506bd208286879f3444a7"
+    },
+    "dbs-learning": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-learning/SKILL.md",
+      "computedHash": "028ddbf2102b4491674163d7862a6d681064aeb36bc510f709c1b7eb51aafe3e"
+    },
+    "dbs-report": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-report/SKILL.md",
+      "computedHash": "20c9eec9ebb411ccb23e41da511c03876905bad7060019952f7047d1f4a3f3d3"
+    },
+    "dbs-resonate": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-resonate/SKILL.md",
+      "computedHash": "8492066beebacaa4a2a21ce4838f68a73aa9e1ab6cfc46c8e008d7be702b8817"
+    },
+    "dbs-restore": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-restore/SKILL.md",
+      "computedHash": "668714d7910af99df540823b984ab92b2011f7d8cf92c5ad3e57325e4ede3145"
+    },
+    "dbs-save": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-save/SKILL.md",
+      "computedHash": "c8aaff41f6f981ae3adb41413f2330dd9566dd7ab28877886a7274c9ca0a0394"
+    },
+    "dbs-script-flow": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-script-flow/SKILL.md",
+      "computedHash": "e603b557e6c12f85dddca1efed327d0fef7813f461efc4e273d987ba9e951482"
+    },
+    "dbs-skill-maker": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-skill-maker/SKILL.md",
+      "computedHash": "b017bacc398bbf84a3992d5eaf8e4c622b2290bd2be7c48272322426def5a18b"
+    },
+    "dbs-spread": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-spread/SKILL.md",
+      "computedHash": "faeaec936f4696e25144317795000393e299b7ad27f01cfcabb0c0388f170166"
+    },
+    "dbs-standard-answer": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-standard-answer/SKILL.md",
+      "computedHash": "93b5fe5a64496abd48c6cc9935e16bbeadcefaca1d7cf1054046105636938a0e"
+    },
+    "dbs-theory-grounding": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-theory-grounding/SKILL.md",
+      "computedHash": "71d328aa14913a5fd860898d732c10235c606a32510daf272da418da6098c5ab"
+    },
+    "dbs-update": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-update/SKILL.md",
+      "computedHash": "0e04b8085d507937e4980f27b40ad165379a656364651f37601ca9dd94b0b985"
+    },
+    "dbs-video-extract": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-video-extract/SKILL.md",
+      "computedHash": "81deb42ccd5a66a6697fea93125358443c6abff22047e4bae9f788775e1f675e"
+    },
+    "dbs-wechat-html": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-wechat-html/SKILL.md",
+      "computedHash": "7c1cdb6911783a826c383aa540cfe3c2e70500a94cc61eb55227b6cf60ef7856"
+    },
+    "dbs-xhs-title": {
+      "source": "dontbesilent2025/dbskill",
+      "sourceType": "github",
+      "skillPath": "skills/dbs-xhs-title/SKILL.md",
+      "computedHash": "91bec24a3d57fe512b73131f9664ff0d1e9e52e893e43f1cc3514e1ea77150d4"
+    },
+    "design-taste-frontend": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
+    },
+    "design-taste-frontend-v1": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill-v1/SKILL.md",
+      "computedHash": "0a226c13d69639553cf8a7c40aa5527b026820f8ddaf7a6b263988e32ab44a27"
+    },
+    "full-output-enforcement": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/output-skill/SKILL.md",
+      "computedHash": "524f7c7950c3fde726101613f630140411c7d080e63be718687f4b38f919be81"
+    },
+    "gpt-taste": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/gpt-tasteskill/SKILL.md",
+      "computedHash": "7bd1bfdda0e51016ca222693401a65fc0dd9bf9487e0bd5b1740ba510f6f963a"
+    },
+    "high-end-visual-design": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/soft-skill/SKILL.md",
+      "computedHash": "f730e4132775f13eea19e3dc39afc6bb453cfc0498872b127ad8f0d47cfd802d"
+    },
+    "human-writing": {
+      "source": "KKKKhazix/human-writing",
+      "sourceType": "github",
+      "skillPath": "human-writing/SKILL.md",
+      "computedHash": "1753e7f740dea9f20a19418d0de342e0d427779ff85f01688333a1f2a886de4f"
+    },
+    "humanizer-zh": {
+      "source": "op7418/humanizer-zh",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "ad6b2b1f1433413c64f6403dc322d950da175a058f494291bd4399e77cb587c7"
+    },
+    "image-to-code": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/image-to-code-skill/SKILL.md",
+      "computedHash": "3d2ac14d956fdafc5500d2108b90895e134d847f9f199e7f1d18bf1f814cf7c8"
+    },
+    "imagegen-frontend-mobile": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/imagegen-frontend-mobile/SKILL.md",
+      "computedHash": "7c1d1dc59cd0df4063b8621af543bf5dea1d576b261507e17b0323c69680b048"
+    },
+    "imagegen-frontend-web": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/imagegen-frontend-web/SKILL.md",
+      "computedHash": "27255c7c50181e58add156b2aa2bd5325285b85f04027e4c8b73742d98d7be0a"
+    },
+    "industrial-brutalist-ui": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/brutalist-skill/SKILL.md",
+      "computedHash": "e66e5a2a8b73cef79ab6546459c665e8b983645689c5f3772f7eed8b9f1e8e0e"
+    },
+    "minimalist-ui": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/minimalist-skill/SKILL.md",
+      "computedHash": "7e88897e0371184e97a82b8d9ef080323c13f21eb067b58ef71eb05173a08ac2"
+    },
+    "redesign-existing-projects": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/redesign-skill/SKILL.md",
+      "computedHash": "47eced3e960a2c961d3cbee11fa1216264f589344b586a5cbd03967cd6b9c54b"
+    },
+    "stitch-design-taste": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/stitch-skill/SKILL.md",
+      "computedHash": "c96b580192b34167efa01f460bbc669ff4315cf97f3cf6ff85ded8029aa720b8"
+    }
+  }
+}

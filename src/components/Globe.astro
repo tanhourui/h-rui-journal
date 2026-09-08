@@ -1,0 +1,815 @@
+---
+interface Props {
+  journeysData: any;
+}
+
+const { journeysData } = Astro.props;
+---
+
+<div class="globe-stage-wrapper">
+  <!-- State, Country & Coordinates Tab Centered Directly on Top of the Globe -->
+  <div class="globe-top-badge">
+    <span class="dot"></span>
+    <span id="activeRegionText" style="font-weight:600;">Tokyo · Japan</span>
+    <span class="sep">·</span>
+    <span id="activeCoordsText">35.712° N, 139.762° E</span>
+  </div>
+
+  <div class="viewport-grid">
+    <!-- Center Canvas: Globe Stage with Trajectory Arcs & Stable Ring -->
+    <div class="canvas-container">
+      <canvas id="globeCanvas" width="680" height="680"></canvas>
+    </div>
+
+    <!-- Right Column: Connected Cards with Direct Hairline from Globe -->
+    <div id="cardsColumn" class="cards-column"></div>
+  </div>
+
+  <!-- Floating Zoom Controls -->
+  <div class="zoom-controls">
+    <button id="zoomInBtn" class="zoom-btn" title="Zoom In">+</button>
+    <button id="zoomOutBtn" class="zoom-btn" title="Zoom Out">−</button>
+  </div>
+</div>
+
+<script is:inline src="/d3.min.js"></script>
+<script is:inline src="/topojson-client.min.js"></script>
+<script is:inline src="/world-data.js"></script>
+<script is:inline src="/country-dots.js"></script>
+
+<script is:inline define:vars={{ initialJourneys: journeysData }}>
+  window.JOURNEYS_DATA = initialJourneys;
+</script>
+
+<script is:inline>
+  (function() {
+    const countries = window.JOURNEYS_DATA || {};
+
+    let currentCountryKey = 'japan';
+    let currentStateIndex = 0;
+
+    const canvas = document.getElementById('globeCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    // Fixed Aperture Circle (580px diameter)
+    const GLOBE_APERTURE_RADIUS = 290; 
+    let cx = canvas.width / 2;
+    let cy = canvas.height / 2;
+
+    let currentZoomFactor = 1.0;
+    let targetZoomFactor = 1.0;
+    const MIN_ZOOM = 0.85;
+    const MAX_ZOOM = 2.8;
+
+    let projection = d3.geoOrthographic()
+      .scale(GLOBE_APERTURE_RADIUS * currentZoomFactor)
+      .translate([cx, cy])
+      .precision(0.3);
+
+    let path = d3.geoPath().projection(projection).context(ctx);
+    let graticule = d3.geoGraticule10();
+
+    let worldCountries = null;
+    if (window.WORLD_ATLAS) {
+      worldCountries = topojson.feature(window.WORLD_ATLAS, window.WORLD_ATLAS.objects.countries);
+    }
+
+    const landDots = window.COUNTRY_DOTS || [];
+
+    let rot = [-138.25, -36.2];
+    let targetRot = [-138.25, -36.2];
+    let isDragging = false;
+    let lastPos = { x: 0, y: 0 };
+
+    function getThemeColors() {
+      const styles = getComputedStyle(document.body);
+      return {
+        globeBase: styles.getPropertyValue('--globe-base').trim() || '#ECE8DF',
+        globeStroke: styles.getPropertyValue('--globe-stroke').trim() || '#D5D0C2',
+        landDots: styles.getPropertyValue('--land-dots').trim() || '#C0BAAC',
+        countryStroke: styles.getPropertyValue('--country-stroke').trim() || '#746E60',
+        ringTicks: styles.getPropertyValue('--ring-ticks').trim() || '#7A7466',
+        ringSubtle: styles.getPropertyValue('--ring-subtle').trim() || 'rgba(160, 155, 145, 0.35)',
+        accent: styles.getPropertyValue('--sub-accent').trim() || '#3E4D40',
+        inkPrimary: styles.getPropertyValue('--ink-primary').trim() || '#21201D',
+        routeArc: styles.getPropertyValue('--route-arc').trim() || '#3E4D40'
+      };
+    }
+
+    function render() {
+      rot[0] += (targetRot[0] - rot[0]) * 0.08;
+      rot[1] += (targetRot[1] - rot[1]) * 0.08;
+      
+      currentZoomFactor += (targetZoomFactor - currentZoomFactor) * 0.1;
+      projection.scale(GLOBE_APERTURE_RADIUS * currentZoomFactor).rotate(rot);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const colors = getThemeColors();
+
+      // 1. STABLE ASTROLABE CALIBRATION RING
+      ctx.save();
+      ctx.translate(cx, cy);
+
+      ctx.beginPath();
+      ctx.arc(0, 0, GLOBE_APERTURE_RADIUS + 26, 0, Math.PI * 2);
+      ctx.strokeStyle = colors.ringSubtle;
+      ctx.lineWidth = 0.7;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(0, 0, GLOBE_APERTURE_RADIUS + 12, 0, Math.PI * 2);
+      ctx.strokeStyle = colors.ringSubtle;
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+
+      for (let deg = 0; deg < 360; deg += 5) {
+        const rad = deg * Math.PI / 180;
+        const isMajor = (deg % 30 === 0);
+        const tickLength = isMajor ? 11 : 5;
+        const r1 = GLOBE_APERTURE_RADIUS + 12;
+        const r2 = r1 + tickLength;
+
+        const x1 = Math.cos(rad) * r1;
+        const y1 = Math.sin(rad) * r1;
+        const x2 = Math.cos(rad) * r2;
+        const y2 = Math.sin(rad) * r2;
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.lineWidth = isMajor ? 1.2 : 0.5;
+        ctx.strokeStyle = isMajor ? colors.ringTicks : colors.ringSubtle;
+        ctx.stroke();
+
+        if (isMajor && (deg % 60 === 0)) {
+          const textR = r2 + 11;
+          const tx = Math.cos(rad) * textR;
+          const ty = Math.sin(rad) * textR;
+          ctx.font = '8px monospace';
+          ctx.fillStyle = colors.ringTicks;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`${deg}°`, tx, ty);
+        }
+      }
+      ctx.restore();
+
+      // 2. Fixed Globe Aperture Circle
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, GLOBE_APERTURE_RADIUS, 0, Math.PI * 2);
+      ctx.fillStyle = colors.globeBase;
+      ctx.fill();
+      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = colors.globeStroke;
+      ctx.stroke();
+      
+      ctx.clip();
+
+      // 3. Graticules
+      ctx.beginPath();
+      path(graticule);
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = colors.ringSubtle;
+      ctx.stroke();
+
+      const rotCenter = [-rot[0], -rot[1]];
+
+      // 4. Render Clean Inset Interior Dots
+      const dotSize = Math.max(1.1, 1.35 * currentZoomFactor);
+      ctx.fillStyle = colors.landDots;
+      landDots.forEach(coord => {
+        if (d3.geoDistance(coord, rotCenter) < Math.PI / 2) {
+          const pt = projection(coord);
+          if (pt) {
+            const dCenter = Math.hypot(pt[0] - cx, pt[1] - cy);
+            if (dCenter <= GLOBE_APERTURE_RADIUS) {
+              ctx.beginPath();
+              ctx.arc(pt[0], pt[1], dotSize, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        }
+      });
+
+      // 5. Fine Vector Country Boundaries
+      if (worldCountries) {
+        ctx.beginPath();
+        path(worldCountries);
+        ctx.lineWidth = Math.min(1.2, 0.75 * currentZoomFactor);
+        ctx.strokeStyle = colors.countryStroke;
+        ctx.stroke();
+      }
+
+      // 6. Travel Trajectory Arcs Connecting Cities
+      const countryData = countries[currentCountryKey];
+      if (countryData && countryData.route && countryData.route.length > 1) {
+        ctx.beginPath();
+        for (let i = 0; i < countryData.route.length - 1; i++) {
+          const start = countryData.route[i];
+          const end = countryData.route[i + 1];
+          const interpolate = d3.geoInterpolate(start, end);
+
+          let first = true;
+          for (let t = 0; t <= 1; t += 0.05) {
+            const coord = interpolate(t);
+            if (d3.geoDistance(coord, rotCenter) < Math.PI / 2) {
+              const pt = projection(coord);
+              if (pt && Math.hypot(pt[0] - cx, pt[1] - cy) <= GLOBE_APERTURE_RADIUS) {
+                if (first) { ctx.moveTo(pt[0], pt[1]); first = false; }
+                else ctx.lineTo(pt[0], pt[1]);
+              }
+            }
+          }
+        }
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = colors.routeArc;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // 7. Destination Pins Inside Viewfinder
+      let activePinPt = null;
+
+      if (countryData && countryData.states) {
+        countryData.states.forEach((s, idx) => {
+          const coords = s.coords;
+          const dist = d3.geoDistance(coords, rotCenter);
+
+          if (dist < Math.PI / 2) {
+            const pt = projection(coords);
+            if (!pt) return;
+            const [px, py] = pt;
+            const dCenter = Math.hypot(px - cx, py - cy);
+            
+            if (dCenter <= GLOBE_APERTURE_RADIUS) {
+              const isCurrent = (idx === currentStateIndex);
+
+              if (isCurrent) {
+                activePinPt = [px, py];
+
+                ctx.beginPath();
+                ctx.arc(px, py, 16, 0, Math.PI * 2);
+                ctx.fillStyle = colors.accent + '30';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(px, py, 26, 0, Math.PI * 2);
+                ctx.strokeStyle = colors.accent;
+                ctx.lineWidth = 1.3;
+                ctx.stroke();
+              }
+
+              ctx.beginPath();
+              ctx.arc(px, py, isCurrent ? 6 : 4, 0, Math.PI * 2);
+              ctx.fillStyle = isCurrent ? colors.accent : colors.countryStroke;
+              ctx.fill();
+
+              ctx.font = isCurrent ? 'bold 12px monospace' : '10px monospace';
+              ctx.fillStyle = isCurrent ? colors.inkPrimary : colors.countryStroke;
+              ctx.fillText(s.stateName, px + 12, py + 4);
+            }
+          }
+        });
+      }
+
+      ctx.restore();
+
+      // 8. Hairline Connecting Pin to Active Right Card
+      if (activePinPt) {
+        const [px, py] = activePinPt;
+        const cardEl = document.querySelector('.chapter-card.active');
+        
+        if (cardEl && window.innerWidth > 1200) {
+          const canvasRect = canvas.getBoundingClientRect();
+          const cardRect = cardEl.getBoundingClientRect();
+
+          const targetX = (cardRect.left - canvasRect.left);
+          const targetY = (cardRect.top + cardRect.height / 2 - canvasRect.top);
+
+          const midX = px + (targetX - px) * 0.55;
+
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          ctx.lineTo(midX, py);
+          ctx.lineTo(targetX - 10, targetY);
+          ctx.lineTo(targetX, targetY);
+
+          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = colors.accent;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(targetX, targetY, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = colors.accent;
+          ctx.fill();
+        }
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    // DOM Elements
+    const activeRegionText = document.getElementById('activeRegionText');
+    const activeCoordsText = document.getElementById('activeCoordsText');
+    const cardsColumn = document.getElementById('cardsColumn');
+
+    function updateCountryCards(countryKey) {
+      if (!cardsColumn) return;
+      cardsColumn.innerHTML = '';
+      const c = countries[countryKey];
+      if (!c || !c.states) return;
+
+      c.states.forEach((s, idx) => {
+        const card = document.createElement('div');
+        card.className = `chapter-card ${idx === currentStateIndex ? 'active' : ''}`;
+        card.setAttribute('data-index', idx);
+
+        card.innerHTML = `
+          <div class="card-bezel-wrapper">
+            <div class="card-inner-surface">
+              <div class="collapsed-row">
+                <span class="state-name-sm">${s.title}</span>
+                <span class="date-meta-sm font-mono">${s.date}</span>
+              </div>
+              <div class="expanded-content">
+                <div class="card-img-wrap">
+                  <img src="${s.hero}" alt="${s.title}" loading="lazy">
+                  <span class="story-tag font-mono">0${idx+1}</span>
+                </div>
+                <p class="card-desc">${s.desc}</p>
+                <div class="card-action-bar">
+                  <span class="exif-meta font-mono">${s.exif}</span>
+                  <a href="/journey/${s.slug}" class="story-cta-pill font-mono">
+                    <span>Read Story</span>
+                    <span class="cta-arrow-bubble">↗</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('mouseenter', () => {
+          selectState(idx);
+        });
+
+        cardsColumn.appendChild(card);
+      });
+    }
+
+    function selectCountry(countryKey, stateIndex = 0) {
+      currentCountryKey = countryKey;
+      currentStateIndex = stateIndex;
+      const c = countries[countryKey];
+      if (!c) return;
+      const s = c.states[stateIndex] || c.states[0];
+
+      if (s) {
+        targetRot = [-s.coords[0], -s.coords[1]];
+        if (activeRegionText) activeRegionText.textContent = `${s.stateName} · ${c.name}`;
+        if (activeCoordsText) activeCoordsText.textContent = s.coordsText;
+      }
+
+      document.querySelectorAll('.country-nav-item').forEach(btn => {
+        if (btn.getAttribute('data-country') === countryKey) {
+          btn.className = 'country-nav-item active';
+        } else {
+          btn.className = 'country-nav-item';
+        }
+      });
+
+      updateCountryCards(countryKey);
+    }
+
+    function selectState(stateIndex) {
+      currentStateIndex = stateIndex;
+      const c = countries[currentCountryKey];
+      if (!c || !c.states[stateIndex]) return;
+      const s = c.states[stateIndex];
+
+      targetRot = [-s.coords[0], -s.coords[1]];
+
+      if (activeRegionText) activeRegionText.textContent = `${s.stateName} · ${c.name}`;
+      if (activeCoordsText) activeCoordsText.textContent = s.coordsText;
+
+      document.querySelectorAll('.chapter-card').forEach((card, idx) => {
+        if (idx === stateIndex) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+    }
+
+    function detectCenteredCountry() {
+      const rotCenter = [-rot[0], -rot[1]];
+      let closestCountry = currentCountryKey;
+      let minDistance = Infinity;
+
+      for (const [key, data] of Object.entries(countries)) {
+        if (!data.center) continue;
+        const dist = d3.geoDistance(data.center, rotCenter);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestCountry = key;
+        }
+      }
+
+      if (closestCountry !== currentCountryKey && minDistance < 0.75) {
+        currentCountryKey = closestCountry;
+        currentStateIndex = 0;
+        selectCountry(closestCountry, 0);
+      }
+    }
+
+    function zoomIn() {
+      targetZoomFactor = Math.min(MAX_ZOOM, targetZoomFactor + 0.3);
+    }
+    function zoomOut() {
+      targetZoomFactor = Math.max(MIN_ZOOM, targetZoomFactor - 0.3);
+    }
+
+    const zoomInBtn = document.getElementById('zoomInBtn');
+    const zoomOutBtn = document.getElementById('zoomOutBtn');
+    if (zoomInBtn) zoomInBtn.addEventListener('click', zoomIn);
+    if (zoomOutBtn) zoomOutBtn.addEventListener('click', zoomOut);
+
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.deltaY < 0) zoomIn();
+      else zoomOut();
+    }, { passive: false });
+
+    function handleStart(clientX, clientY) {
+      isDragging = true;
+      lastPos = { x: clientX, y: clientY };
+    }
+
+    function handleMove(clientX, clientY) {
+      if (!isDragging) return;
+      const dx = clientX - lastPos.x;
+      const dy = clientY - lastPos.y;
+      targetRot[0] += dx * (0.45 / currentZoomFactor);
+      targetRot[1] = Math.max(-65, Math.min(65, targetRot[1] - dy * (0.35 / currentZoomFactor)));
+      lastPos = { x: clientX, y: clientY };
+      detectCenteredCountry();
+    }
+
+    function handleEnd() {
+      isDragging = false;
+    }
+
+    canvas.addEventListener('mousedown', (e) => handleStart(e.clientX, e.clientY));
+    window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+    window.addEventListener('mouseup', handleEnd);
+
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) handleStart(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1) handleMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+
+    window.addEventListener('touchend', handleEnd);
+
+    document.querySelectorAll('.country-nav-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const countryKey = btn.getAttribute('data-country');
+        selectCountry(countryKey, 0);
+      });
+    });
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+      const c = countries[currentCountryKey];
+      if (!c || !c.states) return;
+      c.states.forEach((s, idx) => {
+        const rotCenter = [-rot[0], -rot[1]];
+        if (d3.geoDistance(s.coords, rotCenter) < Math.PI / 2) {
+          const pt = projection(s.coords);
+          if (pt) {
+            const dist = Math.hypot(pt[0] - clickX, pt[1] - clickY);
+            if (dist < 28) {
+              selectState(idx);
+            }
+          }
+        }
+      });
+    });
+
+    // Start in Malaysia (Penang)
+    selectCountry('malaysia', 0);
+    render();
+  })();
+</script>
+
+<style>
+  .globe-stage-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    padding: 20px 40px;
+  }
+
+  /* State, Country & Coordinate Floating Tab Right on Top of the Globe */
+  .globe-top-badge {
+    position: absolute;
+    top: 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 22px;
+    border-radius: 9999px;
+    background: var(--card-surface);
+    border: 1px solid var(--border-subtle);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--sub-accent);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+    z-index: 15;
+    transition: all 0.3s ease;
+  }
+
+  .globe-top-badge .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--sub-accent);
+  }
+
+  .globe-top-badge .sep {
+    color: var(--border-subtle);
+  }
+
+  /* Centered Viewport Grid: Center Globe + Connected Right Cards */
+  .viewport-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1260px;
+    position: relative;
+    margin-top: 20px;
+  }
+
+  /* Center Globe Canvas Container */
+  .canvas-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 680px;
+    height: 680px;
+    flex-shrink: 0;
+    margin: 0 auto;
+  }
+
+  canvas {
+    cursor: grab;
+    touch-action: none;
+  }
+
+  canvas:active {
+    cursor: grabbing;
+  }
+
+  /* Zoom Controls */
+  .zoom-controls {
+    position: absolute;
+    bottom: 28px;
+    left: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 15;
+  }
+
+  .zoom-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--card-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--ink-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+  }
+
+  .zoom-btn:hover {
+    border-color: var(--sub-accent);
+    color: var(--sub-accent);
+    transform: scale(1.05);
+  }
+
+  /* Right Cards Column */
+  .cards-column {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 350px;
+    flex-shrink: 0;
+    z-index: 15;
+    position: relative;
+    margin-left: 24px;
+  }
+
+  :global(.chapter-card) {
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.card-bezel-wrapper) {
+    padding: 3px;
+    border-radius: 18px;
+    background: rgba(128, 128, 128, 0.05);
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.chapter-card:hover .card-bezel-wrapper) {
+    border-color: var(--sub-accent);
+    transform: translateX(3px);
+  }
+
+  :global(.chapter-card.active .card-bezel-wrapper) {
+    border-color: var(--sub-accent);
+    background: var(--sub-accent-light);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  }
+
+  :global(.card-inner-surface) {
+    background: var(--card-surface);
+    border-radius: 15px;
+    padding: 13px 15px;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.3);
+    transition: background-color 0.3s ease;
+  }
+
+  :global(.chapter-card .collapsed-row) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  :global(.chapter-card .state-name-sm) {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink-primary);
+  }
+
+  :global(.chapter-card .date-meta-sm) {
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+
+  :global(.chapter-card .expanded-content) {
+    display: none;
+    margin-top: 12px;
+  }
+
+  :global(.chapter-card.active .expanded-content) {
+    display: block;
+  }
+
+  :global(.card-img-wrap) {
+    width: 100%;
+    height: 175px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    position: relative;
+    background: #EAE6DC;
+  }
+
+  :global(.card-img-wrap img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  :global(.chapter-card:hover .card-img-wrap img) {
+    transform: scale(1.03);
+  }
+
+  :global(.story-tag) {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--sub-accent);
+    color: #FFF;
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  :global(.card-desc) {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  :global(.card-action-bar) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  :global(.exif-meta) {
+    font-size: 10px;
+    color: var(--ink-muted);
+  }
+
+  :global(.story-cta-pill) {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--sub-accent);
+    color: #FFF !important;
+    padding: 4px 5px 4px 11px;
+    border-radius: 9999px;
+    font-size: 10.5px;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  :global(.story-cta-pill:hover) {
+    transform: translateY(-1px);
+    opacity: 0.95;
+  }
+
+  :global(.story-cta-pill:active) {
+    transform: scale(0.97);
+  }
+
+  :global(.cta-arrow-bubble) {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.22);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+
+  @media (max-width: 1200px) {
+    .globe-stage-wrapper {
+      height: auto;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .viewport-grid {
+      flex-direction: column;
+    }
+    .canvas-container {
+      width: 100%;
+      height: 460px;
+      max-width: 460px;
+    }
+    .cards-column {
+      width: 100%;
+      max-width: 460px;
+      margin-left: 0;
+      margin-top: 20px;
+    }
+    .globe-top-badge {
+      position: relative;
+      top: 0;
+      margin-bottom: 16px;
+    }
+    .zoom-controls {
+      bottom: 16px;
+      left: 16px;
+    }
+  }
+</style>

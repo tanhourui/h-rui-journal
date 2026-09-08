@@ -1,0 +1,20 @@
+{
+  "name": "h-rui-journal",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --port 3000 --host",
+    "start": "astro dev --port 3000 --host",
+    "build": "astro build",
+    "preview": "astro preview --port 3000 --host",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^5.4.2",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.7.3"
+  }
+}

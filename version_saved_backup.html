@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tan Hou Rui — Visual Journal & Cartography</title>
+  <script src="d3.min.js"></script>
+  <script src="topojson-client.min.js"></script>
+  <script src="world-data.js"></script>
+  <script src="country-dots.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=JetBrains+Mono:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg-washi: #F7F5EE;
+      --card-washi: #FDFCF8;
+      --ink-primary: #21201D;
+      --ink-muted: #848076;
+      --sub-moss: #3E4D40;      /* Kyoto Moss */
+      --sub-moss-light: #ECEFEA;
+      --sub-walnut: #5C4A3C;    /* Japanese Walnut */
+      --border-subtle: #E2DDD0;
+    }
+
+    body {
+      background-color: var(--bg-washi);
+      color: var(--ink-primary);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      width: 100vw;
+      overflow-x: hidden;
+      display: flex;
+    }
+
+    .font-serif { font-family: 'Cinzel', Georgia, serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Left Sidebar: Branding, Country Selector, and Navigation */
+    aside#leftSidebar {
+      width: 280px;
+      min-width: 260px;
+      height: 100vh;
+      padding: 36px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--border-subtle);
+      background: rgba(247, 245, 238, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 20;
+      flex-shrink: 0;
+    }
+
+    .brand-block h1 {
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: var(--ink-primary);
+    }
+
+    .brand-block .subtitle {
+      font-size: 11px;
+      color: var(--ink-muted);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .nav-section-title {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--ink-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Vertical Country Selector */
+    .country-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .country-nav-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ink-muted);
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+
+    .country-nav-item:hover {
+      background: rgba(0,0,0,0.03);
+      color: var(--ink-primary);
+      border-color: var(--border-subtle);
+    }
+
+    .country-nav-item.active {
+      background: var(--sub-moss-light);
+      border-color: #D5DCD2;
+      color: var(--sub-moss);
+      font-weight: 500;
+    }
+
+    .country-nav-item .chapter-count {
+      font-size: 10px;
+      color: #9C978C;
+    }
+
+    .country-nav-item.active .chapter-count {
+      color: var(--sub-moss);
+    }
+
+    .sidebar-footer {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--ink-muted);
+      line-height: 1.6;
+    }
+
+    /* Main Center-Right Stage */
+    main#mainStage {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      padding: 20px 40px;
+    }
+
+    /* State, Country & Coordinate Floating Tab Right on Top of the Globe */
+    .globe-top-badge {
+      position: absolute;
+      top: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 20px;
+      border-radius: 9999px;
+      background: #FFF;
+      border: 1px solid var(--border-subtle);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--sub-moss);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      z-index: 15;
+    }
+
+    .globe-top-badge .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--sub-moss);
+    }
+
+    .globe-top-badge .sep {
+      color: #C2BDAF;
+    }
+
+    /* Centered Viewport Grid */
+    .viewport-grid {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 1240px;
+      position: relative;
+      margin-top: 24px;
+    }
+
+    /* Center Globe Canvas Container */
+    .canvas-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 680px;
+      height: 680px;
+      flex-shrink: 0;
+      margin: 0 auto;
+    }
+
+    canvas {
+      cursor: grab;
+      touch-action: none;
+    }
+
+    canvas:active {
+      cursor: grabbing;
+    }
+
+    /* Zoom Controls */
+    .zoom-controls {
+      position: absolute;
+      bottom: 28px;
+      left: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 15;
+    }
+
+    .zoom-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(253, 252, 248, 0.95);
+      border: 1px solid var(--border-subtle);
+      color: var(--ink-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+
+    .zoom-btn:hover {
+      border-color: var(--sub-moss);
+      color: var(--sub-moss);
+      transform: scale(1.05);
+    }
+
+    /* Right Cards Column */
+    .cards-column {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 340px;
+      flex-shrink: 0;
+      z-index: 15;
+      position: relative;
+      margin-left: 20px;
+    }
+
+    .chapter-card {
+      background: rgba(253, 252, 248, 0.96);
+      backdrop-filter: blur(14px);
+      border: 1px solid #DCD7CA;
+      border-radius: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .chapter-card:hover {
+      border-color: var(--sub-moss);
+      transform: translateX(4px);
+    }
+
+    .chapter-card.active {
+      border-color: var(--sub-moss);
+      box-shadow: 0 16px 36px rgba(62, 77, 64, 0.12);
+      background: #FFF;
+      padding: 16px 18px;
+    }
+
+    .chapter-card .collapsed-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chapter-card .state-name-sm {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .chapter-card .date-meta-sm {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--ink-muted);
+    }
+
+    .chapter-card .expanded-content {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .chapter-card.active .expanded-content {
+      display: block;
+    }
+
+    .card-img-wrap {
+      width: 100%;
+      height: 170px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      position: relative;
+      background: #EAE6DC;
+    }
+
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .chapter-card:hover .card-img-wrap img {
+      transform: scale(1.03);
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: #55524B;
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    .card-action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #ECE7DB;
+    }
+
+    .exif-meta {
+      font-size: 10px;
+      color: var(--ink-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .enter-link {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--sub-moss);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* Bottom Subtext */
+    .bottom-guidance {
+      position: absolute;
+      bottom: 20px;
+      font-size: 11px;
+      color: var(--ink-muted);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      gap: 16px;
+      z-index: 5;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      body { flex-direction: column; }
+      aside#leftSidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-subtle); padding: 20px; }
+      main#mainStage { height: auto; min-height: 100vh; padding: 20px; }
+      .viewport-grid { flex-direction: column; }
+      .canvas-container { width: 100%; height: 460px; max-width: 460px; }
+      .cards-column { width: 100%; max-width: 460px; margin-left: 0; margin-top: 20px; }
+      .globe-top-badge { position: relative; top: 0; margin-bottom: 16px; }
+      .zoom-controls { bottom: 16px; left: 16px; }
+    }
+
+    /* Chapter Full-Page View */
+    #chapterView {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--bg-washi);
+      z-index: 50;
+      padding: 40px 24px 80px;
+    }
+
+    .chapter-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .chapter-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 16px;
+      margin-bottom: 32px;
+    }
+
+    .return-btn {
+      background: none;
+      border: none;
+      color: var(--sub-moss);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .return-btn:hover {
+      text-decoration: underline;
+    }
+
+    .chapter-heading-h2 {
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-top: 8px;
+    }
+
+    .chapter-hero-box {
+      width: 100%;
+      height: 500px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #EAE6DC;
+      margin: 28px 0 10px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.05);
+    }
+
+    .chapter-hero-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .diptych-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .diptych-grid img {
+      width: 100%;
+      height: 290px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Sidebar (Branding & Destination Navigation) -->
+  <aside id="leftSidebar">
+    <div>
+      <div class="brand-block">
+        <h1>Tan Hou Rui</h1>
+        <p class="subtitle font-mono">Selected Journeys / 旅の記録</p>
+      </div>
+
+      <div style="margin-top: 40px;">
+        <div class="nav-section-title">Destinations</div>
+        <div class="country-nav-list">
+          <button class="country-nav-item active" data-country="malaysia">
+            <span>01. Malaysia</span>
+            <span class="chapter-count">3 Chapters</span>
+          </button>
+          <button class="country-nav-item" data-country="japan">
+            <span>02. Japan</span>
+            <span class="chapter-count">2 Chapters</span>
+          </button>
+          <button class="country-nav-item" data-country="iceland">
+            <span>03. Iceland</span>
+            <span class="chapter-count">1 Chapter</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Legend -->
+    <div class="sidebar-footer">
+      <div>NATURAL EARTH CARTOGRAPHY</div>
+      <div style="color:#A4A096; font-size:10px;">ORTHOGRAPHIC PROJECTION</div>
+      <div style="color:#A4A096; font-size:10px; margin-top:4px;">STATUS: CONNECTED</div>
+    </div>
+  </aside>
+
+  <!-- Main Stage: Centered Globe & Connected Cards -->
+  <main id="mainStage">
+    
+    <!-- State, Country & Coordinates Tab Centered Directly on Top of the Globe -->
+    <div class="globe-top-badge">
+      <span class="dot"></span>
+      <span id="activeRegionText" style="font-weight:600;">Penang, Malaysia</span>
+      <span class="sep">·</span>
+      <span id="activeCoordsText">5.416° N, 100.332° E</span>
+    </div>
+
+    <div class="viewport-grid">
+      
+      <!-- Center Canvas: Globe Stage with Stable Astrolabe Ring -->
+      <div class="canvas-container">
+        <canvas id="globeCanvas" width="680" height="680"></canvas>
+      </div>
+
+      <!-- Right Column: Connected Cards for the Target Country -->
+      <div id="cardsColumn" class="cards-column"></div>
+
+    </div>
+
+    <!-- Floating Zoom Controls -->
+    <div class="zoom-controls">
+      <button id="zoomInBtn" class="zoom-btn" title="Zoom In">+</button>
+      <button id="zoomOutBtn" class="zoom-btn" title="Zoom Out">−</button>
+    </div>
+
+    <!-- Bottom Minimal Guidance -->
+    <div class="bottom-guidance">
+      <span>● Scroll wheel zooms map inside circle</span>
+      <span>·</span>
+      <span>Drag globe to target</span>
+      <span>·</span>
+      <span>Hairline links pin to chapter</span>
+    </div>
+  </main>
+
+  <!-- Full-Page Chapter View -->
+  <section id="chapterView">
+    <div class="chapter-container">
+      <div class="chapter-top-bar">
+        <button id="backToGlobeBtn" class="return-btn">← Return to Globe</button>
+        <span id="chapterDate" style="font-size:12px; font-family:'JetBrains Mono'; color:var(--ink-muted);">September 2024</span>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        <span id="chapterCountry" style="font-size:12px; font-family:'JetBrains Mono'; color:var(--sub-walnut); text-transform:uppercase; letter-spacing:0.15em;">Malaysia</span>
+        <span style="color:#B8B4AA;">/</span>
+        <span id="chapterSubtitle" style="font-size:12px; font-family:'JetBrains Mono'; color:var(--sub-moss); text-transform:uppercase; letter-spacing:0.15em;">Penang State</span>
+      </div>
+
+      <h2 id="chapterTitle" class="chapter-heading-h2">Penang: Heritage Shophouses & Coastal Shadows</h2>
+      <p id="chapterBody" style="font-size:15px; color:#524F48; line-height:1.7; margin-top:14px; font-weight:300;">
+        Wandering the narrow corridors of George Town at sunrise. Weathered pastel plaster, morning kopi steam drifting from corner kopitiams, and the humid sea breeze rolling in from the Clan Jetties.
+      </p>
+
+      <div class="chapter-hero-box">
+        <img id="chapterHeroImg" src="" alt="">
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:11px; font-family:'JetBrains Mono'; color:var(--ink-muted); margin-top:8px;">
+        <span id="chapterHeroCaption">Muntri Street — 07:15 AM</span>
+        <span id="chapterHeroExif">28mm · ƒ/2.8 · 1/400s · ISO 200</span>
+      </div>
+
+      <div class="diptych-grid">
+        <div>
+          <img id="chapterSec1" src="" alt="">
+          <div style="font-size:10px; font-family:'JetBrains Mono'; color:var(--ink-muted); margin-top:6px;">Clan Jetties Timber</div>
+        </div>
+        <div>
+          <img id="chapterSec2" src="" alt="">
+          <div style="font-size:10px; font-family:'JetBrains Mono'; color:var(--ink-muted); margin-top:6px;">Peranakan Tilework</div>
+        </div>
+      </div>
+
+      <div style="margin-top:40px; padding-top:20px; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; font-size:13px; font-family:'JetBrains Mono'; color:var(--sub-moss);">
+        <button id="prevChapterBtn" style="background:none; border:none; color:inherit; cursor:pointer;">← Previous Chapter</button>
+        <span style="color:var(--ink-muted);">State Chapters</span>
+        <button id="nextChapterBtn" style="background:none; border:none; color:inherit; cursor:pointer;">Next Chapter →</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const countries = {
+      malaysia: {
+        name: 'Malaysia',
+        center: [101.9758, 4.2105],
+        states: [
+          {
+            id: 'penang',
+            stateName: 'Penang',
+            title: 'George Town, Penang',
+            chapterTitle: 'Penang: Heritage Shophouses & Coastal Shadows',
+            coords: [100.3327, 5.4164],
+            coordsText: '5.416° N, 100.332° E',
+            date: 'September 2024',
+            desc: 'Wandering George Town at dawn. Weathered pastel plaster, morning kopi steam, and the humid sea breeze along the Clan Jetties.',
+            exif: '28mm · ƒ/2.8 · 1/400s · ISO 200',
+            hero: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&w=1200&q=80',
+            sub1: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=600&q=80',
+            sub2: 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=600&q=80'
+          },
+          {
+            id: 'melaka',
+            stateName: 'Melaka',
+            title: 'Melaka Historic City',
+            chapterTitle: 'Melaka: Red Ochre Walls & River Dusk',
+            coords: [102.2501, 2.1896],
+            coordsText: '2.189° N, 102.250° E',
+            date: 'June 2024',
+            desc: 'Dutch Square at dusk. The slow dark river, red Dutch bricks, and lantern light reflecting on wet canal pavements.',
+            exif: '35mm · ƒ/2.0 · 1/250s · ISO 400',
+            hero: 'https://images.unsplash.com/photo-1582298538104-fe2e74c27f59?auto=format&fit=crop&w=1200&q=80',
+            sub1: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80',
+            sub2: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=600&q=80'
+          },
+          {
+            id: 'kl',
+            stateName: 'Kuala Lumpur',
+            title: 'Kuala Lumpur Metropolis',
+            chapterTitle: 'Kuala Lumpur: Monorail Curves & Tropical Rain',
+            coords: [101.6869, 3.1390],
+            coordsText: '3.139° N, 101.686° E',
+            date: 'March 2024',
+            desc: 'Sudden afternoon cloudbursts over Bukit Bintang. Concrete flyovers, reflective wet asphalt, and lush tropical foliage.',
+            exif: '40mm · ƒ/2.0 · 1/500s · ISO 250',
+            hero: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1200&q=80',
+            sub1: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
+            sub2: 'https://images.unsplash.com/photo-1508248017083-9533f816dd16?auto=format&fit=crop&w=600&q=80'
+          }
+        ]
+      },
+      japan: {
+        name: 'Japan',
+        center: [138.2529, 36.2048],
+        states: [
+          {
+            id: 'tokyo',
+            stateName: 'Tokyo (Kanto)',
+            title: 'Tokyo Metropolis',
+            chapterTitle: 'Tokyo: Rain, Reflections & Quiet Alleys',
+            coords: [139.6503, 35.6762],
+            coordsText: '35.676° N, 139.650° E',
+            date: 'November 2024',
+            desc: 'Walking through Yanaka at dawn before the Yamanote line starts humming. Damp asphalt, vending machines, and cedar gates.',
+            exif: '35mm · ƒ/2.0 · 1/320s · ISO 400',
+            hero: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80',
+            sub1: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=600&q=80',
+            sub2: 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=600&q=80'
+          },
+          {
+            id: 'kyoto',
+            stateName: 'Kyoto (Kansai)',
+            title: 'Kyoto Prefecture',
+            chapterTitle: 'Kyoto: Morning Mist & Stone Gardens',
+            coords: [135.7681, 35.0116],
+            coordsText: '35.011° N, 135.768° E',
+            date: 'April 2024',
+            desc: 'The scent of damp moss at Saiho-ji and the quiet clatter of wooden geta sandals along the Shirakawa canal.',
+            exif: '50mm · ƒ/2.8 · 1/160s · ISO 200',
+            hero: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80',
+            sub1: 'https://images.unsplash.com/photo-1492571350019-22de08371fd3?auto=format&fit=crop&w=600&q=80',
+            sub2: 'https://images.unsplash.com/photo-1509023464722-18d996393ca8?auto=format&fit=crop&w=600&q=80'
+          }
+        ]
+      },
+      iceland: {
+        name: 'Iceland',
+        center: [-18.5, 64.9],
+        states: [
+          {
+            id: 'reykjavik',
+            stateName: 'South Coast',
+            title: 'Reykjavík & South Coast',
+            chapterTitle: 'Iceland: Black Sands & Low Winter Light',
+            coords: [-21.9426, 64.1466],
+            coordsText: '64.146° N, 21.942° W',
+            date: 'October 2023',
+            desc: 'Wind carving through black volcanic sand dunes. The sub-arctic sun hangs at eye level for six hours straight.',
+            exif: '28mm · ƒ/5.6 · 1/500s · ISO 100',
+            hero: 'https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=1200&q=80',
+            sub1: 'https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=600&q=80',
+            sub2: 'https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=600&q=80'
+          }
+        ]
+      }
+    };
+
+    let currentCountryKey = 'malaysia';
+    let currentStateIndex = 0;
+
+    const canvas = document.getElementById('globeCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Fixed Aperture Circle (580px diameter)
+    const GLOBE_APERTURE_RADIUS = 290; 
+    let cx = canvas.width / 2;
+    let cy = canvas.height / 2;
+
+    // Internal Map Zoom Factor
+    let currentZoomFactor = 1.0;
+    let targetZoomFactor = 1.0;
+    const MIN_ZOOM = 0.85;
+    const MAX_ZOOM = 2.8;
+
+    let projection = d3.geoOrthographic()
+      .scale(GLOBE_APERTURE_RADIUS * currentZoomFactor)
+      .translate([cx, cy])
+      .precision(0.3);
+
+    let path = d3.geoPath().projection(projection).context(ctx);
+    let graticule = d3.geoGraticule10();
+
+    let worldCountries = null;
+    if (window.WORLD_ATLAS) {
+      worldCountries = topojson.feature(window.WORLD_ATLAS, window.WORLD_ATLAS.objects.countries);
+    }
+
+    const landDots = window.COUNTRY_DOTS || [];
+
+    let rot = [-102, -15];
+    let targetRot = [-102, -15];
+    let isDragging = false;
+    let lastPos = { x: 0, y: 0 };
+
+    function render() {
+      rot[0] += (targetRot[0] - rot[0]) * 0.08;
+      rot[1] += (targetRot[1] - rot[1]) * 0.08;
+      
+      currentZoomFactor += (targetZoomFactor - currentZoomFactor) * 0.1;
+      projection.scale(GLOBE_APERTURE_RADIUS * currentZoomFactor).rotate(rot);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 1. STABLE ASTROLABE CALIBRATION RING (Completely stationary)
+      ctx.save();
+      ctx.translate(cx, cy);
+
+      ctx.beginPath();
+      ctx.arc(0, 0, GLOBE_APERTURE_RADIUS + 26, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(160, 155, 145, 0.35)';
+      ctx.lineWidth = 0.7;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(0, 0, GLOBE_APERTURE_RADIUS + 12, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(160, 155, 145, 0.2)';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+
+      for (let deg = 0; deg < 360; deg += 5) {
+        const rad = deg * Math.PI / 180;
+        const isMajor = (deg % 30 === 0);
+        const tickLength = isMajor ? 11 : 5;
+        const r1 = GLOBE_APERTURE_RADIUS + 12;
+        const r2 = r1 + tickLength;
+
+        const x1 = Math.cos(rad) * r1;
+        const y1 = Math.sin(rad) * r1;
+        const x2 = Math.cos(rad) * r2;
+        const y2 = Math.sin(rad) * r2;
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.lineWidth = isMajor ? 1.2 : 0.5;
+        ctx.strokeStyle = isMajor ? '#7A7466' : 'rgba(160, 155, 145, 0.35)';
+        ctx.stroke();
+
+        if (isMajor && (deg % 60 === 0)) {
+          const textR = r2 + 11;
+          const tx = Math.cos(rad) * textR;
+          const ty = Math.sin(rad) * textR;
+          ctx.font = '8px monospace';
+          ctx.fillStyle = '#8C877A';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`${deg}°`, tx, ty);
+        }
+      }
+      ctx.restore();
+
+      // 2. Fixed Globe Aperture Circle
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, GLOBE_APERTURE_RADIUS, 0, Math.PI * 2);
+      ctx.fillStyle = '#ECE8DF';
+      ctx.fill();
+      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = '#D5D0C2';
+      ctx.stroke();
+      
+      ctx.clip();
+
+      // 3. Graticules
+      ctx.beginPath();
+      path(graticule);
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = 'rgba(130, 126, 116, 0.2)';
+      ctx.stroke();
+
+      const rotCenter = [-rot[0], -rot[1]];
+
+      // 4. Render Clean Inset Interior Dots
+      const dotSize = Math.max(1.1, 1.35 * currentZoomFactor);
+      ctx.fillStyle = '#C0BAAC';
+      landDots.forEach(coord => {
+        if (d3.geoDistance(coord, rotCenter) < Math.PI / 2) {
+          const pt = projection(coord);
+          if (pt) {
+            const dCenter = Math.hypot(pt[0] - cx, pt[1] - cy);
+            if (dCenter <= GLOBE_APERTURE_RADIUS) {
+              ctx.beginPath();
+              ctx.arc(pt[0], pt[1], dotSize, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        }
+      });
+
+      // 5. Fine Vector Country Boundaries
+      if (worldCountries) {
+        ctx.beginPath();
+        path(worldCountries);
+        ctx.lineWidth = Math.min(1.2, 0.75 * currentZoomFactor);
+        ctx.strokeStyle = '#746E60';
+        ctx.stroke();
+      }
+
+      // 6. Destination Pins Inside Viewfinder
+      const countryData = countries[currentCountryKey];
+      let activePinPt = null;
+
+      if (countryData && countryData.states) {
+        countryData.states.forEach((s, idx) => {
+          const coords = s.coords;
+          const dist = d3.geoDistance(coords, rotCenter);
+
+          if (dist < Math.PI / 2) {
+            const pt = projection(coords);
+            if (!pt) return;
+            const [px, py] = pt;
+            const dCenter = Math.hypot(px - cx, py - cy);
+            
+            if (dCenter <= GLOBE_APERTURE_RADIUS) {
+              const isCurrent = (idx === currentStateIndex);
+
+              if (isCurrent) {
+                activePinPt = [px, py];
+
+                ctx.beginPath();
+                ctx.arc(px, py, 16, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(62, 77, 64, 0.18)';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(px, py, 26, 0, Math.PI * 2);
+                ctx.strokeStyle = '#3E4D40';
+                ctx.lineWidth = 1.3;
+                ctx.stroke();
+              }
+
+              ctx.beginPath();
+              ctx.arc(px, py, isCurrent ? 6 : 4, 0, Math.PI * 2);
+              ctx.fillStyle = isCurrent ? '#3E4D40' : '#5C4A3C';
+              ctx.fill();
+
+              ctx.font = isCurrent ? 'bold 12px monospace' : '10px monospace';
+              ctx.fillStyle = isCurrent ? '#21201D' : '#5C4A3C';
+              ctx.fillText(s.stateName, px + 12, py + 4);
+            }
+          }
+        });
+      }
+
+      ctx.restore();
+
+      // 7. Dynamic Callout Hairline (Connects pin to active card on the right)
+      if (activePinPt) {
+        const [px, py] = activePinPt;
+        const cardEl = document.querySelector('.chapter-card.active');
+        
+        if (cardEl && window.innerWidth > 1200) {
+          const canvasRect = canvas.getBoundingClientRect();
+          const cardRect = cardEl.getBoundingClientRect();
+
+          const targetX = (cardRect.left - canvasRect.left);
+          const targetY = (cardRect.top + cardRect.height / 2 - canvasRect.top);
+
+          const midX = px + (targetX - px) * 0.55;
+
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          ctx.lineTo(midX, py);
+          ctx.lineTo(targetX - 10, targetY);
+          ctx.lineTo(targetX, targetY);
+
+          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = '#3E4D40';
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(targetX, targetY, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#3E4D40';
+          ctx.fill();
+        }
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    // DOM References
+    const activeRegionText = document.getElementById('activeRegionText');
+    const activeCoordsText = document.getElementById('activeCoordsText');
+    const cardsColumn = document.getElementById('cardsColumn');
+
+    const chapterView = document.getElementById('chapterView');
+    const backToGlobeBtn = document.getElementById('backToGlobeBtn');
+
+    const chapterCountry = document.getElementById('chapterCountry');
+    const chapterSubtitle = document.getElementById('chapterSubtitle');
+    const chapterTitle = document.getElementById('chapterTitle');
+    const chapterDate = document.getElementById('chapterDate');
+    const chapterBody = document.getElementById('chapterBody');
+    const chapterHeroImg = document.getElementById('chapterHeroImg');
+    const chapterHeroCaption = document.getElementById('chapterHeroCaption');
+    const chapterHeroExif = document.getElementById('chapterHeroExif');
+    const chapterSec1 = document.getElementById('chapterSec1');
+    const chapterSec2 = document.getElementById('chapterSec2');
+    const prevChapterBtn = document.getElementById('prevChapterBtn');
+    const nextChapterBtn = document.getElementById('nextChapterBtn');
+
+    function updateCountryCards(countryKey) {
+      cardsColumn.innerHTML = '';
+      const c = countries[countryKey];
+
+      c.states.forEach((s, idx) => {
+        const card = document.createElement('div');
+        card.className = `chapter-card ${idx === currentStateIndex ? 'active' : ''}`;
+        card.setAttribute('data-index', idx);
+
+        card.innerHTML = `
+          <div class="collapsed-row">
+            <span class="state-name-sm">${s.title}</span>
+            <span class="date-meta-sm">${s.date}</span>
+          </div>
+          <div class="expanded-content">
+            <div class="card-img-wrap">
+              <img src="${s.hero}" alt="${s.title}">
+              <span style="position:absolute; top:8px; left:8px; background:var(--sub-moss); color:#FFF; font-size:9px; font-family:'JetBrains Mono'; padding:2px 7px; border-radius:4px;">Chapter 0${idx+1}</span>
+            </div>
+            <p class="card-desc">${s.desc}</p>
+            <div class="card-action-bar">
+              <span class="exif-meta">${s.exif}</span>
+              <span class="enter-link">Enter Chapter →</span>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('mouseenter', () => {
+          selectState(idx);
+        });
+
+        card.addEventListener('click', () => {
+          selectState(idx);
+          openChapter();
+        });
+
+        cardsColumn.appendChild(card);
+      });
+    }
+
+    function selectCountry(countryKey, stateIndex = 0) {
+      currentCountryKey = countryKey;
+      currentStateIndex = stateIndex;
+      const c = countries[countryKey];
+      const s = c.states[stateIndex];
+
+      targetRot = [-s.coords[0], -s.coords[1]];
+
+      document.querySelectorAll('.country-nav-item').forEach(btn => {
+        if (btn.getAttribute('data-country') === countryKey) {
+          btn.className = 'country-nav-item active';
+        } else {
+          btn.className = 'country-nav-item';
+        }
+      });
+
+      activeRegionText.textContent = `${s.stateName}, ${c.name}`;
+      activeCoordsText.textContent = s.coordsText;
+
+      updateCountryCards(countryKey);
+    }
+
+    function selectState(stateIndex) {
+      currentStateIndex = stateIndex;
+      const c = countries[currentCountryKey];
+      const s = c.states[stateIndex];
+
+      targetRot = [-s.coords[0], -s.coords[1]];
+
+      activeRegionText.textContent = `${s.stateName}, ${c.name}`;
+      activeCoordsText.textContent = s.coordsText;
+
+      document.querySelectorAll('.chapter-card').forEach((card, idx) => {
+        if (idx === stateIndex) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+    }
+
+    function detectCenteredCountry() {
+      const rotCenter = [-rot[0], -rot[1]];
+      let closestCountry = currentCountryKey;
+      let minDistance = Infinity;
+
+      for (const [key, data] of Object.entries(countries)) {
+        const dist = d3.geoDistance(data.center, rotCenter);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestCountry = key;
+        }
+      }
+
+      if (closestCountry !== currentCountryKey && minDistance < 0.75) {
+        currentCountryKey = closestCountry;
+        currentStateIndex = 0;
+        selectCountry(closestCountry, 0);
+      }
+    }
+
+    function openChapter() {
+      const c = countries[currentCountryKey];
+      const s = c.states[currentStateIndex];
+
+      chapterCountry.textContent = c.name;
+      chapterSubtitle.textContent = s.stateName;
+      chapterTitle.textContent = s.chapterTitle;
+      chapterDate.textContent = s.date;
+      chapterBody.textContent = s.desc;
+      chapterHeroImg.src = s.hero;
+      chapterHeroCaption.textContent = `${s.title} — Curated Frame`;
+      chapterHeroExif.textContent = s.exif;
+      chapterSec1.src = s.sub1;
+      chapterSec2.src = s.sub2;
+
+      chapterView.style.display = 'block';
+      chapterView.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showGlobe() {
+      chapterView.style.display = 'none';
+    }
+
+    function zoomIn() {
+      targetZoomFactor = Math.min(MAX_ZOOM, targetZoomFactor + 0.3);
+    }
+    function zoomOut() {
+      targetZoomFactor = Math.max(MIN_ZOOM, targetZoomFactor - 0.3);
+    }
+
+    document.getElementById('zoomInBtn').addEventListener('click', zoomIn);
+    document.getElementById('zoomOutBtn').addEventListener('click', zoomOut);
+
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.deltaY < 0) zoomIn();
+      else zoomOut();
+    }, { passive: false });
+
+    function handleStart(clientX, clientY) {
+      isDragging = true;
+      lastPos = { x: clientX, y: clientY };
+    }
+
+    function handleMove(clientX, clientY) {
+      if (!isDragging) return;
+      const dx = clientX - lastPos.x;
+      const dy = clientY - lastPos.y;
+      targetRot[0] += dx * (0.45 / currentZoomFactor);
+      targetRot[1] = Math.max(-65, Math.min(65, targetRot[1] - dy * (0.35 / currentZoomFactor)));
+      lastPos = { x: clientX, y: clientY };
+      detectCenteredCountry();
+    }
+
+    function handleEnd() {
+      isDragging = false;
+    }
+
+    canvas.addEventListener('mousedown', (e) => handleStart(e.clientX, e.clientY));
+    window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+    window.addEventListener('mouseup', handleEnd);
+
+    let initialPinchDist = null;
+
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        handleStart(e.touches[0].clientX, e.touches[0].clientY);
+      } else if (e.touches.length === 2) {
+        initialPinchDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      } else if (e.touches.length === 2 && initialPinchDist) {
+        const currentDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        const diff = currentDist - initialPinchDist;
+        if (Math.abs(diff) > 5) {
+          targetZoomFactor = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, targetZoomFactor + diff * 0.005));
+          initialPinchDist = currentDist;
+        }
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      handleEnd();
+      initialPinchDist = null;
+    });
+
+    document.querySelectorAll('.country-nav-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const countryKey = btn.getAttribute('data-country');
+        selectCountry(countryKey, 0);
+      });
+    });
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+      const c = countries[currentCountryKey];
+      c.states.forEach((s, idx) => {
+        const rotCenter = [-rot[0], -rot[1]];
+        if (d3.geoDistance(s.coords, rotCenter) < Math.PI / 2) {
+          const pt = projection(s.coords);
+          if (pt) {
+            const dist = Math.hypot(pt[0] - clickX, pt[1] - clickY);
+            if (dist < 28) {
+              selectState(idx);
+            }
+          }
+        }
+      });
+    });
+
+    backToGlobeBtn.addEventListener('click', showGlobe);
+
+    prevChapterBtn.addEventListener('click', () => {
+      const c = countries[currentCountryKey];
+      const nextIdx = (currentStateIndex - 1 + c.states.length) % c.states.length;
+      selectState(nextIdx);
+      openChapter();
+    });
+
+    nextChapterBtn.addEventListener('click', () => {
+      const c = countries[currentCountryKey];
+      const nextIdx = (currentStateIndex + 1) % c.states.length;
+      selectState(nextIdx);
+      openChapter();
+    });
+
+    selectCountry('malaysia', 0);
+    render();
+  </script>
+</body>
+</html>

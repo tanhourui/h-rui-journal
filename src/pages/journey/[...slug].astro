@@ -1,0 +1,456 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const journeys = await getCollection('journeys');
+  return journeys.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry }
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const allJourneys = await getCollection('journeys');
+const siblings = allJourneys
+  .filter(j => j.data.country === entry.data.country)
+  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+
+const currentIndex = siblings.findIndex(j => j.slug === entry.slug);
+const prevJourney = siblings[(currentIndex - 1 + siblings.length) % siblings.length];
+const nextJourney = siblings[(currentIndex + 1) % siblings.length];
+---
+
+<BaseLayout title={`${entry.data.title} · H. Rui Journal`}>
+  <div class="story-page">
+    <div class="story-container">
+      
+      <!-- Top Navigation Bar -->
+      <nav class="story-nav">
+        <a href="/" class="return-link font-mono">
+          <span class="arrow-bubble">←</span>
+          <span>Return to Globe</span>
+        </a>
+        <div class="meta-right font-mono">
+          <span class="time-badge">{entry.data.date}</span>
+          {entry.data.time && <span class="time-sub">· {entry.data.time}</span>}
+        </div>
+      </nav>
+
+      <!-- Breadcrumb & Header -->
+      <header class="story-header">
+        <div class="breadcrumb font-mono">
+          <span class="country-tag">{entry.data.countryName}</span>
+          <span class="slash">/</span>
+          <span class="region-tag">{entry.data.stateName}</span>
+          <span class="coords-tag font-mono">{entry.data.coordsText}</span>
+        </div>
+        <h1 class="story-title">{entry.data.chapterTitle}</h1>
+        <p class="story-lead">{entry.data.desc}</p>
+      </header>
+
+      <!-- Master Hero Photograph (Double-Bezel Frame) -->
+      <section class="master-hero-frame">
+        <div class="hero-bezel-outer">
+          <div class="hero-image-box">
+            <img src={entry.data.hero} alt={entry.data.title} />
+          </div>
+        </div>
+        <div class="image-caption-bar font-mono">
+          <span class="caption-title">{entry.data.heroCaption || `${entry.data.title} · Main Exposure`}</span>
+          <span class="caption-exif-pill">{entry.data.exif}</span>
+        </div>
+      </section>
+
+      <!-- Essay Prose Content -->
+      <section class="story-prose">
+        <Content />
+      </section>
+
+      <!-- Companion Diptych Grid (Asymmetrical Editorial Rhythm) -->
+      {(entry.data.sub1 || entry.data.sub2) && (
+        <section class="diptych-section">
+          <div class="diptych-heading font-mono">Curated Detail Frames</div>
+          <div class="diptych-grid">
+            {entry.data.sub1 && (
+              <div class="diptych-item item-dominant">
+                <div class="diptych-bezel">
+                  <div class="diptych-img-wrap">
+                    <img src={entry.data.sub1} alt={entry.data.sub1Caption || "Detail Frame 01"} loading="lazy" />
+                  </div>
+                </div>
+                <div class="diptych-caption font-mono">
+                  <span class="sub-title">{entry.data.sub1Caption || "Detail Study 01"}</span>
+                  <span class="sub-exif">{entry.data.sub1Exif || ""}</span>
+                </div>
+              </div>
+            )}
+            {entry.data.sub2 && (
+              <div class="diptych-item item-accent">
+                <div class="diptych-bezel">
+                  <div class="diptych-img-wrap">
+                    <img src={entry.data.sub2} alt={entry.data.sub2Caption || "Detail Frame 02"} loading="lazy" />
+                  </div>
+                </div>
+                <div class="diptych-caption font-mono">
+                  <span class="sub-title">{entry.data.sub2Caption || "Detail Study 02"}</span>
+                  <span class="sub-exif">{entry.data.sub2Exif || ""}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      <!-- Chapter Journey Navigation Footer -->
+      <footer class="story-footer font-mono">
+        <a href={`/journey/${prevJourney.slug}`} class="chapter-nav-btn">
+          <span>← {prevJourney.data.stateName}</span>
+        </a>
+        <div class="footer-center-meta">
+          <span class="footer-center">Tan Hou Rui</span>
+          <span class="footer-sep">·</span>
+          <a href="https://instagram.com/hourui95" target="_blank" rel="noopener noreferrer" class="footer-ig">@hourui95 ↗</a>
+        </div>
+        <a href={`/journey/${nextJourney.slug}`} class="chapter-nav-btn">
+          <span>{nextJourney.data.stateName} →</span>
+        </a>
+      </footer>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .story-page {
+    width: 100vw;
+    min-height: 100vh;
+    background: var(--bg-canvas);
+    color: var(--ink-primary);
+    padding: 56px 28px 112px;
+  }
+
+  .story-container {
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  .story-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 22px;
+    margin-bottom: 40px;
+  }
+
+  .return-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--sub-accent);
+    font-size: 12.5px;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+  }
+
+  .arrow-bubble {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--sub-accent-light);
+    color: var(--sub-accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: transform 0.2s ease;
+  }
+
+  .return-link:hover {
+    transform: translateX(-2px);
+  }
+
+  .return-link:hover .arrow-bubble {
+    transform: scale(1.08);
+  }
+
+  .meta-right {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+  }
+
+  .story-header {
+    margin-bottom: 36px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin-bottom: 14px;
+  }
+
+  .country-tag {
+    color: var(--sub-secondary);
+    font-weight: 500;
+  }
+
+  .slash {
+    color: var(--border-subtle);
+  }
+
+  .region-tag {
+    color: var(--sub-accent);
+    font-weight: 500;
+  }
+
+  .footer-center-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-center {
+    letter-spacing: 0.05em;
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+
+  .footer-sep {
+    color: var(--border-subtle);
+    font-size: 10px;
+  }
+
+  .footer-ig {
+    font-size: 11px;
+    color: var(--ink-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .footer-ig:hover {
+    color: var(--sub-accent);
+  }
+
+  .coords-tag {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .story-title {
+    font-size: 34px;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+
+  .story-lead {
+    font-size: 15.5px;
+    color: var(--ink-muted);
+    line-height: 1.8;
+    font-weight: 300;
+    max-width: 720px;
+  }
+
+  /* Master Hero Photograph Frame */
+  .master-hero-frame {
+    margin: 40px 0;
+  }
+
+  .hero-bezel-outer {
+    padding: 4px;
+    border-radius: 20px;
+    background: rgba(128, 128, 128, 0.05);
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.06);
+  }
+
+  .hero-image-box {
+    width: 100%;
+    height: 540px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #EAE6DC;
+  }
+
+  .hero-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .image-caption-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 12px;
+    padding: 0 4px;
+  }
+
+  .caption-exif-pill {
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--card-surface);
+    border: 1px solid var(--border-subtle);
+    font-size: 10.5px;
+    color: var(--ink-muted);
+  }
+
+  /* Story Prose */
+  .story-prose {
+    font-size: 15.5px;
+    line-height: 1.9;
+    color: var(--ink-primary);
+    margin: 48px 0;
+    max-width: 68ch;
+  }
+
+  .story-prose :global(p) {
+    margin-bottom: 22px;
+    font-weight: 300;
+  }
+
+  /* Asymmetric Diptych Grid */
+  .diptych-section {
+    margin-top: 64px;
+    padding-top: 36px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .diptych-heading {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+
+  .diptych-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 24px;
+    align-items: end;
+  }
+
+  .diptych-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .diptych-bezel {
+    padding: 3px;
+    border-radius: 16px;
+    background: rgba(128, 128, 128, 0.05);
+    border: 1px solid var(--border-subtle);
+    transition: border-color 0.3s ease;
+  }
+
+  .diptych-item:hover .diptych-bezel {
+    border-color: var(--sub-accent);
+  }
+
+  .item-dominant .diptych-img-wrap {
+    width: 100%;
+    height: 350px;
+    border-radius: 13px;
+    overflow: hidden;
+    background: #EAE6DC;
+  }
+
+  .item-accent .diptych-img-wrap {
+    width: 100%;
+    height: 290px;
+    border-radius: 13px;
+    overflow: hidden;
+    background: #EAE6DC;
+  }
+
+  .diptych-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .diptych-item:hover .diptych-img-wrap img {
+    transform: scale(1.03);
+  }
+
+  .diptych-caption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10.5px;
+    color: var(--ink-muted);
+    margin-top: 10px;
+    padding: 0 2px;
+  }
+
+  .sub-exif {
+    font-size: 10px;
+    opacity: 0.85;
+  }
+
+  /* Story Footer */
+  .story-footer {
+    margin-top: 72px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--sub-accent);
+  }
+
+  .chapter-nav-btn {
+    color: inherit;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .chapter-nav-btn:hover {
+    border-color: var(--border-subtle);
+    background: var(--card-surface);
+  }
+
+  .footer-center {
+    color: var(--ink-muted);
+    font-size: 11px;
+  }
+
+  @media (max-width: 768px) {
+    .story-title {
+      font-size: 26px;
+    }
+    .hero-image-box {
+      height: 340px;
+    }
+    .diptych-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .item-dominant .diptych-img-wrap,
+    .item-accent .diptych-img-wrap {
+      height: 240px;
+    }
+    .coords-tag {
+      display: none;
+    }
+  }
+</style>

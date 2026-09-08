@@ -1,0 +1,17 @@
+# Build and dependencies
+node_modules/
+dist/
+.astro/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+*.log
+
+# Stashed drafts
+_drafts_journeys/

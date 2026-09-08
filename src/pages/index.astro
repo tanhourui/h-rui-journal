@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Globe from '../components/Globe.astro';
+import { getCollection } from 'astro:content';
+
+const allJourneys = await getCollection('journeys');
+
+// Group journeys by country
+interface CountryData {
+  name: string;
+  center: [number, number];
+  route: [number, number][];
+  states: any[];
+}
+
+const countryCenters: Record<string, [number, number]> = {
+  japan: [138.2529, 36.2048]
+};
+
+const groupedCountries: Record<string, CountryData> = {
+  japan: {
+    name: 'Japan',
+    center: countryCenters.japan,
+    route: [
+      [139.7620, 35.7126], // Tokyo (Todai / Central)
+      [138.8653, 35.4167], // Lake Yamanaka & Kawaguchiko
+      [139.7671, 35.6812]  // Marunouchi & Everyday Tokyo
+    ],
+    states: []
+  }
+};
+
+allJourneys.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+
+allJourneys.forEach(entry => {
+  const c = entry.data.country;
+  if (groupedCountries[c]) {
+    groupedCountries[c].states.push({
+      slug: entry.slug,
+      id: entry.slug.split('/').pop(),
+      ...entry.data
+    });
+  }
+});
+---
+
+<BaseLayout title="H. Rui Journal / 旅の記録">
+  <div class="landing-layout">
+    <Sidebar />
+    <main id="mainStage" class="main-stage">
+      <Globe journeysData={groupedCountries} />
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .landing-layout {
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .main-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  @media (max-width: 1200px) {
+    .landing-layout {
+      flex-direction: column;
+    }
+  }
+</style>

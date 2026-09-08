@@ -1,0 +1,138 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "H. Rui Journal / 旅の記録",
+  description = "Minimalist editorial cartography and travel photography journal by Tan Hou Rui."
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style is:global>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      /* Day Palette (09:00 - 18:00) */
+      --bg-canvas: #F7F5EE;
+      --card-surface: #FDFCF8;
+      --ink-primary: #21201D;
+      --ink-muted: #848076;
+      --sub-accent: #3E4D40;     /* Kyoto Moss */
+      --sub-accent-light: #ECEFEA;
+      --sub-secondary: #5C4A3C;  /* Walnut */
+      --border-subtle: #E2DDD0;
+      --globe-base: #ECE8DF;
+      --globe-stroke: #D5D0C2;
+      --land-dots: #C0BAAC;
+      --country-stroke: #746E60;
+      --ring-ticks: #7A7466;
+      --ring-subtle: rgba(160, 155, 145, 0.35);
+      --route-arc: #3E4D40;
+    }
+
+    body.theme-dawn {
+      /* Dawn (05:00 - 09:00) */
+      --bg-canvas: #EFF1ED;
+      --card-surface: #F8FAF7;
+      --ink-primary: #1C221E;
+      --ink-muted: #79837D;
+      --sub-accent: #2E4738;
+      --sub-accent-light: #DFE7E0;
+      --sub-secondary: #4A564E;
+      --border-subtle: #D8E0D8;
+      --globe-base: #E4EAE3;
+      --globe-stroke: #CFD8CF;
+      --land-dots: #B7C3B7;
+      --country-stroke: #5D7063;
+      --ring-ticks: #607265;
+      --ring-subtle: rgba(120, 140, 125, 0.3);
+      --route-arc: #2E4738;
+    }
+
+    body.theme-dusk {
+      /* Dusk / Night (18:00 - 05:00) */
+      --bg-canvas: #121211;
+      --card-surface: #1B1B19;
+      --ink-primary: #ECEBE7;
+      --ink-muted: #96948B;
+      --sub-accent: #E5A967;     /* Warm Amber Lantern */
+      --sub-accent-light: #28241F;
+      --sub-secondary: #C89B6D;
+      --border-subtle: #2C2B27;
+      --globe-base: #1A1A18;
+      --globe-stroke: #33322D;
+      --land-dots: #383732;
+      --country-stroke: #5A5850;
+      --ring-ticks: #8C887B;
+      --ring-subtle: rgba(140, 136, 123, 0.25);
+      --route-arc: #E5A967;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--ink-primary);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      width: 100vw;
+      overflow-x: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <slot />
+
+  <script is:inline>
+    function applyTimeAtmosphere() {
+      const hour = new Date().getHours();
+      let theme = 'day';
+      let label = 'Daylight Washi Palette';
+
+      if (hour >= 5 && hour < 9) {
+        theme = 'dawn';
+        label = 'Dawn Mist Palette (06:00)';
+      } else if (hour >= 9 && hour < 18) {
+        theme = 'day';
+        label = 'Daylight Washi Palette';
+      } else {
+        theme = 'dusk';
+        label = 'Sumi-e Night Palette';
+      }
+
+      document.body.className = theme === 'day' ? '' : `theme-${theme}`;
+      const badge = document.getElementById('timeAtmosphereText');
+      if (badge) badge.textContent = label;
+    }
+    applyTimeAtmosphere();
+  </script>
+</body>
+</html>
