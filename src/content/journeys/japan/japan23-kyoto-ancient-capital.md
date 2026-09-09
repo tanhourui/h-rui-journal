@@ -27,9 +27,7 @@ gallery:
   - image: "/images/japan23/japan23_1012_kyoto_higashiyama_stone_steps_032.jpg"
     caption: "Busy Intersection and Power Lines Along Shijo Dori"
     exif: "Huawei P40 Pro · ƒ/1.9 · 1/800s · ISO 50"
-  - image: "/images/japan23/japan23_1012_kyoto_higashiyama_yukata_walk_033.jpg"
-    caption: "Travelers in Yukata Strolling Down a Quiet Stone-Walled Alley"
-    exif: "Huawei P40 Pro · ƒ/1.9 · 1/1100s · ISO 50"
+
   - image: "/images/japan23/japan23_1012_kyoto_machiya_wooden_lattice_034.jpg"
     caption: "Woman in Yukata Standing on a Busy Street with Yasaka Pagoda in Background"
     exif: "Huawei P40 Pro · ƒ/1.9 · 1/600s · ISO 50"
