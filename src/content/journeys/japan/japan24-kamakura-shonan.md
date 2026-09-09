@@ -144,14 +144,11 @@ gallery:
   - image: "/images/japan24/japan24_1122_shonan_shichirigahama_fuji_pacific_coast_043.jpg"
     caption: "Coastal Highway Route 134 Curving Along the Bay"
     exif: "Leica · ƒ/1.8 · ISO 50"
-  - image: "/images/japan24/japan24_1122_shonan_shichirigahama_fuji_pacific_coast_044.jpg"
-    caption: "Pale Silhouette of Mount Fuji Fading into Afternoon Haze"
-    exif: "Leica · ƒ/1.8 · ISO 50"
 ---
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Stepping off the Enoden tram at Shichirigahama, the sea breeze brings the immediate chill of early winter. The black volcanic sand along the curve of Sagami Bay slopes down toward the turquoise surf, textured by retreating foam and the footprints of early morning walkers. Looking west across the water, the colossal silhouette of Mount Fuji stands clear of the sea haze, its snowfields glowing under direct sunlight while the coastal houses sit nestled below the headland.
+    Stepping off the Enoden tram at Shichirigahama, the sea breeze brings the immediate chill of early winter. The black volcanic sand along the curve of Sagami Bay slopes down toward the turquoise surf, textured by retreating foam and the footprints of early morning walkers. Looking west across the water, the colossal silhouette of Mount Fuji stands clear of the sea haze, its snowfields glowing under direct sunlight while coastal houses line the foot of the headland.
   </p>
   <p class="zh-prose">
     从江之电的列车踏上七里滨，迎面是初冬太平洋微咸的冷风。相模湾弧形岸线铺着一层暗色的火山砂，退去的潮水留下一圈圈洁白的泡沫。向西望去，富士山整座雪冠毫无遮挡地耸立在远方海面之上，山脊雪线在晴空下轮廓分明，海岬下沿则是密密匝匝的木造民居。

@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 const exifReader = require('exif-reader');
@@ -34,6 +34,13 @@ const tasks = [
     webPrefix: '/images/malaysia',
     prefix: 'malaysia',
     manifest: 'malaysia_manifest.json'
+  },
+  {
+    srcFolder: path.join('Malaysia', 'MERDEKA PARADE'),
+    destDir: path.join(outputBase, 'malaysia', 'merdeka'),
+    webPrefix: '/images/malaysia/merdeka',
+    prefix: 'merdeka',
+    manifest: 'merdeka_manifest.json'
   },
   {
     srcFolder: 'Vietnam 26',
@@ -192,6 +199,15 @@ async function processTask(task) {
   fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
   console.log('Saved manifest: ' + manifestPath + ' with ' + manifest.length + ' items.');
+
+  // Clean up any orphaned files in destDir
+  const validFiles = new Set(manifest.map(m => m.fileName));
+  for (const f of fs.readdirSync(task.destDir)) {
+    if (/\.(jpe?g|png|webp)$/i.test(f) && !validFiles.has(f)) {
+      console.log('  Deleting orphaned image: ' + f);
+      fs.unlinkSync(path.join(task.destDir, f));
+    }
+  }
 }
 
 async function runAll() {

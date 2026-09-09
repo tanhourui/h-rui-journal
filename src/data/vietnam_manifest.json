@@ -403,51 +403,9 @@
   },
   {
     "index": 23,
-    "originalFile": "IMG_20260315_183047.jpg",
+    "originalFile": "IMG_20260315_183121.jpg",
     "fileName": "vietnam26_023.jpg",
     "webPath": "/images/vietnam/vietnam26_023.jpg",
-    "width": 1536,
-    "height": 2048,
-    "aspectRatio": 0.75,
-    "isPortrait": true,
-    "camera": "Xiaomi 14 Ultra",
-    "focal": 35,
-    "fNumber": 1.63,
-    "exposureTime": "1/136s",
-    "iso": 3200,
-    "exif": "Xiaomi 14 Ultra · 35mm · ƒ/1.63 · 1/136s · ISO 3200",
-    "date": "2026-03-15T18:30:47.000Z",
-    "gps": [
-      105.84639,
-      21.03678
-    ]
-  },
-  {
-    "index": 24,
-    "originalFile": "IMG_20260315_183102.jpg",
-    "fileName": "vietnam26_024.jpg",
-    "webPath": "/images/vietnam/vietnam26_024.jpg",
-    "width": 1536,
-    "height": 2048,
-    "aspectRatio": 0.75,
-    "isPortrait": true,
-    "camera": "Xiaomi 14 Ultra",
-    "focal": 120,
-    "fNumber": 2.5,
-    "exposureTime": "1/8s",
-    "iso": 4000,
-    "exif": "Xiaomi 14 Ultra · 120mm · ƒ/2.5 · 1/8s · ISO 4000",
-    "date": "2026-03-15T18:31:02.000Z",
-    "gps": [
-      105.84638,
-      21.0368
-    ]
-  },
-  {
-    "index": 25,
-    "originalFile": "IMG_20260315_183121.jpg",
-    "fileName": "vietnam26_025.jpg",
-    "webPath": "/images/vietnam/vietnam26_025.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -465,10 +423,10 @@
     ]
   },
   {
-    "index": 26,
+    "index": 24,
     "originalFile": "IMG_20260315_183221.jpg",
-    "fileName": "vietnam26_026.jpg",
-    "webPath": "/images/vietnam/vietnam26_026.jpg",
+    "fileName": "vietnam26_024.jpg",
+    "webPath": "/images/vietnam/vietnam26_024.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -486,10 +444,10 @@
     ]
   },
   {
-    "index": 27,
+    "index": 25,
     "originalFile": "IMG_20260315_221239.jpg",
-    "fileName": "vietnam26_027.jpg",
-    "webPath": "/images/vietnam/vietnam26_027.jpg",
+    "fileName": "vietnam26_025.jpg",
+    "webPath": "/images/vietnam/vietnam26_025.jpg",
     "width": 1488,
     "height": 2048,
     "aspectRatio": 0.727,
@@ -504,10 +462,10 @@
     "gps": null
   },
   {
-    "index": 28,
+    "index": 26,
     "originalFile": "IMG_20260315_221829.jpg",
-    "fileName": "vietnam26_028.jpg",
-    "webPath": "/images/vietnam/vietnam26_028.jpg",
+    "fileName": "vietnam26_026.jpg",
+    "webPath": "/images/vietnam/vietnam26_026.jpg",
     "width": 1364,
     "height": 2048,
     "aspectRatio": 0.666,
@@ -522,10 +480,10 @@
     "gps": null
   },
   {
-    "index": 29,
+    "index": 27,
     "originalFile": "IMG_20260315_222809.jpg",
-    "fileName": "vietnam26_029.jpg",
-    "webPath": "/images/vietnam/vietnam26_029.jpg",
+    "fileName": "vietnam26_027.jpg",
+    "webPath": "/images/vietnam/vietnam26_027.jpg",
     "width": 1354,
     "height": 2048,
     "aspectRatio": 0.661,

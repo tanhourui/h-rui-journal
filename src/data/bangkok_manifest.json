@@ -190,30 +190,9 @@
   },
   {
     "index": 10,
-    "originalFile": "IMG_20250410_002439.jpg",
+    "originalFile": "IMG_20250410_101753.jpg",
     "fileName": "bkk25_010.jpg",
     "webPath": "/images/thailand/bangkok/bkk25_010.jpg",
-    "width": 1366,
-    "height": 2048,
-    "aspectRatio": 0.667,
-    "isPortrait": true,
-    "camera": "Xiaomi 14 Ultra",
-    "focal": 46,
-    "fNumber": 2,
-    "exposureTime": "1/50s",
-    "iso": 100,
-    "exif": "Xiaomi 14 Ultra · 46mm · ƒ/2 · 1/50s · ISO 100",
-    "date": "2025-04-09T18:33:10.000Z",
-    "gps": [
-      100.51016,
-      13.74021
-    ]
-  },
-  {
-    "index": 11,
-    "originalFile": "IMG_20250410_101753.jpg",
-    "fileName": "bkk25_011.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_011.jpg",
     "width": 1366,
     "height": 2048,
     "aspectRatio": 0.667,
@@ -231,10 +210,10 @@
     ]
   },
   {
-    "index": 12,
+    "index": 11,
     "originalFile": "IMG_20250410_213854.jpg",
-    "fileName": "bkk25_012.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_012.jpg",
+    "fileName": "bkk25_011.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_011.jpg",
     "width": 1535,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -252,10 +231,10 @@
     ]
   },
   {
-    "index": 13,
+    "index": 12,
     "originalFile": "IMG_20250410_214107.jpg",
-    "fileName": "bkk25_013.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_013.jpg",
+    "fileName": "bkk25_012.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_012.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -273,10 +252,10 @@
     ]
   },
   {
-    "index": 14,
+    "index": 13,
     "originalFile": "IMG_20250410_214838.jpg",
-    "fileName": "bkk25_014.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_014.jpg",
+    "fileName": "bkk25_013.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_013.jpg",
     "width": 2048,
     "height": 1536,
     "aspectRatio": 1.333,
@@ -294,10 +273,10 @@
     ]
   },
   {
-    "index": 15,
+    "index": 14,
     "originalFile": "IMG_20250410_220219.jpg",
-    "fileName": "bkk25_015.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_015.jpg",
+    "fileName": "bkk25_014.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_014.jpg",
     "width": 1366,
     "height": 2048,
     "aspectRatio": 0.667,
@@ -315,10 +294,10 @@
     ]
   },
   {
-    "index": 16,
+    "index": 15,
     "originalFile": "IMG_20250410_232706.jpg",
-    "fileName": "bkk25_016.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_016.jpg",
+    "fileName": "bkk25_015.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_015.jpg",
     "width": 2048,
     "height": 1151,
     "aspectRatio": 1.779,
@@ -336,10 +315,10 @@
     ]
   },
   {
-    "index": 17,
+    "index": 16,
     "originalFile": "IMG_20250411_124201.jpg",
-    "fileName": "bkk25_017.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_017.jpg",
+    "fileName": "bkk25_016.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_016.jpg",
     "width": 2048,
     "height": 1536,
     "aspectRatio": 1.333,
@@ -357,10 +336,10 @@
     ]
   },
   {
-    "index": 18,
+    "index": 17,
     "originalFile": "IMG_20250411_145238.jpg",
-    "fileName": "bkk25_018.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_018.jpg",
+    "fileName": "bkk25_017.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_017.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -378,10 +357,10 @@
     ]
   },
   {
-    "index": 19,
+    "index": 18,
     "originalFile": "IMG_20250411_150009.jpg",
-    "fileName": "bkk25_019.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_019.jpg",
+    "fileName": "bkk25_018.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_018.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -399,10 +378,10 @@
     ]
   },
   {
-    "index": 20,
+    "index": 19,
     "originalFile": "IMG_20250411_150707.jpg",
-    "fileName": "bkk25_020.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_020.jpg",
+    "fileName": "bkk25_019.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_019.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -420,10 +399,10 @@
     ]
   },
   {
-    "index": 21,
+    "index": 20,
     "originalFile": "IMG_20250411_161342.jpg",
-    "fileName": "bkk25_021.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_021.jpg",
+    "fileName": "bkk25_020.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_020.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -441,10 +420,10 @@
     ]
   },
   {
-    "index": 22,
+    "index": 21,
     "originalFile": "IMG_20250411_161532.jpg",
-    "fileName": "bkk25_022.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_022.jpg",
+    "fileName": "bkk25_021.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_021.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -462,10 +441,10 @@
     ]
   },
   {
-    "index": 23,
+    "index": 22,
     "originalFile": "IMG_20250411_161734.jpg",
-    "fileName": "bkk25_023.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_023.jpg",
+    "fileName": "bkk25_022.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_022.jpg",
     "width": 2048,
     "height": 1536,
     "aspectRatio": 1.333,
@@ -483,10 +462,10 @@
     ]
   },
   {
-    "index": 24,
+    "index": 23,
     "originalFile": "IMG_20250411_162203.jpg",
-    "fileName": "bkk25_024.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_024.jpg",
+    "fileName": "bkk25_023.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_023.jpg",
     "width": 2048,
     "height": 1536,
     "aspectRatio": 1.333,
@@ -504,10 +483,10 @@
     ]
   },
   {
-    "index": 25,
+    "index": 24,
     "originalFile": "IMG_20250411_165409.jpg",
-    "fileName": "bkk25_025.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_025.jpg",
+    "fileName": "bkk25_024.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_024.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -525,10 +504,10 @@
     ]
   },
   {
-    "index": 26,
+    "index": 25,
     "originalFile": "IMG_20250411_170345.jpg",
-    "fileName": "bkk25_026.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_026.jpg",
+    "fileName": "bkk25_025.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_025.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -546,10 +525,10 @@
     ]
   },
   {
-    "index": 27,
+    "index": 26,
     "originalFile": "IMG_20250411_170539.jpg",
-    "fileName": "bkk25_027.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_027.jpg",
+    "fileName": "bkk25_026.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_026.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -567,10 +546,10 @@
     ]
   },
   {
-    "index": 28,
+    "index": 27,
     "originalFile": "IMG_20250411_170625.jpg",
-    "fileName": "bkk25_028.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_028.jpg",
+    "fileName": "bkk25_027.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_027.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -588,10 +567,10 @@
     ]
   },
   {
-    "index": 29,
+    "index": 28,
     "originalFile": "IMG_20250412_005929.jpg",
-    "fileName": "bkk25_029.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_029.jpg",
+    "fileName": "bkk25_028.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_028.jpg",
     "width": 1366,
     "height": 2048,
     "aspectRatio": 0.667,
@@ -609,10 +588,10 @@
     ]
   },
   {
-    "index": 30,
+    "index": 29,
     "originalFile": "IMG_20250412_010147.jpg",
-    "fileName": "bkk25_030.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_030.jpg",
+    "fileName": "bkk25_029.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_029.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -630,10 +609,10 @@
     ]
   },
   {
-    "index": 31,
+    "index": 30,
     "originalFile": "IMG_20250412_010408.jpg",
-    "fileName": "bkk25_031.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_031.jpg",
+    "fileName": "bkk25_030.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_030.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -651,10 +630,10 @@
     ]
   },
   {
-    "index": 32,
+    "index": 31,
     "originalFile": "IMG_20250412_010617.jpg",
-    "fileName": "bkk25_032.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_032.jpg",
+    "fileName": "bkk25_031.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_031.jpg",
     "width": 1237,
     "height": 2048,
     "aspectRatio": 0.604,
@@ -672,10 +651,10 @@
     ]
   },
   {
-    "index": 33,
+    "index": 32,
     "originalFile": "IMG_20250412_011149.jpg",
-    "fileName": "bkk25_033.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_033.jpg",
+    "fileName": "bkk25_032.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_032.jpg",
     "width": 1297,
     "height": 2048,
     "aspectRatio": 0.633,
@@ -693,10 +672,10 @@
     ]
   },
   {
-    "index": 34,
+    "index": 33,
     "originalFile": "IMG_20250412_011436.jpg",
-    "fileName": "bkk25_034.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_034.jpg",
+    "fileName": "bkk25_033.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_033.jpg",
     "width": 1258,
     "height": 2048,
     "aspectRatio": 0.614,
@@ -714,10 +693,10 @@
     ]
   },
   {
-    "index": 35,
+    "index": 34,
     "originalFile": "IMG_20250413_023452.jpg",
-    "fileName": "bkk25_035.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_035.jpg",
+    "fileName": "bkk25_034.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_034.jpg",
     "width": 2048,
     "height": 1134,
     "aspectRatio": 1.806,
@@ -735,10 +714,10 @@
     ]
   },
   {
-    "index": 36,
+    "index": 35,
     "originalFile": "IMG_20250413_023643.jpg",
-    "fileName": "bkk25_036.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_036.jpg",
+    "fileName": "bkk25_035.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_035.jpg",
     "width": 1536,
     "height": 2048,
     "aspectRatio": 0.75,
@@ -756,10 +735,10 @@
     ]
   },
   {
-    "index": 37,
+    "index": 36,
     "originalFile": "IMG_20250413_023901.jpg",
-    "fileName": "bkk25_037.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_037.jpg",
+    "fileName": "bkk25_036.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_036.jpg",
     "width": 2048,
     "height": 1295,
     "aspectRatio": 1.581,
@@ -777,10 +756,10 @@
     ]
   },
   {
-    "index": 38,
+    "index": 37,
     "originalFile": "IMG_20250413_030644.jpg",
-    "fileName": "bkk25_038.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_038.jpg",
+    "fileName": "bkk25_037.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_037.jpg",
     "width": 1911,
     "height": 2048,
     "aspectRatio": 0.933,
@@ -798,10 +777,10 @@
     ]
   },
   {
-    "index": 39,
+    "index": 38,
     "originalFile": "IMG_20250413_031249.jpg",
-    "fileName": "bkk25_039.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_039.jpg",
+    "fileName": "bkk25_038.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_038.jpg",
     "width": 1297,
     "height": 2048,
     "aspectRatio": 0.633,
@@ -819,10 +798,10 @@
     ]
   },
   {
-    "index": 40,
+    "index": 39,
     "originalFile": "IMG_20250413_031748.jpg",
-    "fileName": "bkk25_040.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_040.jpg",
+    "fileName": "bkk25_039.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_039.jpg",
     "width": 1366,
     "height": 2048,
     "aspectRatio": 0.667,
@@ -840,10 +819,10 @@
     ]
   },
   {
-    "index": 41,
+    "index": 40,
     "originalFile": "IMG_20250413_031909.jpg",
-    "fileName": "bkk25_041.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_041.jpg",
+    "fileName": "bkk25_040.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_040.jpg",
     "width": 2048,
     "height": 1536,
     "aspectRatio": 1.333,
@@ -861,10 +840,10 @@
     ]
   },
   {
-    "index": 42,
+    "index": 41,
     "originalFile": "IMG_20250414_132247.jpg",
-    "fileName": "bkk25_042.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_042.jpg",
+    "fileName": "bkk25_041.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_041.jpg",
     "width": 1255,
     "height": 2048,
     "aspectRatio": 0.613,
@@ -882,10 +861,10 @@
     ]
   },
   {
-    "index": 43,
+    "index": 42,
     "originalFile": "IMG_20250414_132829.jpg",
-    "fileName": "bkk25_043.jpg",
-    "webPath": "/images/thailand/bangkok/bkk25_043.jpg",
+    "fileName": "bkk25_042.jpg",
+    "webPath": "/images/thailand/bangkok/bkk25_042.jpg",
     "width": 1402,
     "height": 2048,
     "aspectRatio": 0.685,

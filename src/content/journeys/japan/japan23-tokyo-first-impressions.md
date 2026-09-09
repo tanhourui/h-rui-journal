@@ -42,9 +42,6 @@ gallery:
   - image: "/images/japan23/japan23_1008_asakusa_lantern_detail_007.jpg"
     caption: "Chochin Giant Paper Lantern Calligraphy Detail"
     exif: "Huawei P40 Pro · ƒ/1.9 · 1/400s · ISO 50"
-  - image: "/images/japan23/japan23_1008_asakusa_temple_eaves_008.jpg"
-    caption: "Buddhist Temple Gables beneath Crisp October Sky"
-    exif: "Huawei P40 Pro · ƒ/1.9 · 1/1200s · ISO 50"
   - image: "/images/japan23/japan23_1008_asakusa_incense_smoke_009.jpg"
     caption: "Swirling Incense Smoke at Jokoro Sacred Burner"
     exif: "Huawei P40 Pro · ƒ/1.9 · 1/500s · ISO 50"
@@ -85,7 +82,7 @@ gallery:
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Walking into the forested approach of Meiji Jingu, the ceaseless roar of Harajuku dissolves into the rustle of giant camphor and cryptomeria boughs. Sunlight slants across broad gravel avenues, illuminating weathered stone lanterns that have stood watch over decades of quiet devotion. Under the cover of sudden afternoon rain, a Shinto wedding procession moves across the inner courtyard with measured solemnity, the vibrant red ceremonial parasol glowing against charcoal flagstones.
+    Walking into the forested approach of Meiji Jingu, the ceaseless roar of Harajuku dissolves into the rustle of giant camphor and cryptomeria boughs. Sunlight slants across broad gravel avenues, illuminating weathered stone lanterns that have stood watch over decades of quiet devotion. Under the cover of sudden afternoon rain, a Shinto wedding procession moves across the inner courtyard with measured solemnity, the crimson ceremonial parasol glowing against charcoal flagstones.
   </p>
   <p class="zh-prose">
     步入明治神宫的参道，原宿街头的喧嚣在巨大香樟与杉木林荫间悄然消融。碎石铺就的林道宽阔平整，阳光斜穿枝叶，在苔痕斑驳的石灯笼上投下疏朗的光斑。午后微雨初歇，神前结婚式的仪仗踏着白石子缓步前行，朱红的仪式大伞在苍灰的庭院殿宇间格外醒目。
@@ -94,7 +91,7 @@ gallery:
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Across the city in Asakusa, dawn brings a completely different rhythm. The vermilion eaves of Senso-ji rise sharp against the clear blue sky, while incense smoke drifts lazily from the giant bronze cauldron. By nightfall, Tokyo turns into a tapestry of reflective asphalt and glowing towers, vinyl umbrellas catching the crimson beacon of Tokyo Tower cutting through the autumn drizzle.
+    Across the city in Asakusa, dawn brings a completely different rhythm. The vermilion eaves of Senso-ji rise sharp against the clear blue sky, while incense smoke drifts lazily from the giant bronze cauldron. By nightfall, Tokyo turns into an expanse of reflective asphalt and glowing towers, vinyl umbrellas catching the crimson beacon of Tokyo Tower cutting through the autumn drizzle.
   </p>
   <p class="zh-prose">
     转至浅草，清晨的节奏则透着下町市井的温厚。浅草寺的朱红飞檐在早秋晴空下棱角分明，常香炉青烟袅袅，在游人还未涌入前保持着一种肃穆的清朗。待到入夜，细雨落满街道，透明雨伞与湿润的沥青路面倒映着东京塔的红色光束，构成东京初遇时最为深刻的色调。

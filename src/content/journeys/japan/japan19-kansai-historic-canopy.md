@@ -31,7 +31,7 @@ gallery:
     caption: "Ancient Japanese Black Pine Framing Fortress Walls"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/1508s · ISO 50"
   - image: "/images/japan19/japan19_034.jpg"
-    caption: "Dotonbori Canal Walk and Vibrant Commercial Facades"
+    caption: "Dotonbori Canal Promenade Flanked by Illuminated Commercial Signboards"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/1508s · ISO 50"
   - image: "/images/japan19/japan19_035.jpg"
     caption: "Reflected Signs Dancing on Dark Canal Waters"
@@ -103,10 +103,10 @@ gallery:
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Boarding the high-speed rail toward Kansai, the geography opened into a tapestry of ancient capitals. At Osaka Castle, the massive dry-stone ramparts rose steeply from deep moats, their weathered granite surfaces radiating stored heat into the still summer air.
+    Boarding the high-speed rail toward Kansai, the geography opened across ancient capitals. At Osaka Castle, the massive dry-stone ramparts rose steeply from deep moats, their weathered granite surfaces radiating stored heat into the still summer air.
   </p>
   <p class="zh-prose">
-    搭乘新干线一路向西奔赴关西，地貌在视野中徐徐展开为千年古都的织锦。大阪城巨大的花岗岩护城石垣拔地而起，巨石表面历经风霜，在静止的盛夏空气中散发着白日沉淀的余温。
+    搭乘新干线一路向西奔赴关西，地貌在视野中徐徐展开为一座座古都的轮廓。大阪城巨大的花岗岩护城石垣拔地而起，巨石表面历经风霜，在静止的盛夏空气中散发着白日沉淀的余温。
   </p>
 </div>
 

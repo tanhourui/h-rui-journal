@@ -56,6 +56,9 @@ gallery:
   - image: "/images/japan25/japan25_1124_odaiba_rainbow_bridge_night_DSC00774.jpg"
     caption: "Rainbow Bridge and Tokyo Tower Illumination at Night"
     exif: "46mm · ƒ/6.3 · 1/10s · ISO 6400"
+  - image: "/images/japan25/IMG_20251122_200142.jpg"
+    caption: "Airborne Telephoto Sunset over Kanto Plain with Tokyo Skytree and Meandering River Glint"
+    exif: "ISO 50 · Telephoto Sunset Haze"
 ---
 
 <div class="bilingual-block">
