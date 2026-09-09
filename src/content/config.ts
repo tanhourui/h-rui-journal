@@ -5,6 +5,9 @@ const journeysCollection = defineCollection({
   schema: z.object({
     country: z.enum(['malaysia', 'japan', 'iceland']),
     countryName: z.string(),
+    year: z.number().default(2025),
+    eraTitle: z.string().optional(),
+    camera: z.string().optional(),
     stateName: z.string(),
     title: z.string(),
     chapterTitle: z.string(),

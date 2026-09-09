@@ -1,13 +1,22 @@
 ---
-interface CountrySummary {
+interface EraItem {
   id: string;
   name: string;
+  year: number;
+  eraTitle: string;
+  camera: string;
   count: string;
 }
 
-const countries: CountrySummary[] = [
-  { id: 'japan', name: '01. Japan', count: '4 Chapters (52 Exposures)' }
-];
+interface Props {
+  eras?: EraItem[];
+}
+
+const { eras = [
+  { id: 'japan-2025', name: 'Japan 2025', year: 2025, eraTitle: 'Mirrorless Discipline & Peak Light', camera: 'Sony α6400', count: '4 Chapters · 52 Exposures' },
+  { id: 'japan-2024', name: 'Japan 2024', year: 2024, eraTitle: 'Leica Optics & Autumn Tone', camera: 'Xiaomi 14 Ultra', count: '3 Chapters · 99 Exposures' },
+  { id: 'japan-2023', name: 'Japan 2023', year: 2023, eraTitle: 'Mobile Exploration & Wonder', camera: 'Huawei P40 Pro', count: '3 Chapters · 45 Exposures' },
+] } = Astro.props;
 ---
 
 <aside id="leftSidebar" class="sidebar">
@@ -20,15 +29,21 @@ const countries: CountrySummary[] = [
     </div>
 
     <div class="nav-section">
-      <div class="nav-section-title">Destinations</div>
+      <div class="nav-section-title">Visual Eras · 旅の軌跡</div>
       <div class="country-nav-list">
-        {countries.map((c, idx) => (
+        {eras.map((era, idx) => (
           <button 
             class={`country-nav-item ${idx === 0 ? 'active' : ''}`}
-            data-country={c.id}
+            data-country={era.id}
           >
-            <span>{c.name}</span>
-            <span class="chapter-count">{c.count}</span>
+            <div class="era-header-row">
+              <span class="era-year-badge">{era.year}</span>
+              <span class="era-title-text">{era.eraTitle}</span>
+            </div>
+            <div class="era-sub-meta font-mono">
+              <span class="camera-pill">{era.camera}</span>
+              <span class="chapter-count">{era.count}</span>
+            </div>
           </button>
         ))}
       </div>
@@ -55,10 +70,10 @@ const countries: CountrySummary[] = [
 
 <style>
   .sidebar {
-    width: 280px;
-    min-width: 260px;
+    width: 320px;
+    min-width: 300px;
     height: 100vh;
-    padding: 36px 28px;
+    padding: 36px 24px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -105,41 +120,89 @@ const countries: CountrySummary[] = [
   .country-nav-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
   }
 
   .country-nav-item {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 11px 14px;
-    border-radius: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 12px 14px;
+    border-radius: 12px;
     border: 1px solid transparent;
     background: transparent;
     color: var(--ink-muted);
-    font-size: 13px;
-    font-family: 'JetBrains Mono', monospace;
     cursor: pointer;
     text-align: left;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
+    width: 100%;
   }
 
   .country-nav-item:hover {
     background: rgba(128,128,128,0.06);
     color: var(--ink-primary);
     border-color: var(--border-subtle);
+    transform: translateX(2px);
   }
 
   .country-nav-item.active {
     background: var(--sub-accent-light);
     border-color: var(--sub-accent);
-    color: var(--sub-accent);
-    font-weight: 500;
+    color: var(--ink-primary);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
   }
 
-  .country-nav-item .chapter-count {
+  .era-header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .era-year-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--border-subtle);
+    color: var(--ink-primary);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .country-nav-item.active .era-year-badge {
+    background: var(--sub-accent);
+    color: #fff;
+  }
+
+  .era-title-text {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-primary);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .era-sub-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
     font-size: 10px;
-    opacity: 0.8;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+
+  .camera-pill {
+    opacity: 0.85;
+  }
+
+  .chapter-count {
+    opacity: 0.75;
   }
 
   .time-atmosphere-pill {

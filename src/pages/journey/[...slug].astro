@@ -15,7 +15,7 @@ const { Content } = await entry.render();
 
 const allJourneys = await getCollection('journeys');
 const siblings = allJourneys
-  .filter(j => j.data.country === entry.data.country)
+  .filter(j => j.data.country === entry.data.country && (j.data.year || 2025) === (entry.data.year || 2025))
   .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 
 const currentIndex = siblings.findIndex(j => j.slug === entry.slug);

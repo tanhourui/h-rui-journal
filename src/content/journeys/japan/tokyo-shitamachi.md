@@ -1,6 +1,9 @@
 ---
 country: "japan"
 countryName: "Japan"
+year: 2025
+eraTitle: "Mirrorless Discipline"
+camera: "Sony α6400"
 stateName: "Tokyo: Shitamachi Core"
 title: "Tokyo Shitamachi & Northern Core"
 chapterTitle: "Tokyo: Autumn Ginkgo, Rail Corridors and Night Light"

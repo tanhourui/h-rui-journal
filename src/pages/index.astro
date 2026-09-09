@@ -6,27 +6,59 @@ import { getCollection } from 'astro:content';
 
 const allJourneys = await getCollection('journeys');
 
-// Group journeys by country
-interface CountryData {
+// Group journeys by Era (Timeline) to showcase photographic progression without mixing timelines
+interface EraData {
+  id: string;
   name: string;
+  year: number;
+  eraTitle: string;
+  camera: string;
   center: [number, number];
   route: [number, number][];
   states: any[];
 }
 
-const countryCenters: Record<string, [number, number]> = {
-  japan: [138.2529, 36.2048]
-};
-
-const groupedCountries: Record<string, CountryData> = {
-  japan: {
-    name: 'Japan',
-    center: countryCenters.japan,
+const erasData: Record<string, EraData> = {
+  'japan-2025': {
+    id: 'japan-2025',
+    name: 'Japan 2025',
+    year: 2025,
+    eraTitle: 'Mirrorless Discipline & Peak Light',
+    camera: 'Sony α6400',
+    center: [139.3, 35.5],
     route: [
       [139.7620, 35.7126], // 01. Tokyo Shitamachi (Todai / Asakusa)
       [139.7454, 35.6586], // 02. Tokyo Metropolis & Bay (Tokyo Tower / Odaiba)
       [138.8653, 35.4167], // 03. Fuji Five Lakes (Lake Yamanaka & Kawaguchiko)
       [139.7671, 35.6812]  // 04. Tokyo Station & Neighborhood Life (Marunouchi)
+    ],
+    states: []
+  },
+  'japan-2024': {
+    id: 'japan-2024',
+    name: 'Japan 2024',
+    year: 2024,
+    eraTitle: 'Leica Optics & Autumn Tone',
+    camera: 'Xiaomi 14 Ultra',
+    center: [139.3, 35.4],
+    route: [
+      [139.5312, 35.3055], // 01. Kamakura & Shonan Coast (Enoden / Shichirigahama)
+      [139.0253, 35.2045], // 02. Hakone & Lake Ashi (Hakone Shrine / Volcanic Ridge)
+      [139.7619, 35.7128]  // 03. Tokyo Autumn & Old Quarters (Todai Ginkgo / Yanaka)
+    ],
+    states: []
+  },
+  'japan-2023': {
+    id: 'japan-2023',
+    name: 'Japan 2023',
+    year: 2023,
+    eraTitle: 'Mobile Exploration & Wonder',
+    camera: 'Huawei P40 Pro',
+    center: [137.5, 35.2],
+    route: [
+      [139.6993, 35.6764], // 01. Tokyo First Impressions (Meiji Jingu / Asakusa / Tokyo Tower)
+      [138.7554, 35.5042], // 02. Lake Kawaguchiko & Northern Fuji (Dawn Reeds / Tenjoyama)
+      [135.7788, 34.9986]  // 03. Kyoto Ancient Capital (Yasaka Pagoda / Kinkaku-ji / Ninenzaka)
     ],
     states: []
   }
@@ -35,22 +67,32 @@ const groupedCountries: Record<string, CountryData> = {
 allJourneys.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 
 allJourneys.forEach(entry => {
-  const c = entry.data.country;
-  if (groupedCountries[c]) {
-    groupedCountries[c].states.push({
+  const y = entry.data.year || 2025;
+  const eraKey = `japan-${y}`;
+  if (erasData[eraKey]) {
+    erasData[eraKey].states.push({
       slug: entry.slug,
       id: entry.slug.split('/').pop(),
       ...entry.data
     });
   }
 });
+
+const erasSummaries = Object.values(erasData).map(e => ({
+  id: e.id,
+  name: e.name,
+  year: e.year,
+  eraTitle: e.eraTitle,
+  camera: e.camera,
+  count: `${e.states.length} Chapters · ${e.states.reduce((acc, s) => acc + (s.gallery?.length || 0) + 1 + (s.sub1 ? 1 : 0) + (s.sub2 ? 1 : 0), 0)} Exposures`
+}));
 ---
 
 <BaseLayout title="H. Rui Journal / 旅の記録">
   <div class="landing-layout">
-    <Sidebar />
+    <Sidebar eras={erasSummaries} />
     <main id="mainStage" class="main-stage">
-      <Globe journeysData={groupedCountries} />
+      <Globe journeysData={erasData} />
     </main>
   </div>
 </BaseLayout>

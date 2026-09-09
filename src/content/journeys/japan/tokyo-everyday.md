@@ -1,7 +1,10 @@
 ---
 country: "japan"
 countryName: "Japan"
-stateName: "Tokyo: Everyday Rhythm"
+year: 2025
+eraTitle: "Mirrorless Discipline"
+camera: "Sony α6400"
+stateName: "Tokyo: Neighborhoods & Rails"
 title: "Tokyo Neighborhood Life & Station Dusk"
 chapterTitle: "Tokyo: Benches, Red Brick and Neighborhood Paths"
 order: 4

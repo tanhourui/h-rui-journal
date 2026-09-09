@@ -1,6 +1,9 @@
 ---
 country: "japan"
 countryName: "Japan"
+year: 2025
+eraTitle: "Mirrorless Discipline"
+camera: "Sony α6400"
 stateName: "Tokyo: Bay & Skyline"
 title: "Tokyo Metropolis & Bay Harbor"
 chapterTitle: "Tokyo: Towers, Golden Avenues and Harbor Sunset"

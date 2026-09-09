@@ -45,7 +45,7 @@ const { journeysData } = Astro.props;
   (function() {
     const countries = window.JOURNEYS_DATA || {};
 
-    let currentCountryKey = 'japan';
+    let currentCountryKey = Object.keys(countries)[0] || 'japan-2025';
     let currentStateIndex = 0;
 
     const canvas = document.getElementById('globeCanvas');
@@ -405,24 +405,8 @@ const { journeysData } = Astro.props;
     }
 
     function detectCenteredCountry() {
-      const rotCenter = [-rot[0], -rot[1]];
-      let closestCountry = currentCountryKey;
-      let minDistance = Infinity;
-
-      for (const [key, data] of Object.entries(countries)) {
-        if (!data.center) continue;
-        const dist = d3.geoDistance(data.center, rotCenter);
-        if (dist < minDistance) {
-          minDistance = dist;
-          closestCountry = key;
-        }
-      }
-
-      if (closestCountry !== currentCountryKey && minDistance < 0.75) {
-        currentCountryKey = closestCountry;
-        currentStateIndex = 0;
-        selectCountry(closestCountry, 0);
-      }
+      // With historical eras within the same geographical country,
+      // era switching is explicitly controlled via the sidebar to preserve timeline isolation.
     }
 
     function zoomIn() {
@@ -504,8 +488,9 @@ const { journeysData } = Astro.props;
       });
     });
 
-    // Start in Malaysia (Penang)
-    selectCountry('malaysia', 0);
+    // Start in active primary era
+    const defaultEra = Object.keys(countries)[0] || 'japan-2025';
+    selectCountry(defaultEra, 0);
     render();
   })();
 </script>
@@ -625,6 +610,12 @@ const { journeysData } = Astro.props;
     flex-direction: column;
     gap: 14px;
     width: 350px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-subtle) transparent;
     flex-shrink: 0;
     z-index: 15;
     position: relative;

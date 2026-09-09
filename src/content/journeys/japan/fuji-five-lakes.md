@@ -1,6 +1,9 @@
 ---
 country: "japan"
 countryName: "Japan"
+year: 2025
+eraTitle: "Mirrorless Discipline"
+camera: "Sony α6400"
 stateName: "Yamanashi: Fuji Five Lakes"
 title: "Fuji Five Lakes Basin"
 chapterTitle: "Fuji Five Lakes: Dawn Kasagumo, Lake Mist and Swans"
