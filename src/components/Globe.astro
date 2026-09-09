@@ -59,8 +59,8 @@ const { journeysData } = Astro.props;
 
     let currentZoomFactor = 1.0;
     let targetZoomFactor = 1.0;
-    const MIN_ZOOM = 0.85;
-    const MAX_ZOOM = 2.8;
+    const MIN_ZOOM = 0.55;
+    const MAX_ZOOM = 3.5;
 
     let projection = d3.geoOrthographic()
       .scale(GLOBE_APERTURE_RADIUS * currentZoomFactor)
@@ -263,13 +263,42 @@ const { journeysData } = Astro.props;
               }
 
               ctx.beginPath();
-              ctx.arc(px, py, isCurrent ? 6 : 4, 0, Math.PI * 2);
+              ctx.arc(px, py, isCurrent ? 6.5 : 3.8, 0, Math.PI * 2);
               ctx.fillStyle = isCurrent ? colors.accent : colors.countryStroke;
               ctx.fill();
 
-              ctx.font = isCurrent ? 'bold 12px monospace' : '10px monospace';
-              ctx.fillStyle = isCurrent ? colors.inkPrimary : colors.countryStroke;
-              ctx.fillText(s.stateName, px + 12, py + 4);
+              // ONLY render the text label for the active pin to eliminate word stacking collisions
+              if (isCurrent) {
+                const labelText = `${s.order ? `0${s.order}. ` : ''}${s.title}`;
+                ctx.font = 'bold 11px monospace';
+                const textWidth = ctx.measureText(labelText).width;
+
+                ctx.save();
+                ctx.fillStyle = colors.globeBase || '#ECE8DF';
+                ctx.shadowColor = 'rgba(0,0,0,0.18)';
+                ctx.shadowBlur = 6;
+                ctx.shadowOffsetY = 2;
+
+                const pillX = px + 12;
+                const pillY = py - 11;
+                const pillW = textWidth + 14;
+                const pillH = 22;
+
+                ctx.beginPath();
+                if (ctx.roundRect) {
+                  ctx.roundRect(pillX, pillY, pillW, pillH, 5);
+                } else {
+                  ctx.rect(pillX, pillY, pillW, pillH);
+                }
+                ctx.fill();
+                ctx.strokeStyle = colors.accent;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.fillStyle = colors.accent;
+                ctx.fillText(labelText, px + 19, py + 4);
+              }
             }
           }
         });
@@ -331,13 +360,19 @@ const { journeysData } = Astro.props;
           <div class="card-bezel-wrapper">
             <div class="card-inner-surface">
               <div class="collapsed-row">
-                <span class="state-name-sm">${s.title}</span>
-                <span class="date-meta-sm font-mono">${s.date}</span>
+                <div class="collapsed-left font-mono">
+                  <span class="chapter-idx-pill">0${idx+1}</span>
+                  <span class="state-name-sm">${s.title}</span>
+                </div>
+                <div class="collapsed-right">
+                  <span class="date-meta-sm font-mono">${s.date}</span>
+                  <span class="expand-chevron font-mono">▾</span>
+                </div>
               </div>
               <div class="expanded-content">
                 <div class="card-img-wrap">
                   <img src="${s.hero}" alt="${s.title}" loading="lazy">
-                  <span class="story-tag font-mono">0${idx+1}</span>
+                  <span class="story-tag font-mono">Chapter 0${idx+1}</span>
                 </div>
                 <p class="card-desc">${s.desc}</p>
                 <div class="card-action-bar">
@@ -353,7 +388,13 @@ const { journeysData } = Astro.props;
         `;
 
         card.addEventListener('mouseenter', () => {
-          selectState(idx);
+          if (window.innerWidth > 900) selectState(idx);
+        });
+
+        card.addEventListener('click', (e) => {
+          if (!e.target.closest('.story-cta-pill')) {
+            selectState(idx);
+          }
         });
 
         cardsColumn.appendChild(card);
@@ -450,15 +491,50 @@ const { journeysData } = Astro.props;
     window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
     window.addEventListener('mouseup', handleEnd);
 
+    let pinchStartDist = 0;
+    let pinchStartZoom = 1.0;
+    let lastTapTime = 0;
+
     canvas.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) handleStart(e.touches[0].clientX, e.touches[0].clientY);
+      if (e.touches.length === 1) {
+        handleStart(e.touches[0].clientX, e.touches[0].clientY);
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        pinchStartDist = Math.hypot(dx, dy);
+        pinchStartZoom = targetZoomFactor;
+      }
     }, { passive: true });
 
     window.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1) handleMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: true });
+      if (e.touches.length === 1) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      } else if (e.touches.length === 2 && pinchStartDist > 0) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const currentDist = Math.hypot(dx, dy);
+        const scale = currentDist / pinchStartDist;
+        targetZoomFactor = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, pinchStartZoom * scale));
+        if (e.cancelable) e.preventDefault();
+      }
+    }, { passive: false });
 
-    window.addEventListener('touchend', handleEnd);
+    window.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) {
+        pinchStartDist = 0;
+      }
+      if (e.touches.length === 0) {
+        handleEnd();
+        const now = Date.now();
+        if (now - lastTapTime < 300) {
+          // Double tap toggles zoom
+          if (targetZoomFactor > 1.35) targetZoomFactor = 1.0;
+          else targetZoomFactor = 2.1;
+        }
+        lastTapTime = now;
+      }
+    });
 
     document.querySelectorAll('.country-nav-item').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -525,6 +601,8 @@ const { journeysData } = Astro.props;
     box-shadow: 0 4px 14px rgba(0,0,0,0.04);
     z-index: 15;
     transition: all 0.3s ease;
+    white-space: nowrap;
+    max-width: 90vw;
   }
 
   .globe-top-badge .dot {
@@ -557,6 +635,8 @@ const { journeysData } = Astro.props;
     justify-content: center;
     width: 680px;
     height: 680px;
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
     flex-shrink: 0;
     margin: 0 auto;
   }
@@ -564,6 +644,9 @@ const { journeysData } = Astro.props;
   canvas {
     cursor: grab;
     touch-action: none;
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 
   canvas:active {
@@ -582,14 +665,14 @@ const { journeysData } = Astro.props;
   }
 
   .zoom-btn {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background: var(--card-surface);
     border: 1px solid var(--border-subtle);
     color: var(--ink-primary);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 16px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -663,12 +746,59 @@ const { journeysData } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 2px 0;
+    cursor: pointer;
+    min-height: 28px;
+  }
+
+  :global(.collapsed-left) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  :global(.chapter-idx-pill) {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--border-subtle);
+    color: var(--ink-muted);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  :global(.chapter-card.active .chapter-idx-pill) {
+    background: var(--sub-accent);
+    color: #FFF;
+  }
+
+  :global(.collapsed-right) {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  :global(.expand-chevron) {
+    font-size: 11px;
+    color: var(--ink-muted);
+    transition: transform 0.3s ease;
+  }
+
+  :global(.chapter-card.active .expand-chevron) {
+    transform: rotate(180deg);
+    color: var(--sub-accent);
   }
 
   :global(.chapter-card .state-name-sm) {
     font-size: 13.5px;
     font-weight: 600;
     color: var(--ink-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   :global(.chapter-card .date-meta-sm) {
@@ -745,9 +875,9 @@ const { journeysData } = Astro.props;
     gap: 7px;
     background: var(--sub-accent);
     color: #FFF !important;
-    padding: 4px 5px 4px 11px;
+    padding: 5px 6px 5px 12px;
     border-radius: 9999px;
-    font-size: 10.5px;
+    font-size: 11px;
     text-decoration: none;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 2px 6px rgba(0,0,0,0.06);
@@ -773,34 +903,56 @@ const { journeysData } = Astro.props;
     font-size: 10px;
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 900px) {
     .globe-stage-wrapper {
       height: auto;
       min-height: 100vh;
-      padding: 20px;
+      padding: 12px 16px 48px;
     }
     .viewport-grid {
       flex-direction: column;
+      margin-top: 8px;
     }
     .canvas-container {
-      width: 100%;
-      height: 460px;
-      max-width: 460px;
+      width: min(88vw, 360px);
+      height: min(88vw, 360px);
+      max-width: 360px;
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
     }
     .cards-column {
       width: 100%;
-      max-width: 460px;
+      max-width: 480px;
       margin-left: 0;
-      margin-top: 20px;
+      margin-top: 14px;
+      max-height: none;
+      overflow-y: visible;
+      padding-right: 0;
     }
     .globe-top-badge {
       position: relative;
       top: 0;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
+      padding: 5px 14px;
+      font-size: 11px;
+      gap: 6px;
+      white-space: nowrap;
+      max-width: 92vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .globe-top-badge .sep,
+    .globe-top-badge #activeCoordsText {
+      display: none;
     }
     .zoom-controls {
-      bottom: 16px;
-      left: 16px;
+      bottom: 12px;
+      left: 12px;
+    }
+    .zoom-btn {
+      width: 42px;
+      height: 42px;
+      font-size: 22px;
     }
   }
 </style>

@@ -268,13 +268,59 @@ const { eras = [
     color: var(--sub-accent);
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 900px) {
     .sidebar {
       width: 100%;
       height: auto;
       border-right: none;
       border-bottom: 1px solid var(--border-subtle);
-      padding: 20px;
+      padding: 16px 16px 14px;
+    }
+
+    .brand-block h1 {
+      font-size: 19px;
+    }
+
+    .brand-block .subtitle {
+      font-size: 10px;
+    }
+
+    .nav-section {
+      margin-top: 14px;
+    }
+
+    .nav-section-title {
+      font-size: 9.5px;
+      margin-bottom: 8px;
+    }
+
+    .country-nav-list {
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 8px;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .country-nav-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .country-nav-item {
+      min-width: 185px;
+      flex: 0 0 auto;
+      padding: 10px 12px;
+      border-radius: 10px;
+    }
+
+    .time-atmosphere-pill {
+      display: none;
+    }
+
+    .sidebar-footer {
+      display: none;
     }
   }
 </style>
