@@ -233,6 +233,43 @@ const { journeysData } = Astro.props;
       // 7. Destination Pins Inside Viewfinder
       let activePinPt = null;
 
+      // 7a. Render subtle exploration beacons for all OTHER destinations across the globe
+      const renderedBeaconCoords = new Set();
+      Object.entries(countries).forEach(([cKey, cObj]) => {
+        if (cKey === currentCountryKey || !cObj.states) return;
+        // Avoid duplicate pins between overlapping Japan eras
+        if (cKey.startsWith('japan') && currentCountryKey.startsWith('japan')) return;
+
+        cObj.states.forEach(s => {
+          const coordKey = `${s.coords[0].toFixed(2)},${s.coords[1].toFixed(2)}`;
+          if (renderedBeaconCoords.has(coordKey)) return;
+          renderedBeaconCoords.add(coordKey);
+
+          const dist = d3.geoDistance(s.coords, rotCenter);
+          if (dist < Math.PI / 2) {
+            const pt = projection(s.coords);
+            if (!pt) return;
+            const [px, py] = pt;
+            if (Math.hypot(px - cx, py - cy) <= GLOBE_APERTURE_RADIUS) {
+              // Soft radar beacon ring
+              ctx.beginPath();
+              ctx.arc(px, py, 7, 0, Math.PI * 2);
+              ctx.fillStyle = colors.accent + '22';
+              ctx.fill();
+
+              // Anchor dot
+              ctx.beginPath();
+              ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+              ctx.fillStyle = colors.accent;
+              ctx.globalAlpha = 0.65;
+              ctx.fill();
+              ctx.globalAlpha = 1.0;
+            }
+          }
+        });
+      });
+
+      // 7b. Render ACTIVE destination pins, route arcs, and active pill label
       if (countryData && countryData.states) {
         countryData.states.forEach((s, idx) => {
           const coords = s.coords;
@@ -401,7 +438,9 @@ const { journeysData } = Astro.props;
       });
     }
 
-    function selectCountry(countryKey, stateIndex = 0) {
+    let lastActiveJapanEra = 'japan-2025';
+
+    function selectCountry(countryKey, stateIndex = 0, updateRotation = true) {
       currentCountryKey = countryKey;
       currentStateIndex = stateIndex;
       const c = countries[countryKey];
@@ -409,30 +448,34 @@ const { journeysData } = Astro.props;
       const s = c.states[stateIndex] || c.states[0];
 
       if (s) {
-        targetRot = [-s.coords[0], -s.coords[1]];
-        if (activeRegionText) activeRegionText.textContent = `${s.stateName} · ${c.name}`;
+        if (updateRotation) {
+          targetRot = [-s.coords[0], -s.coords[1]];
+        }
+        if (activeRegionText) activeRegionText.textContent = `${s.stateName} · ${c.countryName || c.name}`;
         if (activeCoordsText) activeCoordsText.textContent = s.coordsText;
       }
 
+      // Sync country-nav-item active state
       document.querySelectorAll('.country-nav-item').forEach(btn => {
         if (btn.getAttribute('data-country') === countryKey) {
           btn.className = 'country-nav-item active';
-          const parentDest = btn.getAttribute('data-parent-dest');
-          if (parentDest) {
-            document.querySelectorAll('.dest-tab-btn').forEach(db => {
-              if (db.getAttribute('data-destination') === parentDest) db.classList.add('active');
-              else db.classList.remove('active');
-            });
-            document.querySelectorAll('.destination-panel').forEach(dp => {
-              if (dp.getAttribute('data-destination-panel') === parentDest) dp.classList.add('active');
-              else dp.classList.remove('active');
-            });
-          }
         } else {
           btn.className = 'country-nav-item';
         }
       });
 
+      // Sync parent destination tab and panel
+      const parentDestId = countryKey.startsWith('japan') ? 'japan' : countryKey;
+      document.querySelectorAll('.dest-tab-btn').forEach(db => {
+        if (db.getAttribute('data-destination') === parentDestId) db.classList.add('active');
+        else db.classList.remove('active');
+      });
+      document.querySelectorAll('.destination-panel').forEach(dp => {
+        if (dp.getAttribute('data-destination-panel') === parentDestId) dp.classList.add('active');
+        else dp.classList.remove('active');
+      });
+
+      // Update mobile callout banner without equipment gear names
       const mobileActiveEraDesc = document.getElementById('mobileActiveEraDesc');
       if (mobileActiveEraDesc && c) {
         const totalExp = c.states ? c.states.reduce((acc, st) => acc + (st.gallery?.length || 0) + 1 + (st.sub1 ? 1 : 0) + (st.sub2 ? 1 : 0), 0) : 0;
@@ -445,15 +488,17 @@ const { journeysData } = Astro.props;
     window.selectCountry = selectCountry;
     window.selectState = selectState;
 
-    function selectState(stateIndex) {
+    function selectState(stateIndex, updateRotation = true) {
       currentStateIndex = stateIndex;
       const c = countries[currentCountryKey];
       if (!c || !c.states[stateIndex]) return;
       const s = c.states[stateIndex];
 
-      targetRot = [-s.coords[0], -s.coords[1]];
+      if (updateRotation) {
+        targetRot = [-s.coords[0], -s.coords[1]];
+      }
 
-      if (activeRegionText) activeRegionText.textContent = `${s.stateName} · ${c.name}`;
+      if (activeRegionText) activeRegionText.textContent = `${s.stateName} · ${c.countryName || c.name}`;
       if (activeCoordsText) activeCoordsText.textContent = s.coordsText;
 
       document.querySelectorAll('.chapter-card').forEach((card, idx) => {
@@ -465,9 +510,76 @@ const { journeysData } = Astro.props;
       });
     }
 
+    // Automatically detect which country is targeted when the user spins the globe
     function detectCenteredCountry() {
-      // With historical eras within the same geographical country,
-      // era switching is explicitly controlled via the sidebar to preserve timeline isolation.
+      let curLon = -targetRot[0];
+      curLon = ((curLon + 180) % 360 + 360) % 360 - 180;
+      const curLat = Math.max(-85, Math.min(85, -targetRot[1]));
+      const rotCenter = [curLon, curLat];
+
+      const candidates = [];
+
+      // Check Malaysia
+      if (countries['malaysia'] && countries['malaysia'].states) {
+        let minD = Infinity;
+        countries['malaysia'].states.forEach(s => {
+          const d = d3.geoDistance(rotCenter, s.coords);
+          if (d < minD) minD = d;
+        });
+        candidates.push({ key: 'malaysia', dest: 'malaysia', dist: minD });
+      }
+
+      // Check Thailand
+      if (countries['thailand'] && countries['thailand'].states) {
+        let minD = Infinity;
+        countries['thailand'].states.forEach(s => {
+          const d = d3.geoDistance(rotCenter, s.coords);
+          if (d < minD) minD = d;
+        });
+        candidates.push({ key: 'thailand', dest: 'thailand', dist: minD });
+      }
+
+      // Check Vietnam
+      if (countries['vietnam'] && countries['vietnam'].states) {
+        let minD = Infinity;
+        countries['vietnam'].states.forEach(s => {
+          const d = d3.geoDistance(rotCenter, s.coords);
+          if (d < minD) minD = d;
+        });
+        candidates.push({ key: 'vietnam', dest: 'vietnam', dist: minD });
+      }
+
+      // Check Japan (closest pin across any Japan era)
+      let minJapanD = Infinity;
+      Object.keys(countries).filter(k => k.startsWith('japan')).forEach(jKey => {
+        if (countries[jKey] && countries[jKey].states) {
+          countries[jKey].states.forEach(s => {
+            const d = d3.geoDistance(rotCenter, s.coords);
+            if (d < minJapanD) minJapanD = d;
+          });
+        }
+      });
+      const activeJKey = currentCountryKey.startsWith('japan') ? currentCountryKey : lastActiveJapanEra;
+      candidates.push({ key: activeJKey, dest: 'japan', dist: minJapanD });
+
+      // Sort by closest distance
+      candidates.sort((a, b) => a.dist - b.dist);
+      const closest = candidates[0];
+
+      // Threshold: about 0.45 radians (~26 degrees)
+      if (closest && closest.dist < 0.45) {
+        let targetKey = closest.key;
+        if (closest.dest === 'japan') {
+          targetKey = currentCountryKey.startsWith('japan') ? currentCountryKey : lastActiveJapanEra;
+        } else if (currentCountryKey.startsWith('japan')) {
+          lastActiveJapanEra = currentCountryKey;
+        }
+
+        if (targetKey !== currentCountryKey) {
+          // Switch active country, cards, and sidebar without jerking rotation
+          selectCountry(targetKey, 0, false);
+        }
+      }
     }
 
     function zoomIn() {
@@ -488,8 +600,11 @@ const { journeysData } = Astro.props;
       else zoomOut();
     }, { passive: false });
 
+    let dragMovement = 0;
+
     function handleStart(clientX, clientY) {
       isDragging = true;
+      dragMovement = 0;
       lastPos = { x: clientX, y: clientY };
     }
 
@@ -497,6 +612,7 @@ const { journeysData } = Astro.props;
       if (!isDragging) return;
       const dx = clientX - lastPos.x;
       const dy = clientY - lastPos.y;
+      dragMovement += Math.hypot(dx, dy);
       targetRot[0] += dx * (0.45 / currentZoomFactor);
       targetRot[1] = Math.max(-65, Math.min(65, targetRot[1] - dy * (0.35 / currentZoomFactor)));
       lastPos = { x: clientX, y: clientY };
@@ -505,6 +621,7 @@ const { journeysData } = Astro.props;
 
     function handleEnd() {
       isDragging = false;
+      detectCenteredCountry();
     }
 
     canvas.addEventListener('mousedown', (e) => handleStart(e.clientX, e.clientY));
@@ -559,29 +676,53 @@ const { journeysData } = Astro.props;
     document.querySelectorAll('.country-nav-item').forEach(btn => {
       btn.addEventListener('click', () => {
         const countryKey = btn.getAttribute('data-country');
-        selectCountry(countryKey, 0);
+        selectCountry(countryKey, 0, true);
       });
     });
 
     canvas.addEventListener('click', (e) => {
+      // If user dragged the globe, do not treat as pin click
+      if (dragMovement > 7) return;
+
       const rect = canvas.getBoundingClientRect();
       const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
       const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      const rotCenter = [-rot[0], -rot[1]];
 
-      const c = countries[currentCountryKey];
-      if (!c || !c.states) return;
-      c.states.forEach((s, idx) => {
-        const rotCenter = [-rot[0], -rot[1]];
-        if (d3.geoDistance(s.coords, rotCenter) < Math.PI / 2) {
-          const pt = projection(s.coords);
-          if (pt) {
-            const dist = Math.hypot(pt[0] - clickX, pt[1] - clickY);
-            if (dist < 28) {
-              selectState(idx);
+      let pinFound = false;
+
+      // 1. Check current active country pins first
+      const currentCountryObj = countries[currentCountryKey];
+      if (currentCountryObj && currentCountryObj.states) {
+        currentCountryObj.states.forEach((s, idx) => {
+          if (d3.geoDistance(s.coords, rotCenter) < Math.PI / 2) {
+            const pt = projection(s.coords);
+            if (pt && Math.hypot(pt[0] - clickX, pt[1] - clickY) < 28) {
+              selectState(idx, true);
+              pinFound = true;
             }
           }
+        });
+      }
+
+      // 2. If not found in current country, search all other destinations across the globe!
+      if (!pinFound) {
+        for (const [cKey, cObj] of Object.entries(countries)) {
+          if (cKey === currentCountryKey || !cObj.states) continue;
+          for (let idx = 0; idx < cObj.states.length; idx++) {
+            const s = cObj.states[idx];
+            if (d3.geoDistance(s.coords, rotCenter) < Math.PI / 2) {
+              const pt = projection(s.coords);
+              if (pt && Math.hypot(pt[0] - clickX, pt[1] - clickY) < 28) {
+                selectCountry(cKey, idx, true);
+                pinFound = true;
+                break;
+              }
+            }
+          }
+          if (pinFound) break;
         }
-      });
+      }
     });
 
     // Start in active primary era
