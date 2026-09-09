@@ -104,6 +104,54 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
         </section>
       )}
 
+      <!-- Complete Regional Exposures / Chapter Gallery Grid -->
+      {entry.data.gallery && entry.data.gallery.length > 0 && (
+        <section class="chapter-gallery-section">
+          <div class="gallery-header-row font-mono">
+            <span class="gallery-heading">Regional Exposures Archive</span>
+            <span class="gallery-count">{entry.data.gallery.length} Frames</span>
+          </div>
+          <div class="chapter-gallery-grid">
+            {entry.data.gallery.map((item) => (
+              <div 
+                class="gallery-card"
+                data-image={item.image}
+                data-caption={item.caption}
+                data-exif={item.exif || ''}
+              >
+                <div class="gallery-card-inner">
+                  <div class="gallery-img-box">
+                    <img src={item.image} alt={item.caption} loading="lazy" />
+                    <div class="gallery-overlay-hint font-mono">
+                      <span>Inspect ↗</span>
+                    </div>
+                  </div>
+                  <div class="gallery-card-info font-mono">
+                    <span class="gallery-card-caption">{item.caption}</span>
+                    {item.exif && <span class="gallery-card-exif">{item.exif}</span>}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Fullscreen Lightbox Modal -->
+      <div id="lightboxModal" class="lightbox-modal" aria-hidden="true">
+        <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+        <div class="lightbox-content">
+          <button id="lightboxCloseBtn" class="lightbox-close font-mono" title="Close (Esc)">✕</button>
+          <div class="lightbox-image-wrap">
+            <img id="lightboxImg" src="" alt="" />
+          </div>
+          <div class="lightbox-meta font-mono">
+            <span id="lightboxCaption" class="lightbox-caption"></span>
+            <span id="lightboxExif" class="lightbox-exif"></span>
+          </div>
+        </div>
+      </div>
+
       <!-- Chapter Journey Navigation Footer -->
       <footer class="story-footer font-mono">
         <a href={`/journey/${prevJourney.slug}`} class="chapter-nav-btn">
@@ -453,4 +501,288 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
       display: none;
     }
   }
+
+  /* Bilingual Prose */
+  .story-prose :global(.bilingual-block) {
+    margin-bottom: 36px;
+  }
+
+  .story-prose :global(.en-prose) {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--ink-primary);
+    font-weight: 300;
+    margin-bottom: 12px;
+  }
+
+  .story-prose :global(.zh-prose) {
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--ink-muted);
+    font-weight: 300;
+    border-left: 2px solid var(--border-subtle);
+    padding-left: 16px;
+    margin-top: 8px;
+    margin-bottom: 0;
+  }
+
+  /* Chapter Gallery Section */
+  .chapter-gallery-section {
+    margin-top: 72px;
+    padding-top: 36px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .gallery-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+  }
+
+  .gallery-count {
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--card-surface);
+    border: 1px solid var(--border-subtle);
+    font-size: 10px;
+    color: var(--sub-accent);
+  }
+
+  .chapter-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .gallery-card {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  .gallery-card-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .gallery-img-box {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #EAE6DC;
+    border: 1px solid var(--border-subtle);
+    padding: 2px;
+  }
+
+  .gallery-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.4s ease;
+  }
+
+  .gallery-card:hover .gallery-img-box img {
+    transform: scale(1.04);
+  }
+
+  .gallery-overlay-hint {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    font-size: 9.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: all 0.25s ease;
+    pointer-events: none;
+  }
+
+  .gallery-card:hover .gallery-overlay-hint {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .gallery-card-info {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 10px;
+    color: var(--ink-muted);
+  }
+
+  .gallery-card-caption {
+    font-size: 11px;
+    color: var(--ink-primary);
+    font-weight: 400;
+  }
+
+  .gallery-card-exif {
+    font-size: 9.5px;
+    opacity: 0.75;
+  }
+
+  /* Lightbox Modal */
+  .lightbox-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-modal.active {
+    display: flex;
+  }
+
+  .lightbox-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 17, 15, 0.92);
+    backdrop-filter: blur(8px);
+  }
+
+  .lightbox-content {
+    position: relative;
+    z-index: 10;
+    max-width: 92vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: -42px;
+    right: 0;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .lightbox-close:hover {
+    opacity: 1;
+  }
+
+  .lightbox-image-wrap {
+    max-width: 90vw;
+    max-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-image-wrap img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .lightbox-meta {
+    margin-top: 14px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    color: #DDD8CD;
+    font-size: 11px;
+  }
+
+  .lightbox-caption {
+    font-weight: 500;
+  }
+
+  .lightbox-exif {
+    opacity: 0.75;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  @media (max-width: 900px) {
+    .chapter-gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .chapter-gallery-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
+
+<script is:inline>
+  (function() {
+    const modal = document.getElementById('lightboxModal');
+    const backdrop = document.getElementById('lightboxBackdrop');
+    const closeBtn = document.getElementById('lightboxCloseBtn');
+    const imgEl = document.getElementById('lightboxImg');
+    const captionEl = document.getElementById('lightboxCaption');
+    const exifEl = document.getElementById('lightboxExif');
+
+    if (!modal) return;
+
+    function openLightbox(src, caption, exif) {
+      if (!imgEl) return;
+      imgEl.src = src;
+      imgEl.alt = caption || '';
+      if (captionEl) captionEl.textContent = caption || '';
+      if (exifEl) exifEl.textContent = exif || '';
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+      if (imgEl) imgEl.src = '';
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.gallery-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const src = card.getAttribute('data-image');
+        const caption = card.getAttribute('data-caption');
+        const exif = card.getAttribute('data-exif');
+        openLightbox(src, caption, exif);
+      });
+    });
+
+    if (backdrop) backdrop.addEventListener('click', closeLightbox);
+    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeLightbox();
+      }
+    });
+  })();
+</script>

@@ -13,39 +13,23 @@ if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 }
 
-// Curated selection for the chapters
-const curatedImages = [
-  // Chapter 1: Tokyo Light & Movement
-  "japan25_1123_todai_ginkgo_gothic_colonnade_DSC00339.jpg", // Hero
-  "japan25_1122_sensoji_hozomon_night_DSC00166.jpg",         // Sub 1
-  "japan25_1123_ochanomizu_hijiribashi_trains_DSC00444.jpg",   // Sub 2
-  "japan25_1124_odaiba_mt_fuji_sunset_skyline_DSC00732.jpg",   // Extra feature
+const allFiles = fs.readdirSync(SOURCE_DIR).filter(f => f.toLowerCase().endsWith('.jpg'));
 
-  // Chapter 2: Lake Yamanaka & Kawaguchiko
-  "japan25_1126_yamanaka_mute_swan_wings_morning_mist_DSC00959.jpg", // Hero
-  "japan25_1126_yamanaka_predawn_blue_hour_fuji_DSC00915.jpg",       // Sub 1
-  "japan25_1126_kawaguchiko_momiji_tunnel_bridge_crowd_DSC01171.jpg", // Sub 2
-  "japan25_1126_yamanaka_frost_boardwalk_fuji_DSC00992.jpg",         // Extra
-  "japan25_1126_kawaguchiko_momiji_glowing_red_leaves_DSC01158.jpg", // Extra
-
-  // Chapter 3: Tokyo Autumn Details & Everyday Moments
-  "japan25_1127_tokyo_station_marunouchi_redbrick_DSC01332.jpg",      // Hero
-  "japan25_1128_park_mamachari_red_maple_canopy_DSC01404.jpg",        // Sub 1
-  "japan25_1128_still_life_crimson_leaf_wet_stone_DSC01409.jpg",      // Sub 2
-  "japan25_1127_ueno_ginkgo_leaves_wooden_bench_DSC01229.jpg",        // Extra
-  "japan25_1122_asakusa_kirin_vending_DSC00201.jpg"                   // Extra
-];
-
-console.log(`Starting image optimization for ${curatedImages.length} curated photographs...`);
+console.log(`Found ${allFiles.length} photos to optimize in ${SOURCE_DIR}...`);
 
 async function processImages() {
-  for (const file of curatedImages) {
+  let count = 0;
+  for (const file of allFiles) {
     const srcPath = path.join(SOURCE_DIR, file);
     const destPath = path.join(OUTPUT_DIR, file);
 
-    if (!fs.existsSync(srcPath)) {
-      console.warn(`File not found: ${srcPath}`);
-      continue;
+    // If destination exists and is newer than source, skip unless forced
+    if (fs.existsSync(destPath)) {
+      const srcMtime = fs.statSync(srcPath).mtime;
+      const destMtime = fs.statSync(destPath).mtime;
+      if (destMtime >= srcMtime) {
+        continue;
+      }
     }
 
     try {
@@ -57,12 +41,26 @@ async function processImages() {
 
       const srcSizeMb = (fs.statSync(srcPath).size / (1024 * 1024)).toFixed(2);
       const destSizeKb = (fs.statSync(destPath).size / 1024).toFixed(0);
-      console.log(`✓ Optimized ${file}: ${srcSizeMb}MB -> ${destSizeKb}KB`);
+      count++;
+      console.log(`[${count}] ✓ Optimized ${file}: ${srcSizeMb}MB -> ${destSizeKb}KB`);
     } catch (err) {
       console.error(`Error processing ${file}:`, err.message);
     }
   }
-  console.log(`\nAll images successfully processed into public/images/japan25/!`);
+
+  // Remove deleted files from OUTPUT_DIR if any
+  const outputFiles = fs.readdirSync(OUTPUT_DIR);
+  const currentSet = new Set(allFiles);
+  for (const out of outputFiles) {
+    if (!currentSet.has(out)) {
+      try {
+        fs.unlinkSync(path.join(OUTPUT_DIR, out));
+        console.log(`Removed deleted asset: ${out}`);
+      } catch (e) {}
+    }
+  }
+
+  console.log(`\nBatch optimization complete. Total current photos: ${allFiles.length}`);
 }
 
 processImages();

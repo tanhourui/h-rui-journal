@@ -23,6 +23,12 @@ const journeysCollection = defineCollection({
     sub2: z.string().optional(),
     sub2Caption: z.string().optional(),
     sub2Exif: z.string().optional(),
+    gallery: z.array(z.object({
+      image: z.string(),
+      caption: z.string(),
+      exif: z.string().optional(),
+      aspectRatio: z.string().optional()
+    })).optional()
   })
 });
 
