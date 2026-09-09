@@ -52,10 +52,15 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
       </header>
 
       <!-- Master Hero Photograph (Double-Bezel Frame) -->
-      <section class="master-hero-frame">
+      <section id="masterHeroFrame" class={`master-hero-frame ${entry.data.heroAspect === 'portrait' ? 'is-portrait' : ''}`}>
         <div class="hero-bezel-outer">
           <div class="hero-image-box">
-            <img src={entry.data.hero} alt={entry.data.title} />
+            <img 
+              id="masterHeroImg"
+              src={entry.data.hero} 
+              alt={entry.data.title}
+              onload="if(this.naturalHeight > this.naturalWidth) document.getElementById('masterHeroFrame')?.classList.add('is-portrait')"
+            />
           </div>
         </div>
         <div class="image-caption-bar font-mono">
@@ -313,6 +318,12 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
   /* Master Hero Photograph Frame */
   .master-hero-frame {
     margin: 40px 0;
+    transition: max-width 0.4s ease, margin 0.4s ease;
+  }
+
+  .master-hero-frame.is-portrait {
+    max-width: 620px;
+    margin: 40px auto;
   }
 
   .hero-bezel-outer {
@@ -325,16 +336,24 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
 
   .hero-image-box {
     width: 100%;
-    height: 540px;
     border-radius: 16px;
     overflow: hidden;
     background: #EAE6DC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .hero-image-box img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    max-height: 84vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  .master-hero-frame.is-portrait .hero-image-box img {
+    max-height: 80vh;
   }
 
   .image-caption-bar {
@@ -486,8 +505,8 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     .story-title {
       font-size: 26px;
     }
-    .hero-image-box {
-      height: 340px;
+    .hero-image-box img {
+      max-height: 75vh;
     }
     .diptych-grid {
       grid-template-columns: 1fr;

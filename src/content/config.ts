@@ -17,6 +17,7 @@ const journeysCollection = defineCollection({
     exif: z.string(),
     hero: z.string(),
     heroCaption: z.string().optional(),
+    heroAspect: z.enum(['landscape', 'portrait', 'auto']).default('auto').optional(),
     sub1: z.string().optional(),
     sub1Caption: z.string().optional(),
     sub1Exif: z.string().optional(),
