@@ -2,7 +2,7 @@
 country: "japan"
 countryName: "Japan"
 year: 2023
-eraTitle: "Mobile Exploration & Lakeside Dawn"
+eraTitle: "Rain on Cedar & Ancient Slopes"
 camera: "Huawei P40 Pro"
 stateName: "Yamanashi: Lake Kawaguchiko"
 title: "Lake Kawaguchiko & Northern Fuji"

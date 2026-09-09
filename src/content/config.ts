@@ -3,7 +3,7 @@ import { defineCollection, z } from 'astro:content';
 const journeysCollection = defineCollection({
   type: 'content',
   schema: z.object({
-    country: z.enum(['malaysia', 'japan', 'iceland']),
+    country: z.enum(['malaysia', 'japan', 'thailand', 'vietnam', 'iceland']),
     countryName: z.string(),
     year: z.number().default(2025),
     eraTitle: z.string().optional(),

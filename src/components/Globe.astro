@@ -417,6 +417,17 @@ const { journeysData } = Astro.props;
       document.querySelectorAll('.country-nav-item').forEach(btn => {
         if (btn.getAttribute('data-country') === countryKey) {
           btn.className = 'country-nav-item active';
+          const parentDest = btn.getAttribute('data-parent-dest');
+          if (parentDest) {
+            document.querySelectorAll('.dest-tab-btn').forEach(db => {
+              if (db.getAttribute('data-destination') === parentDest) db.classList.add('active');
+              else db.classList.remove('active');
+            });
+            document.querySelectorAll('.destination-panel').forEach(dp => {
+              if (dp.getAttribute('data-destination-panel') === parentDest) dp.classList.add('active');
+              else dp.classList.remove('active');
+            });
+          }
         } else {
           btn.className = 'country-nav-item';
         }
@@ -424,11 +435,15 @@ const { journeysData } = Astro.props;
 
       const mobileActiveEraDesc = document.getElementById('mobileActiveEraDesc');
       if (mobileActiveEraDesc && c) {
-        mobileActiveEraDesc.textContent = `${c.year || ''} · ${c.eraTitle || c.name} · ${c.camera || ''}`;
+        const totalExp = c.states ? c.states.reduce((acc, st) => acc + (st.gallery?.length || 0) + 1 + (st.sub1 ? 1 : 0) + (st.sub2 ? 1 : 0), 0) : 0;
+        mobileActiveEraDesc.textContent = `${c.name} · ${c.eraTitle || ''} (${totalExp} Exposures)`;
       }
 
       updateCountryCards(countryKey);
     }
+
+    window.selectCountry = selectCountry;
+    window.selectState = selectState;
 
     function selectState(stateIndex) {
       currentStateIndex = stateIndex;

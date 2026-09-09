@@ -6,59 +6,135 @@ import { getCollection } from 'astro:content';
 
 const allJourneys = await getCollection('journeys');
 
-// Group journeys by Era (Timeline) to showcase photographic progression without mixing timelines
-interface EraData {
+// Group journeys by Country & Visual Era
+export interface JourneyGroup {
   id: string;
   name: string;
+  country: string;
+  countryName: string;
   year: number;
   eraTitle: string;
+  shortTitle: string;
   camera: string;
   center: [number, number];
   route: [number, number][];
   states: any[];
 }
 
-const erasData: Record<string, EraData> = {
+const erasData: Record<string, JourneyGroup> = {
   'japan-2025': {
     id: 'japan-2025',
     name: 'Japan 2025',
+    country: 'japan',
+    countryName: 'Japan',
     year: 2025,
-    eraTitle: 'Mirrorless Discipline & Peak Light',
+    eraTitle: 'Winter Resonances & Peak Light',
+    shortTitle: 'Winter Light',
     camera: 'Sony α6400',
     center: [139.3, 35.5],
     route: [
-      [139.7620, 35.7126], // 01. Tokyo Shitamachi (Todai / Asakusa)
-      [139.7454, 35.6586], // 02. Tokyo Metropolis & Bay (Tokyo Tower / Odaiba)
-      [138.8653, 35.4167], // 03. Fuji Five Lakes (Lake Yamanaka & Kawaguchiko)
-      [139.7671, 35.6812]  // 04. Tokyo Station & Neighborhood Life (Marunouchi)
+      [139.7620, 35.7126], // 01. Tokyo Shitamachi
+      [139.7454, 35.6586], // 02. Tokyo Bay Skyline
+      [138.8653, 35.4167], // 03. Fuji Five Lakes
+      [139.7671, 35.6812]  // 04. Tokyo Everyday Life
     ],
     states: []
   },
   'japan-2024': {
     id: 'japan-2024',
     name: 'Japan 2024',
+    country: 'japan',
+    countryName: 'Japan',
     year: 2024,
-    eraTitle: 'Leica Optics & Autumn Tone',
+    eraTitle: 'Autumn Tides & Golden Canopies',
+    shortTitle: 'Autumn Tides',
     camera: 'Xiaomi 14 Ultra',
     center: [139.3, 35.4],
     route: [
-      [139.5312, 35.3055], // 01. Kamakura & Shonan Coast (Enoden / Shichirigahama)
-      [139.0253, 35.2045], // 02. Hakone & Lake Ashi (Hakone Shrine / Volcanic Ridge)
-      [139.7619, 35.7128]  // 03. Tokyo Autumn & Old Quarters (Todai Ginkgo / Yanaka)
+      [139.5312, 35.3055], // 01. Kamakura & Shonan Coast
+      [139.0253, 35.2045], // 02. Hakone & Lake Ashi
+      [139.7619, 35.7128]  // 03. Tokyo Autumn Ginkgo
     ],
     states: []
   },
   'japan-2023': {
     id: 'japan-2023',
     name: 'Japan 2023',
+    country: 'japan',
+    countryName: 'Japan',
     year: 2023,
-    eraTitle: 'Mobile Exploration & Wonder',
+    eraTitle: 'Rain on Cedar & Ancient Slopes',
+    shortTitle: 'Cedar & Stone',
     camera: 'Huawei P40 Pro',
     center: [137.5, 35.2],
     route: [
-      [139.6993, 35.6764], // 01. Tokyo First Impressions (Meiji Jingu / Asakusa / Tokyo Tower)
-      [138.7554, 35.5042], // 02. Lake Kawaguchiko & Northern Fuji (Dawn Reeds / Tenjoyama)
-      [135.7788, 34.9986]  // 03. Kyoto Ancient Capital (Yasaka Pagoda / Kinkaku-ji / Ninenzaka)
+      [139.6993, 35.6764], // 01. Tokyo First Impressions
+      [138.7554, 35.5042], // 02. Lake Kawaguchiko & Northern Fuji
+      [135.7788, 34.9986]  // 03. Kyoto Ancient Capital
+    ],
+    states: []
+  },
+  'japan-2019': {
+    id: 'japan-2019',
+    name: 'Japan 2019',
+    country: 'japan',
+    countryName: 'Japan',
+    year: 2019,
+    eraTitle: 'Midsummer Horizons & First Light',
+    shortTitle: 'Midsummer',
+    camera: 'Huawei & Leica Triple Optics',
+    center: [137.6, 35.1],
+    route: [
+      [139.6917, 35.6895], // 01. Tokyo Summer Awakening
+      [135.5023, 34.6937], // 02. Kansai Historic Canopies
+      [139.7671, 35.6812]  // 03. Tokyo Dusk & Farewell
+    ],
+    states: []
+  },
+  'malaysia': {
+    id: 'malaysia',
+    name: 'Malaysia',
+    country: 'malaysia',
+    countryName: 'Malaysia',
+    year: 2025,
+    eraTitle: 'Hometown Roots & Straits Tides',
+    shortTitle: 'Hometown',
+    camera: 'Xiaomi 14 Ultra & Hasselblad',
+    center: [101.5, 3.5],
+    route: [
+      [102.2464, 2.2056], // 01. Malacca Hometown Straits
+      [100.3282, 5.4124]  // 02. Penang George Town Heritage
+    ],
+    states: []
+  },
+  'thailand': {
+    id: 'thailand',
+    name: 'Thailand',
+    country: 'thailand',
+    countryName: 'Thailand',
+    year: 2025,
+    eraTitle: 'River of Kings & Southern Mist',
+    shortTitle: 'Siam Mists',
+    camera: 'Xiaomi 14 Ultra & Huawei',
+    center: [100.8, 9.7],
+    route: [
+      [100.5090, 13.7410], // 01. Bangkok Chao Phraya
+      [101.0305, 5.7480]  // 02. Betong Southern Mist
+    ],
+    states: []
+  },
+  'vietnam': {
+    id: 'vietnam',
+    name: 'Vietnam',
+    country: 'vietnam',
+    countryName: 'Vietnam',
+    year: 2026,
+    eraTitle: 'Old Quarter Shadows & Colonial Eaves',
+    shortTitle: 'Old Quarter',
+    camera: 'Sony α6400 & Xiaomi 14 Ultra',
+    center: [105.85, 21.03],
+    route: [
+      [105.8464, 21.0368]  // 01. Hanoi Old Quarter
     ],
     states: []
   }
@@ -67,10 +143,21 @@ const erasData: Record<string, EraData> = {
 allJourneys.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 
 allJourneys.forEach(entry => {
-  const y = entry.data.year || 2025;
-  const eraKey = `japan-${y}`;
-  if (erasData[eraKey]) {
-    erasData[eraKey].states.push({
+  const c = entry.data.country;
+  let key = '';
+  if (c === 'japan') {
+    const y = entry.data.year || 2025;
+    key = `japan-${y}`;
+  } else if (c === 'malaysia') {
+    key = 'malaysia';
+  } else if (c === 'thailand') {
+    key = 'thailand';
+  } else if (c === 'vietnam') {
+    key = 'vietnam';
+  }
+
+  if (erasData[key]) {
+    erasData[key].states.push({
       slug: entry.slug,
       id: entry.slug.split('/').pop(),
       ...entry.data
@@ -78,22 +165,65 @@ allJourneys.forEach(entry => {
   }
 });
 
-const erasSummaries = Object.values(erasData).map(e => ({
-  id: e.id,
-  name: e.name,
-  year: e.year,
-  eraTitle: e.eraTitle,
-  shortTitle: e.year === 2025 ? 'Mirrorless' : (e.year === 2024 ? 'Leica Optics' : 'Mobile'),
-  camera: e.camera,
-  cameraShort: e.year === 2025 ? 'Sony' : (e.year === 2024 ? 'Xiaomi Leica' : 'Huawei Leica'),
-  chaptersCount: `${e.states.length} Ch`,
-  count: `${e.states.length} Chapters · ${e.states.reduce((acc, s) => acc + (s.gallery?.length || 0) + 1 + (s.sub1 ? 1 : 0) + (s.sub2 ? 1 : 0), 0)} Exposures`
-}));
+function calcExposures(states: any[]) {
+  return states.reduce((acc, s) => acc + (s.gallery?.length || 0) + 1 + (s.sub1 ? 1 : 0) + (s.sub2 ? 1 : 0), 0);
+}
+
+const destinations = [
+  {
+    id: 'japan',
+    name: 'Japan',
+    nativeName: '日本',
+    exposures: calcExposures(erasData['japan-2025'].states) + 
+               calcExposures(erasData['japan-2024'].states) + 
+               calcExposures(erasData['japan-2023'].states) + 
+               calcExposures(erasData['japan-2019'].states),
+    defaultEraId: 'japan-2025',
+    eras: [
+      { ...erasData['japan-2025'], exposures: calcExposures(erasData['japan-2025'].states) },
+      { ...erasData['japan-2024'], exposures: calcExposures(erasData['japan-2024'].states) },
+      { ...erasData['japan-2023'], exposures: calcExposures(erasData['japan-2023'].states) },
+      { ...erasData['japan-2019'], exposures: calcExposures(erasData['japan-2019'].states) }
+    ]
+  },
+  {
+    id: 'malaysia',
+    name: 'Malaysia',
+    nativeName: '马来西亚',
+    isHometown: true,
+    tag: 'Hometown / 故乡',
+    exposures: calcExposures(erasData['malaysia'].states),
+    defaultEraId: 'malaysia',
+    eras: [
+      { ...erasData['malaysia'], exposures: calcExposures(erasData['malaysia'].states) }
+    ]
+  },
+  {
+    id: 'thailand',
+    name: 'Thailand',
+    nativeName: '泰国',
+    exposures: calcExposures(erasData['thailand'].states),
+    defaultEraId: 'thailand',
+    eras: [
+      { ...erasData['thailand'], exposures: calcExposures(erasData['thailand'].states) }
+    ]
+  },
+  {
+    id: 'vietnam',
+    name: 'Vietnam',
+    nativeName: '越南',
+    exposures: calcExposures(erasData['vietnam'].states),
+    defaultEraId: 'vietnam',
+    eras: [
+      { ...erasData['vietnam'], exposures: calcExposures(erasData['vietnam'].states) }
+    ]
+  }
+];
 ---
 
 <BaseLayout title="H. Rui Journal / 旅の記録">
   <div class="landing-layout">
-    <Sidebar eras={erasSummaries} />
+    <Sidebar destinations={destinations} />
     <main id="mainStage" class="main-stage">
       <Globe journeysData={erasData} />
     </main>

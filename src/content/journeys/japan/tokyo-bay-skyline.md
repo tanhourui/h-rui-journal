@@ -2,7 +2,7 @@
 country: "japan"
 countryName: "Japan"
 year: 2025
-eraTitle: "Mirrorless Discipline"
+eraTitle: "Winter Resonances & Peak Light"
 camera: "Sony α6400"
 stateName: "Tokyo: Bay & Skyline"
 title: "Tokyo Metropolis & Bay Harbor"

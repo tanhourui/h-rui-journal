@@ -2,7 +2,7 @@
 country: "japan"
 countryName: "Japan"
 year: 2025
-eraTitle: "Mirrorless Discipline"
+eraTitle: "Winter Resonances & Peak Light"
 camera: "Sony α6400"
 stateName: "Yamanashi: Fuji Five Lakes"
 title: "Fuji Five Lakes Basin"

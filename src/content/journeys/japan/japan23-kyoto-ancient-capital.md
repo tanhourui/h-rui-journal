@@ -2,7 +2,7 @@
 country: "japan"
 countryName: "Japan"
 year: 2023
-eraTitle: "Mobile Exploration & Ancient Kyoto"
+eraTitle: "Rain on Cedar & Ancient Slopes"
 camera: "Huawei P40 Pro"
 stateName: "Kyoto: Historic Capital"
 title: "Kyoto Heritage & Historic Slopes"

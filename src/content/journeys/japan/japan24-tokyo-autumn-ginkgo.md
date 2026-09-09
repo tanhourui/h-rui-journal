@@ -2,7 +2,7 @@
 country: "japan"
 countryName: "Japan"
 year: 2024
-eraTitle: "Leica Optics & Golden Ginkgo"
+eraTitle: "Autumn Tides & Golden Canopies"
 camera: "Xiaomi 14 Ultra"
 stateName: "Tokyo: Todai, Gaien & Yanaka"
 title: "Tokyo Autumn & Old Quarters"

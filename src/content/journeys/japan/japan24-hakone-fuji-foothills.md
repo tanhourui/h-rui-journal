@@ -2,7 +2,7 @@
 country: "japan"
 countryName: "Japan"
 year: 2024
-eraTitle: "Leica Optics & Mountain Ridges"
+eraTitle: "Autumn Tides & Golden Canopies"
 camera: "Xiaomi 14 Ultra"
 stateName: "Kanagawa & Yamanashi: Hakone & Lake Ashi"
 title: "Hakone Ridges & Lake Ashi"

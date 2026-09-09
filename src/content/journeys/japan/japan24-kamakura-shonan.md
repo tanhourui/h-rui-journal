@@ -2,7 +2,7 @@
 country: "japan"
 countryName: "Japan"
 year: 2024
-eraTitle: "Leica Optics & Coastal Autumn"
+eraTitle: "Autumn Tides & Golden Canopies"
 camera: "Xiaomi 14 Ultra"
 stateName: "Kanagawa: Kamakura & Shonan Coast"
 title: "Kamakura & Shonan Coast"

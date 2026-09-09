@@ -2,7 +2,7 @@
 country: "japan"
 countryName: "Japan"
 year: 2023
-eraTitle: "Mobile Exploration & First Wonder"
+eraTitle: "Rain on Cedar & Ancient Slopes"
 camera: "Huawei P40 Pro"
 stateName: "Tokyo: First Impressions"
 title: "Tokyo Urban Rhythms & Shinto Heritage"
