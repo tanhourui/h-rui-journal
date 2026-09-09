@@ -2,62 +2,62 @@
 country: "japan"
 countryName: "Japan"
 year: 2023
-eraTitle: "Mobile Exploration & First Wonder"
+eraTitle: "Mobile Exploration & Lakeside Dawn"
 camera: "Huawei P40 Pro"
 stateName: "Yamanashi: Lake Kawaguchiko"
-title: "Lake Kawaguchiko & Morning Fuji"
-chapterTitle: "Kawaguchiko: Susuki Grass, Tenjoyama Ridge and Fuji Dawn"
+title: "Lake Kawaguchiko & Northern Fuji"
+chapterTitle: "Kawaguchiko: Dawn Silver Reeds, Lake Solitude and Mount Fuji"
 order: 2
 coords: [138.7554, 35.5042]
 coordsText: "35.504° N, 138.755° E"
 date: "October 10-11, 2023"
 time: "06:02 AM"
-desc: "Watching the dawn light illuminate Mount Fuji across Lake Kawaguchiko. Autumn susuki grass swaying in the quiet breeze, with the entire lake basin wrapped in early morning mist."
-exif: "Huawei P40 Pro · ƒ/1.9 · 1/800s · ISO 50"
+desc: "Standing along the northern shore of Lake Kawaguchiko at dawn. Wild susuki grasses sway softly as the crisp autumn morning unveils the snowless volcanic cone in quiet stillness."
+exif: "Huawei P40 Pro · ƒ/1.9 · 1/1600s · ISO 50"
 hero: "/images/japan23/japan23_1011_kawaguchiko_fuji_dawn_reeds_026.jpg"
-heroCaption: "Mount Fuji Emerging at Dawn Framed by Autumn Reeds on Lake Kawaguchiko Shoreline"
+heroCaption: "Dawn Peak of Mount Fuji Framed with Lakeside Autumn Reeds"
 heroAspect: "portrait"
 sub1: "/images/japan23/japan23_1010_kawaguchiko_ropeway_panorama_023.jpg"
-sub1Caption: "Tenjoyama Ropeway Overlook of the Expansive Lake Kawaguchiko Basin"
+sub1Caption: "Tenjoyama Ropeway Overlook of Lake Kawaguchiko Basin"
 sub1Exif: "Huawei P40 Pro · ƒ/1.9 · 1/1200s · ISO 50"
 sub2: "/images/japan23/japan23_1011_kawaguchiko_fuji_susuki_glow_027.jpg"
-sub2Caption: "Silver Pampas Grass Glowing Under the First Autumn Sunrays"
-sub2Exif: "Huawei P40 Pro · ƒ/1.9 · 1/1000s · ISO 50"
+sub2Caption: "Silver Susuki Pampas Plumes Shimmering in Morning Light"
+sub2Exif: "Huawei P40 Pro · ƒ/1.9 · 1/2000s · ISO 50"
 gallery:
   - image: "/images/japan23/japan23_1010_kawaguchiko_lake_sunset_024.jpg"
-    caption: "Sunset Glow Spreading Over the Northern Lake Bank"
-    exif: "Huawei P40 Pro · ƒ/1.9 · 1/500s · ISO 64"
+    caption: "Sunset Glow Spreading Across Calm Lakeside Waters"
+    exif: "Huawei P40 Pro · ƒ/1.9 · 1/640s · ISO 50"
   - image: "/images/japan23/japan23_1010_kawaguchiko_dusk_mountains_025.jpg"
-    caption: "Mountain Ridge Silhouettes Fading into Indigo Twilight"
-    exif: "Huawei P40 Pro · ƒ/1.9 · 1/160s · ISO 100"
+    caption: "Distant Silhouette of the Southern Alps at Dusk"
+    exif: "Huawei P40 Pro · ƒ/1.9 · 1/400s · ISO 64"
   - image: "/images/japan23/japan23_1011_kawaguchiko_morning_light_reeds_028.jpg"
-    caption: "Morning Sun Warming the Lakeside Reeds"
-    exif: "Huawei P40 Pro · ƒ/1.9 · 1/900s · ISO 50"
-  - image: "/images/japan23/japan23_1011_kawaguchiko_fuji_clean_peak_029.jpg"
-    caption: "The Symmetrical Volcanic Cone in Crisp October Air"
+    caption: "First Morning Rays Warming Lakeside Wetland Grasses"
     exif: "Huawei P40 Pro · ƒ/1.9 · 1/1500s · ISO 50"
+  - image: "/images/japan23/japan23_1011_kawaguchiko_fuji_clean_peak_029.jpg"
+    caption: "Clean Geometric Peak of Mount Fuji in October Crispness"
+    exif: "Huawei P40 Pro · ƒ/1.9 · 1/2400s · ISO 50"
   - image: "/images/japan23/japan23_1011_kawaguchiko_lakeside_autumn_grass_030.jpg"
-    caption: "Lakeside Walking Path in Early Morning Solitude"
-    exif: "Huawei P40 Pro · ƒ/1.9 · 1/1100s · ISO 50"
+    caption: "Solitary Lakeside Footpath in Early Morning Quiet"
+    exif: "Huawei P40 Pro · ƒ/1.9 · 1/1000s · ISO 50"
   - image: "/images/japan23/japan23_1011_kawaguchiko_panoramic_shoreline_031.jpg"
-    caption: "Panoramic Calm Across the Blue Waters of Kawaguchiko"
-    exif: "Huawei P40 Pro · ƒ/1.9 · 1/1400s · ISO 50"
+    caption: "Panoramic Tranquility of Northern Shoreline at Dawn"
+    exif: "Huawei P40 Pro · ƒ/1.9 · 1/1800s · ISO 50"
 ---
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Standing by the lakeside before dawn, the chill of Yamanashi is piercing. As the eastern sky transitions from dark violet to pale amber, the massive triangular form of Mount Fuji slowly detaches from the night. Thick clumps of susuki pampas grass fringe the edge of the water, catching the first side-light of sunrise and framing the volcano in feathery golden plumes.
+    Dawn at Lake Kawaguchiko arrives with profound chill and stillness. Along the northern shoreline near Oishi Park, tall silver susuki grasses bow gently to the lake breeze, their feathery plumes catching the very first amber glow of sunrise. Directly across the mirror-like water, Mount Fuji stands monumental, its rugged volcanic ridges etched sharply against a pale pastel sky.
   </p>
   <p class="zh-prose">
-    破晓前守在河口湖北岸，山梨县清晨的冷气直往衣领里钻。当东方天际从暗紫慢慢褪成浅金，富士山巨大的锥体轮廓一点点从夜色里显露出来。湖边密生着大片芒草，第一道晨光斜斜切过水面，将草穗照得通透发亮，恰好作为天然的前景，将山体稳稳收在画面当中。
+    河口湖的清晨带着山地特有的清冽与沉静。大石公园附近的北岸，银白色的芒草在湖风中微微颔首，茸茸的花穗率先捕捉到地平线上升起的第一缕晨光。隔水相望，富士山的火山锥体拔地而起，深褐色的山体肌理在微明的天幕前勾勒出极为沉稳的几何轮廓。
   </p>
 </div>
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Riding the Tenjoyama ropeway the previous afternoon revealed the vast scale of the Five Lakes depression. From the mountain observation deck, the lake appears as an indigo jewel cupped between steep volcanic ridges. Down along the shoreline path, the autumn stillness is complete, broken only by ripples from morning fishing boats cutting across the glassy surface.
+    As the morning advances, the mist lifting from the lake surface reveals the vast sweep of the basin. The water remains undisturbed, reflecting the sky and the dark timber boat docks that line the shore. It is a quiet study in geometry and elemental atmosphere, where the presence of the mountain commands every perspective.
   </p>
   <p class="zh-prose">
-    前一天午后搭天上山缆车登顶，五湖盆地的地貌一览无余。从观景台俯瞰，河口湖如同一方被群山环抱的深蓝玉石。下到湖畔漫步，秋日的宁静落得很实，偶尔有早出的小舟在镜面般的水面上划出一道细长的白痕，随即又散入波光之中。
+    随着日头渐高，湖面的薄雾徐徐散开，整个湖盆的开阔景象尽收眼底。水波不兴，倒映着晴空与岸边旧木栈桥的线条。这是一场关于几何秩序与自然氛围的静默注视，圣山的存在统摄着视野里的每一个角度。
   </p>
 </div>
