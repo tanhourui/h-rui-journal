@@ -422,6 +422,11 @@ const { journeysData } = Astro.props;
         }
       });
 
+      const mobileActiveEraDesc = document.getElementById('mobileActiveEraDesc');
+      if (mobileActiveEraDesc && c) {
+        mobileActiveEraDesc.textContent = `${c.year || ''} · ${c.eraTitle || c.name} · ${c.camera || ''}`;
+      }
+
       updateCountryCards(countryKey);
     }
 

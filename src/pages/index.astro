@@ -83,7 +83,10 @@ const erasSummaries = Object.values(erasData).map(e => ({
   name: e.name,
   year: e.year,
   eraTitle: e.eraTitle,
+  shortTitle: e.year === 2025 ? 'Mirrorless' : (e.year === 2024 ? 'Leica Optics' : 'Mobile'),
   camera: e.camera,
+  cameraShort: e.year === 2025 ? 'Sony' : (e.year === 2024 ? 'Xiaomi Leica' : 'Huawei Leica'),
+  chaptersCount: `${e.states.length} Ch`,
   count: `${e.states.length} Chapters · ${e.states.reduce((acc, s) => acc + (s.gallery?.length || 0) + 1 + (s.sub1 ? 1 : 0) + (s.sub2 ? 1 : 0), 0)} Exposures`
 }));
 ---

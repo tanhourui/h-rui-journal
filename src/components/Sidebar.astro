@@ -4,7 +4,10 @@ interface EraItem {
   name: string;
   year: number;
   eraTitle: string;
+  shortTitle?: string;
   camera: string;
+  cameraShort?: string;
+  chaptersCount?: string;
   count: string;
 }
 
@@ -13,9 +16,9 @@ interface Props {
 }
 
 const { eras = [
-  { id: 'japan-2025', name: 'Japan 2025', year: 2025, eraTitle: 'Mirrorless Discipline & Peak Light', camera: 'Sony α6400', count: '4 Chapters · 52 Exposures' },
-  { id: 'japan-2024', name: 'Japan 2024', year: 2024, eraTitle: 'Leica Optics & Autumn Tone', camera: 'Xiaomi 14 Ultra', count: '3 Chapters · 99 Exposures' },
-  { id: 'japan-2023', name: 'Japan 2023', year: 2023, eraTitle: 'Mobile Exploration & Wonder', camera: 'Huawei P40 Pro', count: '3 Chapters · 45 Exposures' },
+  { id: 'japan-2025', name: 'Japan 2025', year: 2025, eraTitle: 'Mirrorless Discipline & Peak Light', shortTitle: 'Mirrorless', camera: 'Sony α6400', cameraShort: 'Sony', chaptersCount: '4 Ch', count: '4 Chapters · 52 Exposures' },
+  { id: 'japan-2024', name: 'Japan 2024', year: 2024, eraTitle: 'Leica Optics & Autumn Tone', shortTitle: 'Leica Optics', camera: 'Xiaomi 14 Ultra', cameraShort: 'Xiaomi Leica', chaptersCount: '3 Ch', count: '3 Chapters · 99 Exposures' },
+  { id: 'japan-2023', name: 'Japan 2023', year: 2023, eraTitle: 'Mobile Exploration & Wonder', shortTitle: 'Mobile', camera: 'Huawei P40 Pro', cameraShort: 'Huawei Leica', chaptersCount: '3 Ch', count: '3 Chapters · 45 Exposures' },
 ] } = Astro.props;
 ---
 
@@ -30,6 +33,8 @@ const { eras = [
 
     <div class="nav-section">
       <div class="nav-section-title">Visual Eras · 旅の軌跡</div>
+      
+      <!-- 3-Segment Era Grid: All 3 visible side-by-side on mobile without horizontal swiping -->
       <div class="country-nav-list">
         {eras.map((era, idx) => (
           <button 
@@ -38,26 +43,37 @@ const { eras = [
           >
             <div class="era-header-row">
               <span class="era-year-badge">{era.year}</span>
-              <span class="era-title-text">{era.eraTitle}</span>
+              <span class="era-title-text desktop-only">{era.eraTitle}</span>
+              <span class="era-title-text mobile-only">{era.shortTitle || era.eraTitle}</span>
             </div>
-            <div class="era-sub-meta font-mono">
+            <div class="era-sub-meta font-mono desktop-only">
               <span class="camera-pill">{era.camera}</span>
               <span class="chapter-count">{era.count}</span>
+            </div>
+            <div class="era-sub-meta font-mono mobile-only">
+              <span class="camera-pill">{era.cameraShort || era.camera}</span>
+              <span class="chapter-count">{era.chaptersCount || ''}</span>
             </div>
           </button>
         ))}
       </div>
+
+      <!-- Mobile Active Era Callout Banner -->
+      <div class="mobile-active-era-banner font-mono mobile-only">
+        <span class="active-era-bullet">●</span>
+        <span id="mobileActiveEraDesc">2025 · Mirrorless Discipline · Sony α6400</span>
+      </div>
     </div>
 
     <!-- Time-Aware Atmosphere Indicator -->
-    <div class="time-atmosphere-pill">
+    <div class="time-atmosphere-pill desktop-only">
       <span class="atmosphere-dot"></span>
       <span id="timeAtmosphereText">Auto Palette</span>
     </div>
   </div>
 
   <!-- Sidebar Footer -->
-  <div class="sidebar-footer font-mono">
+  <div class="sidebar-footer font-mono desktop-only">
     <div class="author-name">Tan Hou Rui</div>
     <div class="footer-sub">Visual Archive & Field Journal</div>
     <div class="social-row">
@@ -205,6 +221,14 @@ const { eras = [
     opacity: 0.75;
   }
 
+  .mobile-only {
+    display: none;
+  }
+
+  .desktop-only {
+    display: inherit;
+  }
+
   .time-atmosphere-pill {
     display: inline-flex;
     align-items: center;
@@ -268,59 +292,143 @@ const { eras = [
     color: var(--sub-accent);
   }
 
+  /* Responsive Mobile 3-Segment Timeline Layout */
   @media (max-width: 900px) {
     .sidebar {
       width: 100%;
       height: auto;
       border-right: none;
       border-bottom: 1px solid var(--border-subtle);
-      padding: 16px 16px 14px;
+      padding: 14px 16px 12px;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
     }
 
     .brand-block h1 {
-      font-size: 19px;
+      font-size: 18px;
     }
 
     .brand-block .subtitle {
-      font-size: 10px;
+      font-size: 9.5px;
+      margin-top: 0;
     }
 
     .nav-section {
-      margin-top: 14px;
+      margin-top: 10px;
     }
 
     .nav-section-title {
-      font-size: 9.5px;
-      margin-bottom: 8px;
+      font-size: 9px;
+      margin-bottom: 6px;
+      letter-spacing: 0.14em;
     }
 
+    /* 3 equal columns: 100% visible on screen, zero hidden swipe */
     .country-nav-list {
-      display: flex;
-      flex-direction: row;
-      overflow-x: auto;
-      gap: 8px;
-      padding-bottom: 6px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-
-    .country-nav-list::-webkit-scrollbar {
-      display: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      width: 100%;
     }
 
     .country-nav-item {
-      min-width: 185px;
-      flex: 0 0 auto;
-      padding: 10px 12px;
-      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 8px 4px 7px;
+      border-radius: 8px;
+      width: 100%;
+      min-width: 0;
+      gap: 2px;
     }
 
-    .time-atmosphere-pill {
-      display: none;
+    .country-nav-item:hover {
+      transform: none;
     }
 
-    .sidebar-footer {
-      display: none;
+    .era-header-row {
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      width: 100%;
+    }
+
+    .era-year-badge {
+      font-size: 10.5px;
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    .era-title-text {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      text-align: center;
+    }
+
+    .era-sub-meta {
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      font-size: 8.5px;
+      width: 100%;
+      margin-top: 0;
+    }
+
+    .camera-pill {
+      font-size: 8.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      text-align: center;
+    }
+
+    .chapter-count {
+      font-size: 8px;
+      opacity: 0.75;
+    }
+
+    .mobile-only {
+      display: block;
+    }
+
+    .desktop-only {
+      display: none !important;
+    }
+
+    .mobile-active-era-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: var(--card-surface);
+      border: 1px solid var(--border-subtle);
+      font-size: 10px;
+      color: var(--sub-accent);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    .mobile-active-era-banner .active-era-bullet {
+      font-size: 7px;
+      color: var(--sub-accent);
+      flex-shrink: 0;
     }
   }
 </style>
