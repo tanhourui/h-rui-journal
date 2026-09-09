@@ -63,10 +63,10 @@ gallery:
     caption: "Looking Up into Glowing Scarlet Maple Canopy"
     exif: "135mm · ƒ/5.6 · 1/640s · ISO 200"
   - image: "/images/japan25/japan25_1126_kawaguchiko_momiji_canal_stream_DSC01187.jpg"
-    caption: "Stone Stream Channel Flanked by Autumn Foliage"
+    caption: "Snow-Capped Mount Fuji and Summit Cap Cloud Framed by Lakeside Susuki Plumes"
     exif: "53mm · ƒ/5.0 · 1/1600s · ISO 200"
   - image: "/images/japan25/japan25_1126_kawaguchiko_momiji_deep_crimson_DSC01206.jpg"
-    caption: "Deep Scarlet & Burgundy Maple Branches"
+    caption: "Windswept Susuki Grass Plume in Sharp Focus Against the Hazy Snow Peak of Mount Fuji"
     exif: "93mm · ƒ/5.6 · 1/2000s · ISO 200"
 ---
 
