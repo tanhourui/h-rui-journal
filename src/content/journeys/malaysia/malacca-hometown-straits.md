@@ -15,34 +15,34 @@ time: "06:49 PM"
 desc: "A return to my hometown Malacca. The smell of salt and wet clay drifting from the Straits, the quiet rhythm of the evening tide at Klebang beach, and silhouettes resting against the golden horizon."
 exif: "Xiaomi 14 Ultra · 12mm · ƒ/1.8 · 1/9149s · ISO 50"
 hero: "/images/malaysia/malaysia_006.jpg"
-heroCaption: "Low-Tide Wet Sand Reflecting the Fiery Golden Sunset over the Malacca Straits"
+heroCaption: "Footprints in Sand at Sunset Over the Malacca Straits"
 heroAspect: "portrait"
 sub1: "/images/malaysia/malaysia_007.jpg"
-sub1Caption: "Warm Amber Glow Across the Calming Waters of Klebang Beach"
+sub1Caption: "Silhouettes of Anglers on Rock Breakwater at Sunset"
 sub1Exif: "Xiaomi 14 Ultra · 75mm · ƒ/1.8 · 1/27742s · ISO 250"
 sub2: "/images/malaysia/malaysia_008.jpg"
 sub2Caption: "Lone Angler with Rod on the Rock Breakwater Facing the Distant Straits Cargo Ships"
 sub2Exif: "Xiaomi 14 Ultra · 120mm · ƒ/2.5 · 1/29265s · ISO 250"
 gallery:
   - image: "/images/malaysia/malaysia_009.jpg"
-    caption: "Two Companions Sitting on Shoreline Sand Silhouetted by Blazing Sunset Light"
+    caption: "Two Companions Sitting on Shoreline Sand Silhouetted by Sunset Light"
     exif: "Xiaomi 14 Ultra · 120mm · ƒ/2.5 · 1/586s · ISO 50"
 ---
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Returning to Malacca is never merely a journey of sight; it is a quiet dialogue with time and home. Walking along the coast at Klebang in the late afternoon, the equatorial breeze carries the warm brine of the Malacca Straits across the tidal flats. As the receding sea leaves glassy sheets of water over dark sand, the crimson horizon mirrors the stillness of an ordinary evening.
+    Returning to Malacca is a return to familiar rhythms. Late afternoon at Klebang beach brings the warm, salt-heavy breeze of the Straits. When the tide pulls back, the dark sand catches the sunset, holding the quiet, ordinary stillness of this coastal hometown.
   </p>
   <p class="zh-prose">
-    回到故乡马六甲，从来不只是一场视觉上的重游，而是一次与记忆的静默对话。傍晚漫步在吉里望的海边，带着咸湿与温热的海风从马六甲海峡深处拂来。潮水褪去后，湿润的沙滩如明镜般倒映着熔金般的落日余晖，凝固下南洋故土最寻常也最安宁的时刻。
+    回到马六甲，像是回到某种熟悉的节拍里。傍晚在吉里望海边，马六甲海峡的风带着温热的咸腥气吹过浅滩。潮水退去，暗色的沙滩倒映着落日，留下这片海岸故土最寻常的平静。
   </p>
 </div>
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Along the rock breakwater, a solitary fisherman watches his line extend toward the silhouettes of slow-moving cargo vessels out in the strait. As dusk deepens into liquid amber, companions sit quietly by the surf edge, saying little. Here, where every breeze carries familiar cadence, the lens ceases to seek novelty and rests upon the genuine rhythm of life by the sea.
+    On the rock breakwater, a fisherman waits as cargo ships drift slowly on the horizon. The sky darkens into amber, and people sit quietly by the surf. Facing these familiar waters, the camera stops looking for new sights, capturing only the steady sea breeze and the waiting silhouettes.
   </p>
   <p class="zh-prose">
-    防波堤的礁石上，垂钓者的剪影伴着远方缓缓驶过海峡的货轮静立；暮色将海天染成深邃的琥珀色，沙滩上并肩而坐的人们低语在海浪拍岸的轻响里。在故乡这片熟悉的水域前，快门放下了对新奇风景的追索，只将温厚的海风与平静的守候留在底片之中。
+    防波堤上，垂钓者静立着，远处的货轮在海平线上缓慢移动。天色暗成深琥珀色，人们坐在海浪声旁，没说太多话。面对这片熟悉的水域，镜头不再刻意寻找风景，只记录下温厚的海风与长久的守候。
   </p>
 </div>

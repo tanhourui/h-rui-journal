@@ -34,18 +34,18 @@ gallery:
 
 <div class="bilingual-block">
   <p class="en-prose">
-    George Town carries the layered patina of Penang Island. From the revived Art Deco curves of the old Hin Bus Depot to quiet craft workshops where hand-dyed indigo fabrics hang behind glass, creativity breathes softly through the weathered concrete and aged lime plaster. 
+    George Town wears the marks of its past openly. The old Hin Bus Depot still holds its Art Deco curves, now weathered, while down the quiet streets, indigo fabrics hang behind glass in small workshops. Here, new craft sits naturally against aged lime plaster and concrete.
   </p>
   <p class="zh-prose">
-    乔治市带着槟岛独有的历史质感与生活温度。从兴公司（Hin Bus Depot）带着岁月剥蚀感的装饰艺术（Art Deco）建筑弧线，到老街角里晾晒着蓝染织物的文创工坊，新生的手作温度与泛黄的斑驳墙面在此静静交融。
+    乔治市把过去的痕迹坦然穿在身上。旧兴公司（Hin Bus Depot）斑驳的装饰艺术弧线依然保留着，而在安静的街角，蓝染织物挂在工坊的玻璃窗后。新的手作在这里与老旧的石灰墙和水泥面自然共处。
   </p>
 </div>
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Further south along the island's coast, a concrete pier extends into the tranquil strait under an overcast afternoon sky. At the edge of the water, a single pavilion rests between sea and cloud, marking the slow, unhurried tempo of island living.
+    Further south, a straight concrete pier stretches into the overcast strait. A single pavilion stands at the end, caught between grey water and sky, marking the slow, unchanging pace of the island's afternoons.
   </p>
   <p class="zh-prose">
-    沿着海岸往南，笔直的水泥栈桥静静探入平静的海湾。尽头的凉亭伫立在水天相接的灰蓝色调中，海风掠过孤立的路灯，凝固下海岛午后最纯粹而宁静的舒缓节拍。
+    再往南走，笔直的水泥栈桥伸入阴天的海湾。尽头是一座孤零零的凉亭，夹在灰色的水天之间，守着海岛午后缓慢而不变的步调。
   </p>
 </div>

@@ -80,18 +80,18 @@ gallery:
 
 <div class="bilingual-block">
   <p class="en-prose">
-    August 31 in Malacca carries a distinct, kinetic pulse. Under the blinding tropical sun, thousands line the road shoulder hours before the first drumbeat. When the SMJK Katholik marching band advances, the drum major flings his silver mace dozens of feet into the blue, catching it cleanly as the crowd erupts.
+    August 31 in Malacca is loud, hot, and restless. Hours before the parade, people sit on the sun-baked asphalt. When the SMJK Katholik band marches past, the drum major hurls his silver mace high into the bright sky, catching it to the roar of the dense crowd.
   </p>
   <p class="zh-prose">
-    八月三十一日的马六甲弥漫着炽热而激昂的节庆声浪。正午的热浪翻滚在柏油路面上，数以千计的民众早已沿街席地而坐。公教中学军乐队行进至中心路段，指挥将手中的银棒用力掷向高空，在烈日蓝天中翻转数周后稳稳接住，引来沿街观众的一片惊呼与喝彩。
+    八月三十一日的马六甲嘈杂、炎热且躁动。游行开始前几个小时，人们就已坐在滚烫的柏油路上。公教中学军乐队走过时，指挥将银棒高高抛入刺眼的蓝天，稳稳接住，换来密集人群里的一阵阵欢呼。
   </p>
 </div>
 
 <div class="bilingual-block">
   <p class="en-prose">
-    High above the shophouses and parade scaffolding, the airspace shudders as the Royal Malaysian Air Force roars overhead. Sukhoi Su-30MKMs and F/A-18D Hornets bank in tight combat formation, releasing golden flare streams across the afternoon haze. Looking up between the silhouettes of fluttering paper flags and outstretched phone cameras, national pride feels immediate, loud, and communal.
+    Above the old shophouses, the airspace rattles under the Royal Malaysian Air Force. Su-30MKMs and F/A-18D Hornets bank hard, dropping golden flares across the haze. Looking up past paper flags and a forest of phone screens, the pride in the air is loud and entirely shared.
   </p>
   <p class="zh-prose">
-    老城骑楼与观礼看台上方，低空掠过的马来西亚皇家空军战机撕裂云层。苏霍伊苏-30MKM 与大黄蜂战机呈紧密楔形编队呼啸而过，尾部抛洒的热焰弹在暮色天际划出金色的弧线烟迹。穿过无数高举的手机屏幕与挥舞的小国旗缝隙仰望长空，那份属于整座小城的自豪感在轰鸣声中沉淀为清晰的集体记忆。
+    老城骑楼上方，皇家空军战机低飞时的轰鸣震动着空气。苏-30MKM 与大黄蜂战机急转，在雾霾中抛下金色的热焰弹。透过飞舞的纸旗和无数举起的手机屏幕往上看，那种骄傲的情绪很大声，也属于在场的每一个人。
   </p>
 </div>

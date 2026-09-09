@@ -25,69 +25,69 @@ sub2Caption: "White Hillside Signboard Spelling Kingdom of Thailand Overlooking 
 sub2Exif: "HUAWEI CLT-L29 · 81mm · ƒ/2.4 · 1/386s · ISO 50"
 gallery:
   - image: "/images/thailand/betong/betong19_004.jpg"
-    caption: "Traditional Chinese-Thai Parlor Featuring Vintage Cast-Iron Singer Treadle Sewing Table"
+    caption: "Vintage Cast-Iron Sewing Table and Pink Plastic Chair in Faded Shophouse Parlor"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/50s · ISO 64"
   - image: "/images/thailand/betong/betong19_005.jpg"
-    caption: "World's Largest Antique Mailbox 95110 Bearing Royal Thai Garuda Insignia on Sidewalk"
+    caption: "Red Royal Thai Mailbox on Concrete Sidewalk Beneath Overhead Cables"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/100s · ISO 80"
   - image: "/images/thailand/betong/betong19_006.jpg"
-    caption: "Central Betong Clock Tower Roundabout Flanked by Shophouses and Motorbike Riders"
+    caption: "Elevated View of Betong Corrugated Tin Roofs and Distant Green Mountains"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/418s · ISO 50"
   - image: "/images/thailand/betong/betong19_007.jpg"
-    caption: "Blue Enamel Street Sign for Soi Prapunpaesach Mounted on Utility Pole Amid Cable Snarls"
+    caption: "Color-Isolated Red Sidewalk Mailbox Against Desaturated Town Streets"
     exif: "Exif Archive"
   - image: "/images/thailand/betong/betong19_008.jpg"
-    caption: "Betong Iconic Yellow Open-Back Songthaew Passenger Truck with Timber Bench Seating"
+    caption: "Motorbike Riders on Sloped Concrete Street Flanked by Utility Wires"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/33s · ISO 320"
   - image: "/images/thailand/betong/betong19_009.jpg"
-    caption: "Traditional Dry Goods Apothecary Displaying Dried Herbs, Glass Jars and Hanging Balance Scale"
+    caption: "Betong Clock Tower Adorned with Lanterns Amid Tangled Overhead Cables"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/5000s · ISO 50"
   - image: "/images/thailand/betong/betong19_010.jpg"
-    caption: "Weathered Wooden Shophouse Facade with Vintage Painted Chinese-Thai Tailor Signboard"
+    caption: "Color-Isolated Giant Red Mailbox 95110 Beneath Overhanging Shophouse Eaves"
     exif: "HUAWEI CLT-L29 · 81mm · ƒ/2.4 · 1/1742s · ISO 50"
   - image: "/images/thailand/betong/betong19_011.jpg"
-    caption: "Calico Cat Resting on Shaded Wooden Garden Bench Beneath Broad Rainforest Leaves"
+    caption: "Blue Soi Prapunpaesach Street Sign Angled Against Bright Blue Tarpaulin"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/1779s · ISO 50"
   - image: "/images/thailand/betong/betong19_012.jpg"
-    caption: "Piyamit Millennium Tree Colossal Sprawling Buttress Roots Gripping Damp Rainforest Soil"
+    caption: "Color-Isolated Yellow Songthaew Parked on Desaturated Shophouse Street"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/1580s · ISO 50"
   - image: "/images/thailand/betong/betong19_013.jpg"
-    caption: "Looking Upward into Towering Tropical Canopy Branching Above the Ancient Tree Trunk"
+    caption: "Profile View of Yellow Songthaew Taxi Idling Beneath Storefront Awnings"
     exif: "HUAWEI CLT-L29 · 81mm · ƒ/2.4 · 1/1018s · ISO 50"
   - image: "/images/thailand/betong/betong19_014.jpg"
-    caption: "Vertical Fluted Trunk of the Millennium Big Tree Soaring Toward Diffuse Skylight"
+    caption: "Color-Isolated Blue Street Sign Standing Before Desaturated Canvas Tarp"
     exif: "HUAWEI CLT-L29 · 81mm · ƒ/2.4 · 1/346s · ISO 50"
   - image: "/images/thailand/betong/betong19_015.jpg"
-    caption: "Macro Texture of Mossy Bark Crevices and Deep Fibrous Grain on Century-Old Roots"
+    caption: "Giant Buttress Roots of Millennium Tree Anchoring a Seated Monkey Statue"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/1580s · ISO 50"
   - image: "/images/thailand/betong/betong19_016.jpg"
-    caption: "Cylindrical Red Royal Thai Mailbox on Street Corner with Collection Schedule Plate"
+    caption: "Tabby Cat Resting on Long Wooden Bench Before Closed Security Gates"
     exif: "HUAWEI CLT-L29 · 81mm · ƒ/2.4 · 1/1018s · ISO 50"
   - image: "/images/thailand/betong/betong19_017.jpg"
-    caption: "Sunlight Filtering Across Timber Eaves and Low-Hanging Cables in Quiet Shophouse Alley"
+    caption: "Motorbike Rider Passing Traffic Cones on Desaturated Asphalt Intersection"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/100s · ISO 64"
   - image: "/images/thailand/betong/betong19_018.jpg"
-    caption: "Town Street Corridor Framing Distant Mountain Ridge Under Soft Afternoon Overcast"
+    caption: "Colossal Buttress Roots of Millennium Tree Reaching Up to Forest Canopy"
     exif: "HUAWEI CLT-L29 · 27mm · ƒ/1.8 · 1/50s · ISO 100"
   - image: "/images/thailand/betong/betong19_019.jpg"
-    caption: "Threshold Ancestral Shrine with Red Incense Vessel and Gilded Calligraphy Beside Tile Floor"
+    caption: "Weathered Tailor Signboard Above Collapsed Metal Gates in Monochome"
     exif: "Xiaomi 14 Ultra · 120mm · ƒ/2.5 · 1/912s · ISO 50"
 ---
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Crossing the border from northern Perak at Pengkalan Hulu, the road climbs directly into the cool mountain enclave of Betong in Yala Province. Welcoming signs give way to hillside slopes inscribed with white Thai letters, marking the threshold between nations. In the town center, three-wheeled songthaew passenger trucks painted in signature yellow idle beside the iconic Clock Tower roundabout, while pedestrians post letters into the massive red antique mailboxes capped with the Royal Garuda crest.
+    Crossing the border from northern Perak at Pengkalan Hulu, the road climbs into the mountain town of Betong in Yala Province. Past the checkpoint, hillside slopes inscribed with white Thai letters mark the frontier. In the town center, yellow songthaew passenger trucks idle beside the Clock Tower roundabout, and massive red mailboxes capped with the Royal Garuda crest stand on the street corners.
   </p>
   <p class="zh-prose">
-    从霹雳州北部的仁丹口岸穿过边境，山路一路向上蜿蜒进入惹拉府最南端的群山怀抱——勿洞。告别了马来西亚的关卡公路，山坡上醒目的泰文白字标识出边陲的界线。镇中心的钟楼转盘周围，刷着醒目黄色车漆的双条车静静停靠在街边，红色的九米巨型古董邮筒顶着金翅鸟徽章立于街角，见证着边陲小镇独特的慢速生活节奏。
+    从霹雳州北部的仁丹口岸穿过边境，山路蜿蜒进入惹拉府南端群山间的勿洞。跨过关卡，山坡上醒目的泰文白字标识出边陲界线。镇中心钟楼转盘旁，黄漆双条车静静停靠，红色巨型邮筒立于街角，顶着金翅鸟徽章。
   </p>
 </div>
 
 <div class="bilingual-block">
   <p class="en-prose">
-    Deep within the rainforest trails of the Piyamit historical complex, the scale shifts from domestic timber shophouses to primeval nature. Here stands the Millennium Big Tree, its colossal buttress roots fanning outward like vertical wooden ramparts anchored deep into damp jungle soil. Looking up past mossy bark fissures into the green crown hundreds of feet above, the forest breathes in unbroken mountain silence.
+    Deep in the rainforest near the Piyamit historical complex, the scale shifts from domestic shophouses to primeval nature. The Millennium Tree rises from the damp soil, its colossal buttress roots fanning out like wooden walls. Looking up past mossy bark to the green crown hundreds of feet above, the forest breathes in unbroken mountain silence.
   </p>
   <p class="zh-prose">
-    深入友谊村历史地道周边的热带雨林深处，眼前的尺度由市井排屋骤然转换为原始自然。被誉为千年大树的巨型古榕破土而起，层层叠叠的板根如同高大的木质城墙在湿润的泥土中深深扎根。仰望长满青苔的苍劲树身直插百米之上的绿色树冠，整片原始林海在清冽山风中散发着亘古不变的宁静。
+    深入友谊村历史地道周边的雨林，尺度骤然从市井排屋转换为原始自然。巨型古榕破土而起，层叠板根如木质高墙般在湿润泥土中扎根。仰望长满青苔的树身直插百米之上的绿色树冠，林间只有山风拂过的声响。
   </p>
 </div>

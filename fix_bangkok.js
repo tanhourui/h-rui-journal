@@ -1,4 +1,6 @@
----
+const fs = require('fs');
+
+const data = `---
 country: "thailand"
 countryName: "Thailand"
 year: 2024
@@ -70,7 +72,7 @@ gallery:
     caption: "Sun Glowing Behind Ayutthaya Prang Over Dark Stone Stairs"
     exif: "xiaomi 14 Ultra | LEICA 23mm f/1.6 1/2000s ISO 50"
   - image: "/images/thailand/bangkok/bkk25_019.jpg"
-    caption: "Looking Out Over Dense Night Traffic from Elevated Concrete Walkway"
+    caption: "Looking Out Over Bustling Night Traffic from Elevated Concrete Walkway"
     exif: "xiaomi 14 Ultra | LEICA 23mm f/1.6 1/50s ISO 640"
   - image: "/images/thailand/bangkok/bkk25_020.jpg"
     caption: "Looking Up at Stark White Ayutthaya Stupa Against Blue Sky"
@@ -170,3 +172,6 @@ gallery:
     夜幕降临耀华力路，整个街区瞬间变成了一条充满明亮霓虹灯和尾气的隧道。嘟嘟车在密集的车流中穿梭，镀铬的车头格栅映出巨大的中式招牌的红光。米其林推荐的街头摊位前排起了长龙，厨师们在明火上以几十年练就的节奏忙碌着。这是一种感官上的超载——烤猪肉的香味、引擎的轰鸣、刺眼的灯光——这就是唐人街最寻常的一个夜晚。
   </div>
 </div>
+`;
+
+fs.writeFileSync('src/content/journeys/thailand/bangkok-chao-phraya.md', data);
