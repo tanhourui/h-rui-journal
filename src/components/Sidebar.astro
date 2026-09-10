@@ -119,6 +119,12 @@ const { destinations = [] } = Astro.props;
     </div>
   </div>
 
+  <!-- World Clock: Countries Visited -->
+  <div class="world-clock desktop-only" id="worldClock">
+    <div class="wc-label font-mono">Field Clocks</div>
+    <div class="wc-grid" id="wcGrid"></div>
+  </div>
+
   <!-- Sidebar Footer -->
   <div class="sidebar-footer font-mono desktop-only">
     <div class="author-name">Tan Hou Rui</div>
@@ -163,6 +169,47 @@ const { destinations = [] } = Astro.props;
         }
       });
     });
+  })();
+
+  // --- World Clock ---
+  (function() {
+    const CLOCKS = [
+      { flag: '🇲🇾', city: 'Malacca', tz: 'Asia/Kuala_Lumpur', abbr: 'MYT', hometown: true },
+      { flag: '🇯🇵', city: 'Tokyo',   tz: 'Asia/Tokyo',        abbr: 'JST' },
+      { flag: '🇹🇭', city: 'Bangkok', tz: 'Asia/Bangkok',      abbr: 'ICT' },
+      { flag: '🇻🇳', city: 'Hanoi',   tz: 'Asia/Ho_Chi_Minh', abbr: 'ICT' },
+    ];
+
+    const grid = document.getElementById('wcGrid');
+    if (!grid) return;
+
+    // Build rows
+    const rows = CLOCKS.map(c => {
+      const row = document.createElement('div');
+      row.className = 'wc-row' + (c.hometown ? ' wc-hometown' : '');
+      row.innerHTML = `
+        <span class="wc-flag">${c.flag}</span>
+        <span class="wc-city">${c.city}</span>
+        <span class="wc-abbr">${c.abbr}</span>
+        <span class="wc-time" id="wct-${c.abbr}-${c.city}">--:--:--</span>
+      `;
+      grid.appendChild(row);
+      return { ...c, el: row.querySelector('.wc-time') };
+    });
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      const now = Date.now();
+      rows.forEach(c => {
+        if (!c.el) return;
+        const d = new Date(new Date().toLocaleString('en-US', { timeZone: c.tz }));
+        c.el.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+      });
+    }
+
+    tick();
+    setInterval(tick, 1000);
   })();
 </script>
 
@@ -435,6 +482,76 @@ const { destinations = [] } = Astro.props;
     height: 7px;
     border-radius: 50%;
     background: var(--sub-accent);
+  }
+
+
+  /* World Clock */
+  .world-clock {
+    margin-top: 18px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--card-surface);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .wc-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+
+  .wc-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .wc-row {
+    display: grid;
+    grid-template-columns: 18px 60px 30px 1fr;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-muted);
+    padding: 3px 4px;
+    border-radius: 4px;
+  }
+
+  .wc-row.wc-hometown {
+    background: var(--bg-canvas);
+    border: 1px solid var(--border-subtle);
+    color: var(--ink-primary);
+  }
+
+  .wc-flag {
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .wc-city {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .wc-abbr {
+    font-size: 9px;
+    opacity: 0.55;
+    letter-spacing: 0.06em;
+  }
+
+  .wc-time {
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-align: right;
+    color: var(--sub-accent);
+    font-variant-numeric: tabular-nums;
   }
 
   .sidebar-footer {
