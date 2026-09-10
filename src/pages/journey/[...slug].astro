@@ -21,6 +21,11 @@ const siblings = allJourneys
 const currentIndex = siblings.findIndex(j => j.slug === entry.slug);
 const prevJourney = siblings[(currentIndex - 1 + siblings.length) % siblings.length];
 const nextJourney = siblings[(currentIndex + 1) % siblings.length];
+const hasSiblingNavigation = siblings.length > 1;
+const returnEra = entry.data.country === 'japan'
+  ? `japan-${entry.data.year || 2025}`
+  : entry.data.country;
+const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${encodeURIComponent(returnEra)}&chapter=${encodeURIComponent(entry.slug)}`;
 ---
 
 <BaseLayout title={`${entry.data.title} · H. Rui Journal`}>
@@ -29,13 +34,28 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
       
       <!-- Top Navigation Bar -->
       <nav class="story-nav">
-        <a href="/" class="return-link font-mono">
-          <span class="arrow-bubble">←</span>
-          <span>Return to Globe</span>
-        </a>
+        <div class="story-nav-actions">
+          <a href={returnHref} class="return-link font-mono">
+            <span class="arrow-bubble">←</span>
+            <span>Return to Globe</span>
+          </a>
+          <button id="shareChapterBtn" class="share-chapter-btn font-mono" type="button" data-share-title={entry.data.chapterTitle}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="18" cy="5" r="2.5"></circle>
+              <circle cx="6" cy="12" r="2.5"></circle>
+              <circle cx="18" cy="19" r="2.5"></circle>
+              <path d="M8.3 10.8 15.7 6.2M8.3 13.2l7.4 4.6"></path>
+            </svg>
+            <span>Share chapter</span>
+          </button>
+        </div>
         <div class="meta-right font-mono">
           <span class="time-badge">{entry.data.date}</span>
           {entry.data.time && <span class="time-sub">· {entry.data.time}</span>}
+        </div>
+        <div id="shareFeedback" class="share-feedback font-mono" role="status" aria-live="polite" hidden>
+          <span id="shareFeedbackText"></span>
+          <input id="shareFallbackUrl" class="share-fallback-url font-mono" type="text" aria-label="Chapter link to copy" readonly hidden />
         </div>
       </nav>
 
@@ -53,16 +73,25 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
 
       <!-- Master Hero Photograph (Double-Bezel Frame) -->
       <section id="masterHeroFrame" class={`master-hero-frame ${entry.data.heroAspect === 'portrait' ? 'is-portrait' : ''}`}>
-        <div class="hero-bezel-outer">
-          <div class="hero-image-box">
-            <img 
-              id="masterHeroImg"
-              src={entry.data.hero} 
-              alt={entry.data.title}
-              onload="if(this.naturalHeight > this.naturalWidth) document.getElementById('masterHeroFrame')?.classList.add('is-portrait')"
-            />
-          </div>
-        </div>
+        <button
+          type="button"
+          class="image-trigger hero-trigger"
+          data-image={entry.data.hero}
+          data-caption={entry.data.heroCaption || `${entry.data.title} · Main Exposure`}
+          data-exif={entry.data.exif || ''}
+          aria-label="View hero photograph"
+        >
+          <span class="hero-bezel-outer">
+            <span class="hero-image-box">
+              <img
+                id="masterHeroImg"
+                src={entry.data.hero}
+                alt={entry.data.title}
+                onload="if(this.naturalHeight > this.naturalWidth) document.getElementById('masterHeroFrame')?.classList.add('is-portrait')"
+              />
+            </span>
+          </span>
+        </button>
         <div class="image-caption-bar font-mono">
           <span class="caption-title">{entry.data.heroCaption || `${entry.data.title} · Main Exposure`}</span>
           <span class="caption-exif-pill">{entry.data.exif}</span>
@@ -81,11 +110,11 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
           <div class="diptych-grid">
             {entry.data.sub1 && (
               <div class="diptych-item item-dominant">
-                <div class="diptych-bezel">
-                  <div class="diptych-img-wrap">
+                <button type="button" class="image-trigger diptych-bezel" data-image={entry.data.sub1} data-caption={entry.data.sub1Caption || "Detail Study 01"} data-exif={entry.data.sub1Exif || ""} aria-label="View detail frame 1">
+                  <span class="diptych-img-wrap">
                     <img src={entry.data.sub1} alt={entry.data.sub1Caption || "Detail Frame 01"} loading="lazy" />
-                  </div>
-                </div>
+                  </span>
+                </button>
                 <div class="diptych-caption font-mono">
                   <span class="sub-title">{entry.data.sub1Caption || "Detail Study 01"}</span>
                   <span class="sub-exif">{entry.data.sub1Exif || ""}</span>
@@ -94,11 +123,11 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
             )}
             {entry.data.sub2 && (
               <div class="diptych-item item-accent">
-                <div class="diptych-bezel">
-                  <div class="diptych-img-wrap">
+                <button type="button" class="image-trigger diptych-bezel" data-image={entry.data.sub2} data-caption={entry.data.sub2Caption || "Detail Study 02"} data-exif={entry.data.sub2Exif || ""} aria-label="View detail frame 2">
+                  <span class="diptych-img-wrap">
                     <img src={entry.data.sub2} alt={entry.data.sub2Caption || "Detail Frame 02"} loading="lazy" />
-                  </div>
-                </div>
+                  </span>
+                </button>
                 <div class="diptych-caption font-mono">
                   <span class="sub-title">{entry.data.sub2Caption || "Detail Study 02"}</span>
                   <span class="sub-exif">{entry.data.sub2Exif || ""}</span>
@@ -118,11 +147,13 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
           </div>
           <div class="chapter-gallery-grid">
             {entry.data.gallery.map((item) => (
-              <div 
+              <button
+                type="button"
                 class="gallery-card"
                 data-image={item.image}
                 data-caption={item.caption}
                 data-exif={item.exif || ''}
+                aria-label={`View photograph: ${item.caption}`}
               >
                 <div class="gallery-card-inner">
                   <div class="gallery-img-box">
@@ -136,40 +167,50 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
                     {item.exif && <span class="gallery-card-exif">{item.exif}</span>}
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </section>
       )}
 
       <!-- Fullscreen Lightbox Modal -->
-      <div id="lightboxModal" class="lightbox-modal" aria-hidden="true">
-        <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+      <dialog id="lightboxDialog" class="lightbox-dialog" aria-labelledby="lightboxCaption">
         <div class="lightbox-content">
-          <button id="lightboxCloseBtn" class="lightbox-close font-mono" title="Close (Esc)">✕</button>
           <div class="lightbox-image-wrap">
             <img id="lightboxImg" src="" alt="" />
           </div>
+          <div class="lightbox-toolbar">
+            <button id="lightboxPrevBtn" class="lightbox-step lightbox-prev font-mono" type="button" aria-label="Previous photograph">←</button>
+            <span id="lightboxCounter" class="lightbox-counter font-mono" aria-live="polite"></span>
+            <button id="lightboxNextBtn" class="lightbox-step lightbox-next font-mono" type="button" aria-label="Next photograph">→</button>
+            <button id="lightboxCloseBtn" class="lightbox-close font-mono" type="button" aria-label="Close image viewer" title="Close (Esc)">×</button>
+          </div>
           <div class="lightbox-meta font-mono">
-            <span id="lightboxCaption" class="lightbox-caption"></span>
-            <span id="lightboxExif" class="lightbox-exif"></span>
+            <div class="lightbox-copy">
+              <span id="lightboxCaption" class="lightbox-caption"></span>
+              <span id="lightboxExif" class="lightbox-exif"></span>
+            </div>
           </div>
         </div>
-      </div>
+      </dialog>
 
       <!-- Chapter Journey Navigation Footer -->
       <footer class="story-footer font-mono">
-        <a href={`/journey/${prevJourney.slug}`} class="chapter-nav-btn">
-          <span>← {prevJourney.data.stateName}</span>
-        </a>
+        {hasSiblingNavigation ? (
+          <a href={`/journey/${prevJourney.slug}`} class="chapter-nav-btn chapter-nav-prev">
+            <span>← {prevJourney.data.stateName}</span>
+          </a>
+        ) : <span class="chapter-nav-spacer" aria-hidden="true"></span>}
         <div class="footer-center-meta">
           <span class="footer-center">Tan Hou Rui</span>
           <span class="footer-sep">·</span>
           <a href="https://instagram.com/hourui95" target="_blank" rel="noopener noreferrer" class="footer-ig">@hourui95 ↗</a>
         </div>
-        <a href={`/journey/${nextJourney.slug}`} class="chapter-nav-btn">
-          <span>{nextJourney.data.stateName} →</span>
-        </a>
+        {hasSiblingNavigation ? (
+          <a href={`/journey/${nextJourney.slug}`} class="chapter-nav-btn chapter-nav-next">
+            <span>{nextJourney.data.stateName} →</span>
+          </a>
+        ) : <span class="chapter-nav-spacer" aria-hidden="true"></span>}
       </footer>
 
     </div>
@@ -182,7 +223,7 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     min-height: 100vh;
     background: var(--bg-canvas);
     color: var(--ink-primary);
-    padding: 56px 28px 112px;
+    padding: clamp(28px, 5vw, 56px) clamp(16px, 3vw, 28px) 96px;
   }
 
   .story-container {
@@ -199,6 +240,12 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     margin-bottom: 40px;
   }
 
+  .story-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
   .return-link {
     display: inline-flex;
     align-items: center;
@@ -207,6 +254,7 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     font-size: 12.5px;
     text-decoration: none;
     transition: transform 0.2s ease;
+    min-height: 44px;
   }
 
   .arrow-bubble {
@@ -228,6 +276,72 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
 
   .return-link:hover .arrow-bubble {
     transform: scale(1.08);
+  }
+
+  .share-chapter-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 9px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    background: var(--card-surface);
+    color: var(--sub-accent);
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .share-chapter-btn:hover {
+    border-color: var(--sub-accent);
+    color: var(--ink-primary);
+  }
+
+  .share-chapter-btn:focus-visible {
+    outline: 2px solid var(--sub-accent);
+    outline-offset: 2px;
+  }
+
+  .share-chapter-btn:disabled {
+    cursor: wait;
+  }
+
+  .share-chapter-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  .share-feedback {
+    flex-basis: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    color: var(--sub-accent);
+    font-size: 11px;
+  }
+
+  .share-feedback[hidden] {
+    display: none;
+  }
+
+  .share-fallback-url {
+    min-width: 0;
+    flex: 1;
+    padding: 7px 9px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    background: var(--card-surface);
+    color: var(--ink-primary);
+    font-size: 11px;
   }
 
   .meta-right {
@@ -309,7 +423,7 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
 
   .story-lead {
     font-size: 15.5px;
-    color: var(--ink-muted);
+    color: var(--ink-primary);
     line-height: 1.8;
     font-weight: 300;
     max-width: 720px;
@@ -321,24 +435,42 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     transition: max-width 0.4s ease, margin 0.4s ease;
   }
 
+  .image-trigger {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    width: 100%;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    cursor: zoom-in;
+  }
+
+  .image-trigger:focus-visible,
+  .gallery-card:focus-visible {
+    outline: 2px solid var(--sub-accent);
+    outline-offset: 4px;
+  }
+
   .master-hero-frame.is-portrait {
     max-width: 620px;
     margin: 40px auto;
   }
 
   .hero-bezel-outer {
-    padding: 4px;
-    border-radius: 20px;
-    background: rgba(128, 128, 128, 0.05);
+    display: block;
+    padding: 0;
+    border-radius: 8px;
+    background: transparent;
     border: 1px solid var(--border-subtle);
-    box-shadow: 0 12px 36px rgba(0,0,0,0.06);
   }
 
   .hero-image-box {
     width: 100%;
-    border-radius: 16px;
+    border-radius: 7px;
     overflow: hidden;
-    background: #EAE6DC;
+    background: var(--border-subtle);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -368,7 +500,7 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
 
   .caption-exif-pill {
     padding: 3px 9px;
-    border-radius: 6px;
+    border-radius: 4px;
     background: var(--card-surface);
     border: 1px solid var(--border-subtle);
     font-size: 10.5px;
@@ -417,9 +549,10 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
   }
 
   .diptych-bezel {
-    padding: 3px;
-    border-radius: 16px;
-    background: rgba(128, 128, 128, 0.05);
+    display: block;
+    padding: 0;
+    border-radius: 8px;
+    background: transparent;
     border: 1px solid var(--border-subtle);
     transition: border-color 0.3s ease;
   }
@@ -429,19 +562,23 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
   }
 
   .item-dominant .diptych-img-wrap {
+    display: block;
     width: 100%;
-    height: 350px;
-    border-radius: 13px;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    border-radius: 7px;
     overflow: hidden;
-    background: #EAE6DC;
+    background: var(--border-subtle);
   }
 
   .item-accent .diptych-img-wrap {
+    display: block;
     width: 100%;
-    height: 290px;
-    border-radius: 13px;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    border-radius: 7px;
     overflow: hidden;
-    background: #EAE6DC;
+    background: var(--border-subtle);
   }
 
   .diptych-img-wrap img {
@@ -475,8 +612,8 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     margin-top: 72px;
     padding-top: 32px;
     border-top: 1px solid var(--border-subtle);
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
     font-size: 12px;
     color: var(--sub-accent);
@@ -485,10 +622,22 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
   .chapter-nav-btn {
     color: inherit;
     text-decoration: none;
-    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 6px 10px;
     border-radius: 8px;
     border: 1px solid transparent;
     transition: all 0.2s ease;
+  }
+
+  .chapter-nav-next {
+    justify-self: end;
+    text-align: right;
+  }
+
+  .chapter-nav-spacer {
+    min-width: 1px;
   }
 
   .chapter-nav-btn:hover {
@@ -511,10 +660,6 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     .diptych-grid {
       grid-template-columns: 1fr;
       gap: 32px;
-    }
-    .item-dominant .diptych-img-wrap,
-    .item-accent .diptych-img-wrap {
-      height: 240px;
     }
     .coords-tag {
       display: none;
@@ -582,6 +727,13 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     display: flex;
     flex-direction: column;
     cursor: pointer;
+    appearance: none;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
   }
 
   .gallery-card-inner {
@@ -593,19 +745,20 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
   .gallery-img-box {
     position: relative;
     width: 100%;
-    height: 220px;
-    border-radius: 12px;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
     overflow: hidden;
-    background: #EAE6DC;
+    background: var(--border-subtle);
     border: 1px solid var(--border-subtle);
-    padding: 2px;
+    padding: 0;
   }
 
   .gallery-img-box img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 7px;
     transition: transform 0.4s ease;
   }
 
@@ -617,9 +770,8 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     position: absolute;
     top: 10px;
     right: 10px;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(4px);
-    color: #fff;
+    background: var(--ink-primary);
+    color: var(--bg-canvas);
     font-size: 9.5px;
     padding: 2px 7px;
     border-radius: 4px;
@@ -654,63 +806,54 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     opacity: 0.75;
   }
 
-  /* Lightbox Modal */
-  .lightbox-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
+  /* Native lightbox dialog */
+  .lightbox-dialog {
+    width: min(1120px, calc(100vw - 32px));
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 16px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: var(--card-surface);
+    color: var(--ink-primary);
+    overflow: hidden;
   }
 
-  .lightbox-modal.active {
-    display: flex;
-  }
-
-  .lightbox-backdrop {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(18, 17, 15, 0.92);
-    backdrop-filter: blur(8px);
+  .lightbox-dialog::backdrop {
+    background: var(--bg-canvas);
+    opacity: 0.94;
   }
 
   .lightbox-content {
     position: relative;
-    z-index: 10;
-    max-width: 92vw;
-    max-height: 90vh;
+    width: 100%;
+    max-height: calc(100dvh - 64px);
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
   .lightbox-close {
-    position: absolute;
-    top: -42px;
-    right: 0;
-    background: none;
-    border: none;
-    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 4px;
+    background: var(--card-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--ink-primary);
     font-size: 20px;
     cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.2s;
+    margin-left: auto;
+    transition: border-color 0.2s ease;
   }
 
   .lightbox-close:hover {
-    opacity: 1;
+    border-color: var(--sub-accent);
   }
 
   .lightbox-image-wrap {
-    max-width: 90vw;
-    max-height: 80vh;
+    width: 100%;
+    max-height: calc(100dvh - 160px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -718,10 +861,32 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
 
   .lightbox-image-wrap img {
     max-width: 100%;
-    max-height: 80vh;
+    max-height: calc(100dvh - 160px);
     object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+  }
+
+  .lightbox-step {
+    width: 44px;
+    height: 44px;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+    background: var(--card-surface);
+    color: var(--ink-primary);
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  .lightbox-step:hover {
+    border-color: var(--sub-accent);
+  }
+
+  .lightbox-toolbar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
   }
 
   .lightbox-meta {
@@ -729,8 +894,17 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     display: flex;
     gap: 16px;
     align-items: center;
-    color: #DDD8CD;
+    width: 100%;
+    justify-content: space-between;
+    color: var(--ink-primary);
     font-size: 11px;
+  }
+
+  .lightbox-copy {
+    display: flex;
+    min-width: 0;
+    gap: 12px;
+    align-items: center;
   }
 
   .lightbox-caption {
@@ -741,7 +915,20 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
     opacity: 0.75;
     padding: 2px 8px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-canvas);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .lightbox-counter {
+    flex-shrink: 0;
+    color: var(--sub-accent);
+    min-width: 52px;
+    text-align: center;
+  }
+
+  .lightbox-exif[hidden],
+  .lightbox-step[hidden] {
+    display: none;
   }
 
   @media (max-width: 900px) {
@@ -751,57 +938,259 @@ const nextJourney = siblings[(currentIndex + 1) % siblings.length];
   }
 
   @media (max-width: 600px) {
+    .story-page {
+      padding-top: 18px;
+    }
+
+    .story-nav {
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+      padding-bottom: 14px;
+    }
+
+    .story-nav-actions {
+      width: 100%;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .meta-right {
+      flex-basis: 100%;
+      max-width: 100%;
+      text-align: left;
+      line-height: 1.5;
+    }
+
+    .share-feedback {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .share-fallback-url {
+      width: 100%;
+    }
+
+    .story-header {
+      margin-bottom: 24px;
+    }
+
+    .story-title {
+      font-size: clamp(23px, 7vw, 27px);
+    }
+
+    .story-lead,
+    .story-prose :global(.en-prose) {
+      font-size: 15px;
+    }
+
+    .master-hero-frame,
+    .master-hero-frame.is-portrait {
+      margin-top: 28px;
+      margin-bottom: 36px;
+    }
+
+    .image-caption-bar,
+    .diptych-caption {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 6px;
+      line-height: 1.5;
+    }
+
+    .caption-exif-pill,
+    .sub-exif,
+    .gallery-card-exif {
+      overflow-wrap: anywhere;
+    }
+
     .chapter-gallery-grid {
       grid-template-columns: 1fr;
+    }
+
+    .story-footer {
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 8px;
+      align-items: start;
+    }
+
+    .footer-center-meta {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      justify-self: center;
+    }
+
+    .chapter-nav-btn {
+      line-height: 1.45;
+    }
+
+    .lightbox-dialog {
+      width: calc(100vw - 16px);
+      max-height: calc(100dvh - 16px);
+      padding: 8px;
+    }
+
+    .lightbox-image-wrap,
+    .lightbox-image-wrap img {
+      max-height: calc(100dvh - 190px);
+    }
+
+    .lightbox-meta,
+    .lightbox-copy {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .lightbox-meta {
+      padding: 0 4px;
     }
   }
 </style>
 
 <script is:inline>
   (function() {
-    const modal = document.getElementById('lightboxModal');
-    const backdrop = document.getElementById('lightboxBackdrop');
+    const shareBtn = document.getElementById('shareChapterBtn');
+    const shareFeedback = document.getElementById('shareFeedback');
+    const shareFeedbackText = document.getElementById('shareFeedbackText');
+    const shareFallbackUrl = document.getElementById('shareFallbackUrl');
+    let shareFeedbackTimer = 0;
+
+    function showShareFeedback(message, url = '') {
+      if (!shareFeedback || !shareFeedbackText || !shareFallbackUrl) return;
+      window.clearTimeout(shareFeedbackTimer);
+      shareFeedbackText.textContent = message;
+      shareFallbackUrl.hidden = !url;
+      shareFallbackUrl.value = url;
+      shareFeedback.hidden = false;
+
+      if (url) {
+        shareFallbackUrl.focus();
+        shareFallbackUrl.select();
+      } else {
+        shareFeedbackTimer = window.setTimeout(() => {
+          shareFeedback.hidden = true;
+        }, 2400);
+      }
+    }
+
+    async function copyShareUrl(url) {
+      if (window.isSecureContext && navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(url);
+          showShareFeedback('Link copied');
+          return;
+        } catch (_) {
+          // The selectable URL below remains available if clipboard access is denied.
+        }
+      }
+      showShareFeedback('Copy this chapter link:', url);
+    }
+
+    shareBtn?.addEventListener('click', async () => {
+      if (shareBtn.disabled) return;
+      shareBtn.disabled = true;
+      shareBtn.setAttribute('aria-busy', 'true');
+
+      const url = new URL(window.location.pathname, window.location.origin).href;
+      const title = shareBtn.getAttribute('data-share-title') || document.title;
+      const shareData = { title, url };
+      let canUseNativeShare = typeof navigator.share === 'function';
+
+      if (canUseNativeShare && typeof navigator.canShare === 'function') {
+        try {
+          canUseNativeShare = navigator.canShare(shareData);
+        } catch (_) {
+          canUseNativeShare = false;
+        }
+      }
+
+      try {
+        if (canUseNativeShare) {
+          try {
+            await navigator.share(shareData);
+            return;
+          } catch (error) {
+            if (error instanceof DOMException && error.name === 'AbortError') return;
+          }
+        }
+
+        await copyShareUrl(url);
+      } finally {
+        shareBtn.disabled = false;
+        shareBtn.removeAttribute('aria-busy');
+      }
+    });
+
+    const dialog = document.getElementById('lightboxDialog');
     const closeBtn = document.getElementById('lightboxCloseBtn');
+    const prevBtn = document.getElementById('lightboxPrevBtn');
+    const nextBtn = document.getElementById('lightboxNextBtn');
     const imgEl = document.getElementById('lightboxImg');
     const captionEl = document.getElementById('lightboxCaption');
     const exifEl = document.getElementById('lightboxExif');
+    const counterEl = document.getElementById('lightboxCounter');
+    const triggers = Array.from(document.querySelectorAll('[data-image][data-caption]'));
+    let currentIndex = 0;
+    let lastTrigger = null;
 
-    if (!modal) return;
+    if (!dialog || !triggers.length) return;
 
-    function openLightbox(src, caption, exif) {
+    function showImage(index) {
+      currentIndex = (index + triggers.length) % triggers.length;
+      const trigger = triggers[currentIndex];
+      const src = trigger.getAttribute('data-image') || '';
+      const caption = trigger.getAttribute('data-caption') || '';
+      const exif = trigger.getAttribute('data-exif') || '';
       if (!imgEl) return;
       imgEl.src = src;
-      imgEl.alt = caption || '';
-      if (captionEl) captionEl.textContent = caption || '';
-      if (exifEl) exifEl.textContent = exif || '';
-      modal.classList.add('active');
-      modal.setAttribute('aria-hidden', 'false');
+      imgEl.alt = caption;
+      if (captionEl) captionEl.textContent = caption;
+      if (exifEl) {
+        exifEl.textContent = exif;
+        exifEl.hidden = !exif;
+      }
+      if (counterEl) counterEl.textContent = `${currentIndex + 1} / ${triggers.length}`;
+    }
+
+    function openLightbox(index, trigger) {
+      lastTrigger = trigger;
+      showImage(index);
+      if (!dialog.open) dialog.showModal();
       document.body.style.overflow = 'hidden';
+      closeBtn?.focus();
     }
 
     function closeLightbox() {
-      modal.classList.remove('active');
-      modal.setAttribute('aria-hidden', 'true');
-      if (imgEl) imgEl.src = '';
-      document.body.style.overflow = '';
+      if (dialog.open) dialog.close();
     }
 
-    document.querySelectorAll('.gallery-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const src = card.getAttribute('data-image');
-        const caption = card.getAttribute('data-caption');
-        const exif = card.getAttribute('data-exif');
-        openLightbox(src, caption, exif);
-      });
+    triggers.forEach((trigger, index) => {
+      trigger.addEventListener('click', () => openLightbox(index, trigger));
     });
 
-    if (backdrop) backdrop.addEventListener('click', closeLightbox);
     if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    if (prevBtn) prevBtn.addEventListener('click', () => showImage(currentIndex - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => showImage(currentIndex + 1));
+    if (prevBtn) prevBtn.hidden = triggers.length < 2;
+    if (nextBtn) nextBtn.hidden = triggers.length < 2;
+
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) closeLightbox();
+    });
+
+    dialog.addEventListener('close', () => {
+      if (imgEl) imgEl.src = '';
+      document.body.style.overflow = '';
+      lastTrigger?.focus();
+    });
 
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.classList.contains('active')) {
-        closeLightbox();
-      }
+      if (!dialog.open) return;
+      if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
+      if (e.key === 'ArrowRight') showImage(currentIndex + 1);
     });
   })();
 </script>

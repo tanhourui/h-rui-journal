@@ -246,11 +246,16 @@ const destinations = [
     justify-content: center;
     position: relative;
     overflow: hidden;
+    min-width: 0;
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1180px) {
     .landing-layout {
       flex-direction: column;
+    }
+
+    .main-stage {
+      overflow: visible;
     }
   }
 </style>

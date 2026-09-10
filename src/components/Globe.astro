@@ -306,7 +306,8 @@ const { journeysData } = Astro.props;
 
               // ONLY render the text label for the active pin to eliminate word stacking collisions
               if (isCurrent) {
-                const labelText = `${s.order ? `0${s.order}. ` : ''}${s.title}`;
+                const shortTitle = s.title.includes(':') ? s.title.split(':')[0] : s.title;
+                const labelText = `${s.order ? `0${s.order}. ` : ''}${shortTitle}`;
                 ctx.font = 'bold 11px monospace';
                 const textWidth = ctx.measureText(labelText).width;
 
@@ -316,13 +317,16 @@ const { journeysData } = Astro.props;
                 ctx.shadowBlur = 6;
                 ctx.shadowOffsetY = 2;
 
-                const pillX = px + 12;
-                const pillY = py - 11;
                 const pillW = textWidth + 14;
+                const preferredPillX = px + 12;
+                const pillX = preferredPillX + pillW <= canvas.width - 8
+                  ? preferredPillX
+                  : Math.max(8, px - pillW - 12);
+                const pillY = py - 11;
                 const pillH = 22;
 
-                // Store right edge so the hairline connector starts after the pill
-                window._activePinPillRight = pillX + pillW;
+                // Store a safe start point to the right of both the pill and pin.
+                window._activePinPillRight = Math.max(pillX + pillW, px + 18);
 
                 ctx.beginPath();
                 if (ctx.roundRect) {
@@ -351,12 +355,16 @@ const { journeysData } = Astro.props;
         const [px, py] = activePinPt;
         const cardEl = document.querySelector('.chapter-card.active');
         
-        if (cardEl && window.innerWidth > 1200) {
+        if (cardEl && window.innerWidth > 1180) {
           const canvasRect = canvas.getBoundingClientRect();
           const cardRect = cardEl.getBoundingClientRect();
+          const scaleX = canvas.width / canvasRect.width;
+          const scaleY = canvas.height / canvasRect.height;
 
-          const targetX = (cardRect.left - canvasRect.left);
-          const targetY = (cardRect.top + cardRect.height / 2 - canvasRect.top);
+          // The canvas backing store remains 680px while CSS can scale it down.
+          // Convert viewport pixels back to canvas coordinates before drawing.
+          const targetX = (cardRect.left - canvasRect.left) * scaleX;
+          const targetY = (cardRect.top + cardRect.height / 2 - canvasRect.top) * scaleY;
 
           // Start the line from the right edge of the label pill (+ 6px gap)
           // so it never cuts through the pill text
@@ -408,12 +416,12 @@ const { journeysData } = Astro.props;
               <div class="collapsed-row">
                 <div class="collapsed-left font-mono">
                   <span class="chapter-idx-pill">0${idx+1}</span>
-                  <span class="state-name-sm">${s.title}</span>
+                  <span class="collapsed-copy">
+                    <span class="state-name-sm">${s.title}</span>
+                    <span class="date-meta-sm">${s.date}</span>
+                  </span>
                 </div>
-                <div class="collapsed-right">
-                  <span class="date-meta-sm font-mono">${s.date}</span>
-                  <span class="expand-chevron font-mono">▾</span>
-                </div>
+                <span class="expand-chevron font-mono">▾</span>
               </div>
               <div class="expanded-content">
                 <div class="card-img-wrap">
@@ -488,7 +496,8 @@ const { journeysData } = Astro.props;
       const mobileActiveEraDesc = document.getElementById('mobileActiveEraDesc');
       if (mobileActiveEraDesc && c) {
         const totalExp = c.states ? c.states.reduce((acc, st) => acc + (st.gallery?.length || 0) + 1 + (st.sub1 ? 1 : 0) + (st.sub2 ? 1 : 0), 0) : 0;
-        mobileActiveEraDesc.textContent = `${c.name} · ${c.eraTitle || ''} (${totalExp} Exposures)`;
+        const eraLabel = c.shortTitle || c.eraTitle || '';
+        mobileActiveEraDesc.textContent = `${c.name} ${c.year || ''} · ${eraLabel} · ${totalExp} Exp`;
       }
 
       updateCountryCards(countryKey);
@@ -619,9 +628,12 @@ const { journeysData } = Astro.props;
 
     function handleMove(clientX, clientY) {
       if (!isDragging) return;
-      const dx = clientX - lastPos.x;
-      const dy = clientY - lastPos.y;
-      dragMovement += Math.hypot(dx, dy);
+      const rect = canvas.getBoundingClientRect();
+      const clientDx = clientX - lastPos.x;
+      const clientDy = clientY - lastPos.y;
+      const dx = clientDx * (canvas.width / rect.width);
+      const dy = clientDy * (canvas.height / rect.height);
+      dragMovement += Math.hypot(clientDx, clientDy);
       targetRot[0] += dx * (0.45 / currentZoomFactor);
       targetRot[1] = Math.max(-65, Math.min(65, targetRot[1] - dy * (0.35 / currentZoomFactor)));
       lastPos = { x: clientX, y: clientY };
@@ -735,8 +747,14 @@ const { journeysData } = Astro.props;
     });
 
     // Start in active primary era
-    const defaultEra = Object.keys(countries)[0] || 'japan-2025';
-    selectCountry(defaultEra, 0);
+    const params = new URLSearchParams(window.location.search);
+    const requestedEra = params.get('era');
+    const requestedChapter = params.get('chapter');
+    const defaultEra = requestedEra && countries[requestedEra] ? requestedEra : (Object.keys(countries)[0] || 'japan-2025');
+    const restoredIndex = requestedChapter && countries[defaultEra]?.states
+      ? Math.max(0, countries[defaultEra].states.findIndex(state => state.slug === requestedChapter))
+      : 0;
+    selectCountry(defaultEra, restoredIndex);
     render();
   })();
 </script>
@@ -751,7 +769,7 @@ const { journeysData } = Astro.props;
     width: 100%;
     height: 100vh;
     overflow: hidden;
-    padding: 20px 40px;
+    padding: 20px 24px;
   }
 
   /* State, Country & Coordinate Floating Tab Right on Top of the Globe */
@@ -795,6 +813,7 @@ const { journeysData } = Astro.props;
     max-width: 1260px;
     position: relative;
     margin-top: 20px;
+    gap: 24px;
   }
 
   /* Center Globe Canvas Container */
@@ -803,12 +822,12 @@ const { journeysData } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 680px;
-    height: 680px;
+    width: min(680px, calc(100% - 374px));
+    height: auto;
     max-width: 100%;
     aspect-ratio: 1 / 1;
     flex-shrink: 0;
-    margin: 0 auto;
+    margin: 0;
   }
 
   canvas {
@@ -835,9 +854,9 @@ const { journeysData } = Astro.props;
   }
 
   .zoom-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
     background: var(--card-surface);
     border: 1px solid var(--border-subtle);
     color: var(--ink-primary);
@@ -872,7 +891,7 @@ const { journeysData } = Astro.props;
     flex-shrink: 0;
     z-index: 15;
     position: relative;
-    margin-left: 24px;
+    margin-left: 0;
   }
 
   :global(.chapter-card) {
@@ -885,11 +904,10 @@ const { journeysData } = Astro.props;
   }
 
   :global(.card-bezel-wrapper) {
-    padding: 3px;
-    border-radius: 18px;
-    background: rgba(128, 128, 128, 0.05);
+    padding: 0;
+    border-radius: 8px;
+    background: transparent;
     border: 1px solid var(--border-subtle);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -901,14 +919,12 @@ const { journeysData } = Astro.props;
   :global(.chapter-card.active .card-bezel-wrapper) {
     border-color: var(--sub-accent);
     background: var(--sub-accent-light);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
   }
 
   :global(.card-inner-surface) {
     background: var(--card-surface);
-    border-radius: 15px;
+    border-radius: 7px;
     padding: 13px 15px;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.3);
     transition: background-color 0.3s ease;
   }
 
@@ -923,9 +939,18 @@ const { journeysData } = Astro.props;
 
   :global(.collapsed-left) {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
-    overflow: hidden;
+    min-width: 0;
+    flex: 1;
+  }
+
+  :global(.collapsed-copy) {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    flex: 1;
   }
 
   :global(.chapter-idx-pill) {
@@ -941,20 +966,15 @@ const { journeysData } = Astro.props;
 
   :global(.chapter-card.active .chapter-idx-pill) {
     background: var(--sub-accent);
-    color: #FFF;
-  }
-
-  :global(.collapsed-right) {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
+    color: var(--bg-canvas);
   }
 
   :global(.expand-chevron) {
     font-size: 11px;
     color: var(--ink-muted);
     transition: transform 0.3s ease;
+    flex-shrink: 0;
+    margin-top: 3px;
   }
 
   :global(.chapter-card.active .expand-chevron) {
@@ -966,14 +986,15 @@ const { journeysData } = Astro.props;
     font-size: 13.5px;
     font-weight: 600;
     color: var(--ink-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
   }
 
   :global(.chapter-card .date-meta-sm) {
     font-size: 11px;
     color: var(--ink-muted);
+    line-height: 1.35;
   }
 
   :global(.chapter-card .expanded-content) {
@@ -988,11 +1009,11 @@ const { journeysData } = Astro.props;
   :global(.card-img-wrap) {
     width: 100%;
     height: 175px;
-    border-radius: 10px;
+    border-radius: 4px;
     overflow: hidden;
     margin-bottom: 12px;
     position: relative;
-    background: #EAE6DC;
+    background: var(--border-subtle);
   }
 
   :global(.card-img-wrap img) {
@@ -1011,7 +1032,7 @@ const { journeysData } = Astro.props;
     top: 8px;
     left: 8px;
     background: var(--sub-accent);
-    color: #FFF;
+    color: var(--bg-canvas);
     font-size: 9px;
     padding: 2px 7px;
     border-radius: 4px;
@@ -1029,6 +1050,7 @@ const { journeysData } = Astro.props;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
     margin-top: 12px;
     padding-top: 10px;
     border-top: 1px solid var(--border-subtle);
@@ -1037,6 +1059,9 @@ const { journeysData } = Astro.props;
   :global(.exif-meta) {
     font-size: 10px;
     color: var(--ink-muted);
+    min-width: 0;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
   }
 
   :global(.story-cta-pill) {
@@ -1044,13 +1069,14 @@ const { journeysData } = Astro.props;
     align-items: center;
     gap: 7px;
     background: var(--sub-accent);
-    color: #FFF !important;
+    color: var(--bg-canvas) !important;
     padding: 5px 6px 5px 12px;
-    border-radius: 9999px;
+    border-radius: 4px;
     font-size: 11px;
+    flex-shrink: 0;
+    white-space: nowrap;
     text-decoration: none;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
   }
 
   :global(.story-cta-pill:hover) {
@@ -1065,28 +1091,47 @@ const { journeysData } = Astro.props;
   :global(.cta-arrow-bubble) {
     width: 18px;
     height: 18px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.22);
+    border-radius: 4px;
+    background: var(--card-surface);
+    color: var(--sub-accent);
+    border: 1px solid var(--border-subtle);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 10px;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1180px) {
     .globe-stage-wrapper {
       height: auto;
-      min-height: 100vh;
-      padding: 12px 16px 48px;
+      min-height: calc(100vh - 164px);
+      padding: 12px 20px 48px;
+    }
+    .canvas-container {
+      width: min(620px, calc(100% - 374px));
+    }
+    .cards-column {
+      width: 350px;
+    }
+    .globe-top-badge {
+      top: 12px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .globe-stage-wrapper {
+      min-height: 0;
+      padding: 8px 10px 48px;
     }
     .viewport-grid {
       flex-direction: column;
-      margin-top: 8px;
+      margin-top: 2px;
+      gap: 0;
     }
     .canvas-container {
-      width: min(88vw, 360px);
-      height: min(88vw, 360px);
-      max-width: 360px;
+      width: min(68vw, 260px);
+      height: auto;
+      max-width: 260px;
       aspect-ratio: 1 / 1;
       margin: 0 auto;
     }
@@ -1094,7 +1139,7 @@ const { journeysData } = Astro.props;
       width: 100%;
       max-width: 480px;
       margin-left: 0;
-      margin-top: 14px;
+      margin-top: 8px;
       max-height: none;
       overflow-y: visible;
       padding-right: 0;
@@ -1102,14 +1147,22 @@ const { journeysData } = Astro.props;
     .globe-top-badge {
       position: relative;
       top: 0;
-      margin-bottom: 10px;
+      margin-bottom: 4px;
       padding: 5px 14px;
       font-size: 11px;
       gap: 6px;
-      white-space: nowrap;
-      max-width: 92vw;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
+      max-width: calc(100vw - 20px);
+      text-align: center;
+      line-height: 1.35;
+      justify-content: center;
+    }
+    .globe-top-badge .dot {
+      flex-shrink: 0;
+    }
+    .globe-top-badge #activeRegionText {
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
     .globe-top-badge .sep,
     .globe-top-badge #activeCoordsText {
@@ -1120,9 +1173,9 @@ const { journeysData } = Astro.props;
       left: 12px;
     }
     .zoom-btn {
-      width: 42px;
-      height: 42px;
-      font-size: 22px;
+      width: 44px;
+      height: 44px;
+      font-size: 20px;
     }
   }
 </style>

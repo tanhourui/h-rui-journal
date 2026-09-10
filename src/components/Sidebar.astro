@@ -53,7 +53,7 @@ const { destinations = [] } = Astro.props;
             title={`${d.name} (${d.nativeName}) · ${d.exposures} Exposures`}
           >
             <span class="dest-tab-name">{d.name}</span>
-            {d.isHometown && <span class="hometown-dot" title="Hometown Malacca">★</span>}
+            {d.isHometown && <span class="hometown-dot" title="Hometown Malacca" aria-hidden="true"></span>}
             <span class="dest-tab-count font-mono">{d.exposures}</span>
           </button>
         ))}
@@ -223,7 +223,7 @@ const { destinations = [] } = Astro.props;
     gap: 4px;
     background: var(--card-surface);
     padding: 3px;
-    border-radius: 10px;
+    border-radius: 8px;
     border: 1px solid var(--border-subtle);
     margin-bottom: 14px;
   }
@@ -234,7 +234,7 @@ const { destinations = [] } = Astro.props;
     align-items: center;
     justify-content: center;
     padding: 6px 2px;
-    border-radius: 7px;
+    border-radius: 4px;
     border: none;
     background: transparent;
     color: var(--ink-muted);
@@ -245,13 +245,12 @@ const { destinations = [] } = Astro.props;
 
   .dest-tab-btn:hover {
     color: var(--ink-primary);
-    background: rgba(128,128,128,0.06);
+    background: var(--border-subtle);
   }
 
   .dest-tab-btn.active {
     background: var(--sub-accent);
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    color: var(--bg-canvas);
   }
 
   .dest-tab-name {
@@ -270,13 +269,14 @@ const { destinations = [] } = Astro.props;
   }
 
   .dest-tab-btn.is-hometown .hometown-dot {
-    color: #D9822B;
-    font-size: 9px;
-    line-height: 1;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--sub-secondary);
   }
 
   .dest-tab-btn.active.is-hometown .hometown-dot {
-    color: #FFD485;
+    background: var(--bg-canvas);
   }
 
   /* Sub-Panels */
@@ -311,7 +311,7 @@ const { destinations = [] } = Astro.props;
   }
 
   .panel-hometown-badge {
-    color: #D9822B;
+    color: var(--sub-secondary);
     font-weight: 500;
   }
 
@@ -327,7 +327,7 @@ const { destinations = [] } = Astro.props;
     align-items: flex-start;
     gap: 4px;
     padding: 10px 12px;
-    border-radius: 10px;
+    border-radius: 8px;
     border: 1px solid transparent;
     background: transparent;
     color: var(--ink-muted);
@@ -338,7 +338,7 @@ const { destinations = [] } = Astro.props;
   }
 
   .country-nav-item:hover {
-    background: rgba(128,128,128,0.06);
+    background: var(--card-surface);
     color: var(--ink-primary);
     border-color: var(--border-subtle);
     transform: translateX(2px);
@@ -348,7 +348,6 @@ const { destinations = [] } = Astro.props;
     background: var(--sub-accent-light);
     border-color: var(--sub-accent);
     color: var(--ink-primary);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
   }
 
   .era-header-row {
@@ -372,7 +371,7 @@ const { destinations = [] } = Astro.props;
 
   .country-nav-item.active .era-year-badge {
     background: var(--sub-accent);
-    color: #fff;
+    color: var(--bg-canvas);
   }
 
   .era-title-text {
@@ -410,10 +409,6 @@ const { destinations = [] } = Astro.props;
 
   .mobile-only {
     display: none;
-  }
-
-  .desktop-only {
-    display: inherit;
   }
 
   .time-atmosphere-pill {
@@ -463,14 +458,14 @@ const { destinations = [] } = Astro.props;
     text-decoration: none;
     padding: 3px 8px;
     border-radius: 4px;
-    background: rgba(0, 0, 0, 0.03);
+    background: var(--card-surface);
     border: 1px solid var(--border-subtle);
     transition: all 0.2s ease;
   }
 
   .social-link:hover {
     border-color: var(--ink-primary);
-    background: rgba(0, 0, 0, 0.06);
+    background: var(--border-subtle);
   }
 
   .social-tag {
@@ -481,13 +476,14 @@ const { destinations = [] } = Astro.props;
   }
 
   /* Responsive Mobile Layout (No swiping, 100% visible) */
-  @media (max-width: 900px) {
+  @media (max-width: 1180px) {
     .sidebar {
       width: 100%;
       height: auto;
       border-right: none;
       border-bottom: 1px solid var(--border-subtle);
       padding: 12px 14px 10px;
+      overflow: visible;
     }
 
     .brand-block {
@@ -502,7 +498,7 @@ const { destinations = [] } = Astro.props;
     }
 
     .brand-block .subtitle {
-      font-size: 9px;
+      font-size: 10px;
       margin-top: 0;
     }
 
@@ -511,7 +507,7 @@ const { destinations = [] } = Astro.props;
     }
 
     .nav-section-title {
-      font-size: 8.5px;
+      font-size: 10px;
       margin-bottom: 4px;
       letter-spacing: 0.12em;
     }
@@ -525,15 +521,16 @@ const { destinations = [] } = Astro.props;
     }
 
     .dest-tab-btn {
-      padding: 5px 2px;
+      min-height: 44px;
+      padding: 4px 2px;
     }
 
     .dest-tab-name {
-      font-size: 9.5px;
+      font-size: 11px;
     }
 
     .dest-tab-count {
-      font-size: 8px;
+      font-size: 9.5px;
     }
 
     .panel-header-row {
@@ -553,8 +550,9 @@ const { destinations = [] } = Astro.props;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      padding: 6px 3px;
-      border-radius: 6px;
+      min-height: 44px;
+      padding: 5px 3px;
+      border-radius: 4px;
       width: 100%;
       min-width: 0;
       gap: 1px;
@@ -572,23 +570,23 @@ const { destinations = [] } = Astro.props;
     }
 
     .era-year-badge {
-      font-size: 9.5px;
+      font-size: 10.5px;
       padding: 1px 4px;
     }
 
     .era-title-text {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
       width: 100%;
       text-align: center;
     }
 
-    .era-sub-meta {
-      display: none;
-    }
-
     .mobile-only {
       display: block;
+    }
+
+    .era-sub-meta.mobile-only {
+      display: none;
     }
 
     .desktop-only {
@@ -605,18 +603,47 @@ const { destinations = [] } = Astro.props;
       border-radius: 6px;
       background: var(--card-surface);
       border: 1px solid var(--border-subtle);
-      font-size: 9.5px;
+      font-size: 10.5px;
       color: var(--sub-accent);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
+      line-height: 1.35;
       text-align: center;
+    }
+
+    .mobile-active-era-banner #mobileActiveEraDesc {
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     .mobile-active-era-banner .active-era-bullet {
       font-size: 6px;
       color: var(--sub-accent);
       flex-shrink: 0;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .sidebar {
+      padding: 10px 10px 8px;
+    }
+
+    .brand-block .subtitle {
+      max-width: 46vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nav-section-title {
+      display: none;
+    }
+
+    .destination-tabs-grid {
+      margin-bottom: 4px;
+    }
+
+    .mobile-active-era-banner {
+      margin-top: 4px;
     }
   }
 </style>
