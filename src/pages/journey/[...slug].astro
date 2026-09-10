@@ -39,15 +39,23 @@ const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${en
             <span class="arrow-bubble">←</span>
             <span>Return to Globe</span>
           </a>
-          <button id="shareChapterBtn" class="share-chapter-btn font-mono" type="button" data-share-title={entry.data.chapterTitle}>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="18" cy="5" r="2.5"></circle>
-              <circle cx="6" cy="12" r="2.5"></circle>
-              <circle cx="18" cy="19" r="2.5"></circle>
-              <path d="M8.3 10.8 15.7 6.2M8.3 13.2l7.4 4.6"></path>
-            </svg>
-            <span>Share chapter</span>
-          </button>
+          <div class="chapter-utility-actions">
+            <button id="likeChapterBtn" class="like-chapter-btn font-mono" type="button" data-chapter-slug={entry.slug} aria-pressed="false" aria-label="Like this chapter" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.8 4.7a5.5 5.5 0 0 0-7.8 0L12 5.8l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.3l7.8-7.7 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path>
+              </svg>
+              <span id="likeCount" class="like-count" aria-live="polite" aria-atomic="true">…</span>
+            </button>
+            <button id="shareChapterBtn" class="share-chapter-btn font-mono" type="button" data-share-title={entry.data.chapterTitle}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="18" cy="5" r="2.5"></circle>
+                <circle cx="6" cy="12" r="2.5"></circle>
+                <circle cx="18" cy="19" r="2.5"></circle>
+                <path d="M8.3 10.8 15.7 6.2M8.3 13.2l7.4 4.6"></path>
+              </svg>
+              <span>Share chapter</span>
+            </button>
+          </div>
         </div>
         <div class="meta-right font-mono">
           <span class="time-badge">{entry.data.date}</span>
@@ -57,6 +65,7 @@ const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${en
           <span id="shareFeedbackText"></span>
           <input id="shareFallbackUrl" class="share-fallback-url font-mono" type="text" aria-label="Chapter link to copy" readonly hidden />
         </div>
+        <div id="likeFeedback" class="like-feedback font-mono" role="status" aria-live="polite" hidden></div>
       </nav>
 
       <!-- Breadcrumb & Header -->
@@ -238,12 +247,20 @@ const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${en
     border-bottom: 1px solid var(--border-subtle);
     padding-bottom: 22px;
     margin-bottom: 40px;
+    flex-wrap: wrap;
   }
 
   .story-nav-actions {
     display: flex;
     align-items: center;
     gap: 14px;
+    flex: 1;
+  }
+
+  .chapter-utility-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .return-link {
@@ -294,6 +311,73 @@ const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${en
     white-space: nowrap;
   }
 
+  .like-chapter-btn {
+    min-width: 58px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 9px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    background: var(--card-surface);
+    color: var(--sub-accent);
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .like-chapter-btn:hover {
+    border-color: var(--sub-accent);
+    color: var(--ink-primary);
+  }
+
+  .like-chapter-btn:focus-visible {
+    outline: 2px solid var(--sub-accent);
+    outline-offset: 2px;
+  }
+
+  .like-chapter-btn:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
+
+  .like-chapter-btn[hidden] {
+    display: none;
+  }
+
+  .like-chapter-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: transparent;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transform: scale(1);
+    transition: fill 0.2s ease, transform 0.18s ease;
+  }
+
+  .like-chapter-btn[aria-pressed="true"] svg {
+    fill: currentColor;
+  }
+
+  .like-chapter-btn:active svg,
+  .like-chapter-btn.is-updating svg {
+    transform: scale(0.9);
+  }
+
+  .like-count {
+    min-width: 1.5ch;
+    font-variant-numeric: tabular-nums;
+    transition: opacity 0.18s ease;
+  }
+
+  .like-chapter-btn.is-updating .like-count {
+    opacity: 0.45;
+  }
+
   .share-chapter-btn:hover {
     border-color: var(--sub-accent);
     color: var(--ink-primary);
@@ -330,6 +414,17 @@ const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${en
   }
 
   .share-feedback[hidden] {
+    display: none;
+  }
+
+  .like-feedback {
+    flex-basis: 100%;
+    margin-top: 10px;
+    color: var(--sub-secondary);
+    font-size: 11px;
+  }
+
+  .like-feedback[hidden] {
     display: none;
   }
 
@@ -955,6 +1050,10 @@ const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${en
       gap: 8px;
     }
 
+    .chapter-utility-actions {
+      margin-left: auto;
+    }
+
     .meta-right {
       flex-basis: 100%;
       max-width: 100%;
@@ -1048,6 +1147,31 @@ const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${en
       padding: 0 4px;
     }
   }
+
+  @media (max-width: 360px) {
+    .share-chapter-btn {
+      width: 44px;
+      justify-content: center;
+      padding-inline: 0;
+    }
+
+    .share-chapter-btn span {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .like-chapter-btn,
+    .like-chapter-btn svg,
+    .like-count {
+      transition: none;
+    }
+
+    .like-chapter-btn:active svg,
+    .like-chapter-btn.is-updating svg {
+      transform: none;
+    }
+  }
 </style>
 
 <script is:inline>
@@ -1057,6 +1181,111 @@ const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${en
     const shareFeedbackText = document.getElementById('shareFeedbackText');
     const shareFallbackUrl = document.getElementById('shareFallbackUrl');
     let shareFeedbackTimer = 0;
+    const likeBtn = document.getElementById('likeChapterBtn');
+    const likeCount = document.getElementById('likeCount');
+    const likeFeedback = document.getElementById('likeFeedback');
+    let likeLoaded = false;
+    let likeBusy = false;
+    let likeState = { count: 0, liked: false };
+
+    function showLikeFeedback(message = '') {
+      if (!likeFeedback) return;
+      likeFeedback.textContent = message;
+      likeFeedback.hidden = !message;
+    }
+
+    function renderLikeState(state) {
+      likeState = state;
+      if (likeCount) likeCount.textContent = String(state.count);
+      if (likeBtn) {
+        likeBtn.setAttribute('aria-pressed', String(state.liked));
+        const countLabel = state.count === 1 ? 'like' : 'likes';
+        likeBtn.setAttribute('aria-label', `${state.liked ? 'Unlike' : 'Like'} this chapter. ${state.count} ${countLabel}`);
+      }
+    }
+
+    async function requestLikeState(method, liked, retried = false) {
+      if (!likeBtn) throw new Error('Like control unavailable');
+      const slug = likeBtn.getAttribute('data-chapter-slug') || '';
+      const endpoint = `/api/chapter-likes?slug=${encodeURIComponent(slug)}`;
+      const options = method === 'POST'
+        ? {
+            method,
+            credentials: 'same-origin',
+            headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ liked })
+          }
+        : { method, credentials: 'same-origin', headers: { Accept: 'application/json' } };
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 6500);
+      let response;
+      try {
+        response = await fetch(endpoint, { ...options, signal: controller.signal });
+      } finally {
+        window.clearTimeout(timeout);
+      }
+      const payload = await response.json().catch(() => null);
+
+      if (response.status === 409 && method === 'POST' && !retried) {
+        renderLikeState(await requestLikeState('GET'));
+        return requestLikeState('POST', liked, true);
+      }
+      if (!response.ok || !payload || typeof payload.count !== 'number' || typeof payload.liked !== 'boolean') {
+        const error = new Error(payload?.error || 'Likes unavailable');
+        error.status = response.status;
+        throw error;
+      }
+      return payload;
+    }
+
+    async function loadLikeState() {
+      if (!likeBtn || likeBusy) return;
+      likeBusy = true;
+      likeBtn.disabled = true;
+      showLikeFeedback();
+      try {
+        renderLikeState(await requestLikeState('GET'));
+        likeLoaded = true;
+      } catch (error) {
+        likeLoaded = false;
+        if (error?.status === 503) {
+          likeBtn.hidden = true;
+          return;
+        }
+        if (likeCount) likeCount.textContent = '—';
+        likeBtn.setAttribute('aria-label', 'Retry loading chapter likes');
+        showLikeFeedback('Could not load likes. Select the heart to retry.');
+      } finally {
+        likeBusy = false;
+        likeBtn.disabled = false;
+      }
+    }
+
+    likeBtn?.addEventListener('click', async () => {
+      if (likeBusy) return;
+      if (!likeLoaded) {
+        await loadLikeState();
+        return;
+      }
+
+      likeBusy = true;
+      likeBtn.disabled = true;
+      likeBtn.classList.add('is-updating');
+      likeBtn.setAttribute('aria-busy', 'true');
+      showLikeFeedback();
+      try {
+        renderLikeState(await requestLikeState('POST', !likeState.liked));
+      } catch (_) {
+        showLikeFeedback('Could not update this like. Please try again.');
+      } finally {
+        likeBusy = false;
+        likeBtn.disabled = false;
+        likeBtn.removeAttribute('aria-busy');
+        requestAnimationFrame(() => likeBtn.classList.remove('is-updating'));
+      }
+    });
+
+    loadLikeState();
 
     function showShareFeedback(message, url = '') {
       if (!shareFeedback || !shareFeedbackText || !shareFallbackUrl) return;

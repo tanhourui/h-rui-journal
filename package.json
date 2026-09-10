@@ -7,7 +7,9 @@
     "start": "astro dev --port 3000 --host",
     "build": "astro build",
     "preview": "astro preview --port 3000 --host",
-    "check": "astro check"
+    "check": "astro check",
+    "test:likes": "node --test tests/chapter-likes.test.mjs",
+    "test:globe-label": "node --test tests/globe-label.test.mjs"
   },
   "dependencies": {
     "astro": "^5.4.2",
