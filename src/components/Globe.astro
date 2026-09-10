@@ -321,6 +321,9 @@ const { journeysData } = Astro.props;
                 const pillW = textWidth + 14;
                 const pillH = 22;
 
+                // Store right edge so the hairline connector starts after the pill
+                window._activePinPillRight = pillX + pillW;
+
                 ctx.beginPath();
                 if (ctx.roundRect) {
                   ctx.roundRect(pillX, pillY, pillW, pillH, 5);
@@ -355,10 +358,16 @@ const { journeysData } = Astro.props;
           const targetX = (cardRect.left - canvasRect.left);
           const targetY = (cardRect.top + cardRect.height / 2 - canvasRect.top);
 
-          const midX = px + (targetX - px) * 0.55;
+          // Start the line from the right edge of the label pill (+ 6px gap)
+          // so it never cuts through the pill text
+          const lineStartX = window._activePinPillRight
+            ? window._activePinPillRight + 6
+            : px + 30;
+
+          const midX = lineStartX + (targetX - lineStartX) * 0.55;
 
           ctx.beginPath();
-          ctx.moveTo(px, py);
+          ctx.moveTo(lineStartX, py);
           ctx.lineTo(midX, py);
           ctx.lineTo(targetX - 10, targetY);
           ctx.lineTo(targetX, targetY);
