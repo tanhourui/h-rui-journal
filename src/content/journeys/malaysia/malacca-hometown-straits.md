@@ -43,6 +43,6 @@ gallery:
     On the rock breakwater, a fisherman waits as cargo ships drift slowly on the horizon. The sky darkens into amber, and people sit quietly by the surf. Facing these familiar waters, the camera stops looking for new sights, capturing only the steady sea breeze and the waiting silhouettes.
   </p>
   <p class="zh-prose">
-    防波堤上，垂钓者静立着，远处的货轮在海平线上缓慢移动。天色暗成深琥珀色，人们坐在海浪声旁，没说太多话。面对这片熟悉的水域，镜头不再刻意寻找风景，只记录下温厚的海风与长久的守候。
+    防波堤上，垂钓者静立着，远处的货轮在海平线上缓慢移动。天色暗成深琥珀色，人们坐在海浪声旁，没有多余的言语。面对这片熟悉的水域，镜头不再刻意寻找风景，只记录下温厚的海风与长久的守候。
   </p>
 </div>
