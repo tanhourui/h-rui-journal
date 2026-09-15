@@ -496,5 +496,23 @@
     "exif": "Sony α6400 · 88mm · ƒ/5.6 · 1/1000s · ISO 1600",
     "date": "2026-03-15T18:29:07.000Z",
     "gps": null
+  },
+  {
+    "index": 28,
+    "originalFile": "DSC01640.JPG",
+    "fileName": "vietnam26_028.jpg",
+    "webPath": "/images/vietnam/vietnam26_028.jpg",
+    "width": 2048,
+    "height": 1365,
+    "aspectRatio": 1.5,
+    "isPortrait": false,
+    "camera": "Sony α6400",
+    "focal": 73,
+    "fNumber": 5,
+    "exposureTime": "1/640s",
+    "iso": 200,
+    "exif": "Sony α6400 · 73mm · ƒ/5 · 1/640s · ISO 200",
+    "date": "2026-03-12T15:12:28.000Z",
+    "gps": null
   }
 ]
