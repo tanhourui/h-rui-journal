@@ -78,6 +78,7 @@ const { destinations = [] } = Astro.props;
             </div>
 
             <!-- List of Journeys/Eras in this Destination -->
+            <p class="journey-choice-heading mobile-only font-mono" style="font-size:11px; margin:8px 0 6px; color:var(--ink-primary)">Choose a journey</p>
             <div class="country-nav-list">
               {d.eras.map((era, eIdx) => (
                 <button 

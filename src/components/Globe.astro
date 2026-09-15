@@ -19,10 +19,14 @@ const { journeysData } = Astro.props;
     <!-- Center Canvas: Globe Stage with Trajectory Arcs & Stable Ring -->
     <div class="canvas-container">
       <canvas id="globeCanvas" width="680" height="680"></canvas>
+      <button id="globeMotionToggle" class="motion-toggle font-mono" type="button" aria-pressed="false">Pause motion</button>
     </div>
 
     <!-- Right Column: Connected Cards with Direct Hairline from Globe -->
-    <div id="cardsColumn" class="cards-column"></div>
+    <div class="chapter-browser">
+      <nav id="chapterChoices" class="chapter-choices" aria-label="Choose a chapter"></nav>
+      <div id="cardsColumn" class="cards-column"></div>
+    </div>
   </div>
 
   <!-- Floating Zoom Controls -->
@@ -81,6 +85,30 @@ const { journeysData } = Astro.props;
     let targetRot = [-138.25, -36.2];
     let isDragging = false;
     let lastPos = { x: 0, y: 0 };
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const motionToggle = document.getElementById('globeMotionToggle');
+    let motionPaused = reducedMotion.matches;
+    let driftPhase = 0;
+    let lastFrameTime = performance.now();
+    function syncMotionControl() {
+      motionToggle.disabled = reducedMotion.matches;
+      motionToggle.textContent = reducedMotion.matches ? 'Motion reduced' : motionPaused ? 'Resume motion' : 'Pause motion';
+      motionToggle.setAttribute('aria-pressed', String(motionPaused));
+    }
+    function pauseMotion() {
+      motionPaused = true;
+      syncMotionControl();
+    }
+    motionToggle.addEventListener('click', () => {
+      motionPaused = !motionPaused;
+      syncMotionControl();
+    });
+    reducedMotion.addEventListener('change', pauseMotion);
+    // A deliberate navigation action stops ambient movement until explicitly resumed.
+    ['pointerdown', 'focusin'].forEach(eventName => document.addEventListener(eventName, event => {
+      if (event.target.closest('#globeCanvas, .country-nav-item, .dest-tab-btn, .chapter-card, .chapter-choice, .zoom-btn')) pauseMotion();
+    }));
+    syncMotionControl();
 
     function getThemeColors() {
       const styles = getComputedStyle(document.body);
@@ -98,6 +126,14 @@ const { journeysData } = Astro.props;
     }
 
     function render() {
+      const now = performance.now();
+      const elapsed = Math.min((now - lastFrameTime) / 1000, 0.05);
+      lastFrameTime = now;
+      if (!motionPaused && !reducedMotion.matches && !document.hidden && !isDragging) {
+        const nextPhase = driftPhase + elapsed * Math.PI * 2 / 24;
+        targetRot[0] += 3 * (Math.sin(nextPhase) - Math.sin(driftPhase));
+        driftPhase = nextPhase;
+      }
       rot[0] += (targetRot[0] - rot[0]) * 0.08;
       rot[1] += (targetRot[1] - rot[1]) * 0.08;
       
@@ -404,30 +440,46 @@ const { journeysData } = Astro.props;
       cardsColumn.innerHTML = '';
       const c = countries[countryKey];
       if (!c || !c.states) return;
+      const choices = document.getElementById('chapterChoices');
+      choices.replaceChildren();
+      const heading = document.createElement('p');
+      heading.className = 'chapter-choices-heading font-mono';
+      heading.textContent = `Chapters · ${c.states.length}`;
+      choices.appendChild(heading);
+      c.states.forEach((state, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'chapter-choice';
+        button.setAttribute('aria-pressed', String(index === currentStateIndex));
+        button.textContent = `${String(index + 1).padStart(2, '0')}  ${state.title}`;
+        button.addEventListener('click', () => selectState(index));
+        choices.appendChild(button);
+      });
 
       c.states.forEach((s, idx) => {
         const card = document.createElement('div');
         card.className = `chapter-card ${idx === currentStateIndex ? 'active' : ''}`;
         card.setAttribute('data-index', idx);
+        const transitionKey = s.slug.replace(/[^a-zA-Z0-9_-]/g, '-');
 
         card.innerHTML = `
-          <div class="card-bezel-wrapper">
+          <div class="card-bezel-wrapper" style="view-transition-name: chapter-${transitionKey}">
             <div class="card-inner-surface">
-              <div class="collapsed-row">
-                <div class="collapsed-left font-mono">
+              <button type="button" class="collapsed-row" aria-expanded="${idx === currentStateIndex}" aria-controls="chapter-preview-${idx}">
+                <span class="collapsed-left font-mono">
                   <span class="chapter-idx-pill">0${idx+1}</span>
                   <span class="collapsed-copy">
                     <span class="state-name-sm">${s.title}</span>
                     <span class="date-meta-sm">${s.date}</span>
                   </span>
-                </div>
+                </span>
                 <span class="expand-chevron font-mono">▾</span>
-              </div>
-              <div class="expanded-content">
-                <div class="card-img-wrap">
-                  <img src="${s.hero}" alt="${s.title}" loading="lazy">
+              </button>
+              <div class="expanded-content" id="chapter-preview-${idx}">
+                <a class="card-img-wrap" href="/journey/${s.slug}" aria-label="Read ${s.title}">
+                  <img src="${s.hero}" alt="${s.title}" loading="lazy" style="view-transition-name: photo-${transitionKey}">
                   <span class="story-tag font-mono">Chapter 0${idx+1}</span>
-                </div>
+                </a>
                 <p class="card-desc">${s.desc}</p>
                 <div class="card-action-bar">
                   <span class="exif-meta font-mono">${s.exif}</span>
@@ -442,11 +494,14 @@ const { journeysData } = Astro.props;
         `;
 
         card.addEventListener('mouseenter', () => {
-          if (window.innerWidth > 900) selectState(idx);
+          if (window.innerWidth > 900) {
+            pauseMotion();
+            selectState(idx);
+          }
         });
 
         card.addEventListener('click', (e) => {
-          if (!e.target.closest('.story-cta-pill')) {
+          if (!e.target.closest('a')) {
             selectState(idx);
           }
         });
@@ -520,12 +575,14 @@ const { journeysData } = Astro.props;
       if (activeCoordsText) activeCoordsText.textContent = s.coordsText;
 
       document.querySelectorAll('.chapter-card').forEach((card, idx) => {
+        card.querySelector('.collapsed-row').setAttribute('aria-expanded', String(idx === stateIndex));
         if (idx === stateIndex) {
           card.classList.add('active');
         } else {
           card.classList.remove('active');
         }
       });
+      document.querySelectorAll('.chapter-choice').forEach((button, idx) => button.setAttribute('aria-pressed', String(idx === stateIndex)));
     }
 
     // Automatically detect which country is targeted when the user spins the globe
@@ -760,6 +817,33 @@ const { journeysData } = Astro.props;
 </script>
 
 <style>
+  .chapter-browser { min-width: 0; flex-shrink: 0; }
+  .chapter-choices { display: none; }
+  .motion-toggle {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    display: block;
+    margin: 0 auto;
+    min-height: 44px;
+    padding: 6px 12px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    color: var(--ink-muted);
+    background: var(--card-surface);
+    cursor: pointer;
+    font-size: 11px;
+  }
+  .motion-toggle:disabled { cursor: default; }
+  .motion-toggle:focus-visible, :global(.chapter-choice:focus-visible), :global(.collapsed-row:focus-visible) {
+    outline: 2px solid var(--sub-accent);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.chapter-card), :global(.card-bezel-wrapper), :global(.chapter-choice) { transition: none !important; }
+  }
   .globe-stage-wrapper {
     position: relative;
     display: flex;
@@ -929,12 +1013,18 @@ const { journeysData } = Astro.props;
   }
 
   :global(.chapter-card .collapsed-row) {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 2px 0;
     cursor: pointer;
-    min-height: 28px;
+    min-height: 44px;
   }
 
   :global(.collapsed-left) {
@@ -1007,6 +1097,7 @@ const { journeysData } = Astro.props;
   }
 
   :global(.card-img-wrap) {
+    display: block;
     width: 100%;
     height: 175px;
     border-radius: 4px;
@@ -1014,6 +1105,11 @@ const { journeysData } = Astro.props;
     margin-bottom: 12px;
     position: relative;
     background: var(--border-subtle);
+  }
+
+  :global(.card-img-wrap:focus-visible) {
+    outline: 2px solid var(--sub-accent);
+    outline-offset: 3px;
   }
 
   :global(.card-img-wrap img) {
@@ -1119,6 +1215,19 @@ const { journeysData } = Astro.props;
   }
 
   @media (max-width: 760px) {
+    .chapter-browser { width: 100%; max-width: 480px; margin: 52px auto 0; }
+    .chapter-choices { display: grid; gap: 6px; margin-bottom: 16px; }
+    :global(.chapter-choices-heading) { margin: 0 0 4px; color: var(--ink-primary); font-size: 12px; }
+    :global(.chapter-choice) {
+      width: 100%; min-height: 44px; padding: 10px 12px;
+      text-align: left; font: inherit; font-size: 12px; line-height: 1.5;
+      color: var(--ink-primary); background: var(--card-surface);
+      border: 1px solid var(--border-subtle); border-radius: 4px; cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    :global(.chapter-choice[aria-pressed="true"]) { border-color: var(--sub-accent); box-shadow: inset 3px 0 var(--sub-accent); font-weight: 600; }
+    :global(.chapter-choice:active) { transform: scale(0.99); }
+    :global(.chapter-card:not(.active)) { display: none; }
     .globe-stage-wrapper {
       min-height: 0;
       padding: 8px 10px 48px;

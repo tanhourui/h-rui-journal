@@ -12,6 +12,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+const transitionKey = entry.slug.replace(/[^a-zA-Z0-9_-]/g, '-');
 
 const allJourneys = await getCollection('journeys');
 const siblings = allJourneys
@@ -30,7 +31,7 @@ const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${en
 
 <BaseLayout title={`${entry.data.title} · H. Rui Journal`}>
   <div class="story-page">
-    <div class="story-container">
+    <div class="story-container" style={`view-transition-name: chapter-${transitionKey}`}>
       
       <!-- Top Navigation Bar -->
       <nav class="story-nav">
@@ -94,6 +95,7 @@ const returnHref = `/?country=${encodeURIComponent(entry.data.country)}&era=${en
             <span class="hero-image-box">
               <img
                 id="masterHeroImg"
+                style={`view-transition-name: photo-${transitionKey}`}
                 src={entry.data.hero}
                 alt={entry.data.title}
                 onload="if(this.naturalHeight > this.naturalWidth) document.getElementById('masterHeroFrame')?.classList.add('is-portrait')"
