@@ -1,0 +1,83 @@
+---
+interface Props { journeys: Record<string, any>; destinations: any[] }
+const { journeys, destinations } = Astro.props;
+---
+<main class="atlas" id="atlas">
+  <header class="atlas-header">
+    <a class="brand" href="/">H. Rui Journal<span>Photography & journeys</span></a>
+    <a class="classic" href="/classic">Classic view ↗</a>
+  </header>
+  <section class="world" aria-label="Interactive world">
+    <div id="atlas-world" class="world-render" role="img" aria-label="Globe showing the selected journey"></div>
+    <div class="world-tools"><span id="atlas-hint">Explore the chapters below</span><button id="atlas-motion" type="button" aria-pressed="false" hidden>Pause motion</button></div>
+  </section>
+  <nav class="destinations" aria-label="Choose a country">
+    {destinations.map((d, i) => <button type="button" data-dest={d.id} aria-pressed={i === 0}>{d.name}</button>)}
+  </nav>
+  <div class="journey-space">
+    {Object.values(journeys).map((era, eraIndex) => <section class="atlas-era" data-era={era.id} data-country={era.country} hidden={eraIndex !== 0}>
+      <div class="era-heading"><p class="font-mono">{era.countryName} / {era.year}</p><label>Journey<select aria-label={`Choose a ${era.countryName} journey`} data-era-select>{Object.values(journeys).filter(e => e.country === era.country).map(e => <option value={e.id} selected={e.id === era.id}>{e.year} · {e.shortTitle}</option>)}</select></label></div>
+      <h1>{era.shortTitle}</h1>
+      <nav class="atlas-chapters" aria-label="Choose a chapter"><p class="font-mono">Choose a chapter</p>{era.states.map((s: any, i: number) => <button type="button" data-chapter={i} aria-pressed={i === 0} aria-controls={`preview-${era.id}-${i}`}><span class="font-mono">{String(i + 1).padStart(2, '0')}</span>{s.title}<span aria-hidden="true">↗</span></button>)}</nav>
+      <div class="photo-space">{era.states.length > 1 && <img class="photo-echo" src={era.states[1].hero} alt="" aria-hidden="true" loading="lazy" width="600" height="400" />}{era.states.map((s: any, i: number) => <article id={`preview-${era.id}-${i}`} class="atlas-photo" hidden={i !== 0} data-photo={i}>
+        <a class="photo-link" href={`/journey/${s.slug}?from=atlas`} aria-label={`Open chapter: ${s.title}`}><img src={s.hero} alt={s.heroCaption || s.title} loading={eraIndex === 0 && i === 0 ? 'eager' : 'lazy'} width="1200" height="800" /></a>
+        <div class="photo-caption"><h2>{s.title}</h2><a href={`/journey/${s.slug}?from=atlas`}>Open chapter ↗</a></div>
+      </article>)}</div>
+    </section>)}
+  </div>
+  <footer>Tan Hou Rui<a href="/atlas-terrain-credits.txt" target="_blank" rel="noopener">Terrain sources ↗</a><span id="atlas-atmosphere">Local-time atmosphere</span></footer>
+  <noscript><p class="no-script">JavaScript is off. <a href="/classic">Browse the classic journal</a>.</p></noscript>
+</main>
+<script is:inline id="atlas-data" type="application/json" set:html={JSON.stringify(journeys).replace(/</g, '\\u003c')} />
+<script is:inline src="/d3.min.js"></script>
+<script is:inline src="/topojson-client.min.js"></script>
+<script is:inline src="/world-data.js"></script>
+<script>import '../scripts/atlas.js';</script>
+<style>
+  .atlas { --atlas-ocean:#AAAFA7; --atlas-land:#C9CEC3; position:relative; min-height:100dvh; overflow:hidden; padding:28px 2.5vw 22px; isolation:isolate; }
+  :global(body.theme-dawn) .atlas{--atlas-ocean:#9CAAA4;--atlas-land:#BCC8BF}
+  :global(body.theme-dusk) .atlas{--atlas-ocean:#191E21;--atlas-land:#363B3D}
+  .atlas-header {display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}
+  a {color:inherit;text-decoration:none} button,select{font:inherit} button,a,select{-webkit-tap-highlight-color:transparent}
+  button{cursor:pointer} :is(button,a,select):focus-visible{outline:2px solid var(--sub-accent);outline-offset:6px}
+  .brand{font-size:26px;letter-spacing:-1px}.brand span{display:block;font-size:11px;letter-spacing:.05em;color:var(--ink-muted);margin-top:7px}
+  .classic{font-size:12px;color:var(--ink-muted)}
+  .world{position:absolute;left:-26vw;top:-20dvh;width:90vw;height:140dvh;min-height:1000px;z-index:-1}
+  .world-render{width:100%;height:100%;touch-action:pan-y;cursor:grab}.world-render:active{cursor:grabbing}
+  .world-render :global(canvas),.world-render :global(svg){width:100%;height:100%;display:block}
+  .world-tools{position:absolute;left:32%;top:52%;height:40px;display:flex;gap:20px;align-items:center;font-size:11px;color:var(--ink-primary)}
+  .world-tools button{background:var(--bg-canvas);color:var(--ink-primary);border:1px solid var(--border-subtle);padding:8px 12px;border-radius:4px}
+  .destinations{position:absolute;bottom:55px;left:2.5vw;display:flex;gap:28px;z-index:2}
+  .destinations button{background:none;border:0;border-bottom:2px solid transparent;padding:12px 0;color:var(--ink-primary);font-size:13px;min-height:44px}
+  .destinations button[aria-pressed=true]{border-color:var(--sub-accent);color:var(--sub-accent)}
+  .journey-space{margin:35px 0 100px 60%;width:36%;max-width:none}
+  .atlas-era{display:flex;flex-direction:column}.atlas-era[hidden],.atlas-photo[hidden]{display:none}
+  .era-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;font-size:11px;color:var(--ink-muted)}
+  .era-heading label{display:flex;gap:8px;align-items:center}select{max-width:230px;background:var(--bg-canvas);color:var(--ink-primary);border:1px solid var(--border-subtle);padding:10px;border-radius:4px}
+  h1{font-size:clamp(34px,3.1vw,56px);font-weight:300;line-height:1.15;letter-spacing:-1.2px;margin:16px 0 28px;max-width:650px}
+  .photo-space{order:1;position:relative;margin-left:-14vw;width:112%;perspective:1400px;transform-origin:left top;transform:translate3d(var(--photo-x,0px),var(--photo-y,0px),0);transition:transform .15s ease}
+  .atlas-photo{position:relative;pointer-events:none}.atlas-photo a{pointer-events:auto}
+  /* The rear photograph overlaps beneath the main frame, not beside it as a thumbnail. */
+  .photo-echo{position:absolute;width:62%;height:57%;object-fit:cover;left:76%;top:24%;opacity:.95;pointer-events:none;transform-origin:left center;transform:translate3d(calc(var(--photo-x,0px) * -.5),0,-100px) rotateY(-16deg)}
+  .photo-link{display:block;overflow:hidden;background:var(--card-surface);transform-origin:left center;transform:perspective(1400px) rotateY(12deg)}
+  .photo-link img{display:block;width:100%;height:auto;aspect-ratio:1.28;object-fit:cover}
+  .photo-caption{display:flex;flex-direction:column;gap:8px;align-items:flex-start;margin-left:12vw;width:100%;padding:20px 0;background:transparent}
+  h2{font-size:18px;font-weight:400}.photo-caption a{font-size:12px;white-space:nowrap;color:var(--sub-accent);padding:12px 0}
+  .atlas-chapters{order:2;display:grid;grid-template-columns:1fr 1fr;gap:0 22px;margin-top:24px}
+  .atlas-chapters p{grid-column:1/-1;font-size:10px;color:var(--ink-muted);margin-bottom:10px}
+  .atlas-chapters:has(button:only-of-type){grid-template-columns:1fr}
+  .atlas-chapters button{display:flex;align-items:center;text-align:left;gap:12px;padding:13px 0;min-height:48px;background:none;border:0;border-bottom:1px solid var(--border-subtle);color:var(--ink-primary);font-size:12px;line-height:1.5}
+  .atlas-chapters button span:first-child{color:var(--ink-muted);font-size:10px}.atlas-chapters button span:last-child{margin-left:auto}
+  .atlas-chapters button[aria-pressed=true]{color:var(--sub-accent)}
+  footer{display:flex;justify-content:space-between;color:var(--ink-muted);font-size:10px;position:absolute;bottom:20px;left:2.5vw;right:2.5vw}
+  @media(min-width:1000px){.atlas{min-height:max(100dvh,820px)}}
+  @media(max-width:999px){
+    .atlas{padding:22px 6vw}.brand{font-size:22px}.world{position:relative;left:auto;top:auto;width:100%;height:340px;min-height:0;z-index:0;margin:8px 0 10px}
+    .world-tools{left:0;right:0;top:auto;bottom:0;justify-content:center;font-size:10px}.world-tools button{padding:7px 10px}
+    .destinations{position:relative;left:auto;bottom:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0 28px}.destinations button{font-size:12px}
+    .journey-space{width:100%;max-width:none;margin:0 0 40px}.photo-space{transform:none;order:2;margin-left:0;width:100%;perspective:none}.photo-link{transform:none}.photo-echo{display:none}.atlas-chapters{order:1;margin:0 0 25px}h1{font-size:28px;margin:20px 0}
+    .era-heading{gap:10px}.era-heading label{font-size:0}select{max-width:220px;font-size:11px}.photo-link img{height:auto;aspect-ratio:3/2}.photo-caption{flex-direction:row;justify-content:space-between;align-items:flex-start;gap:12px;margin-left:0}h2{font-size:16px}.photo-caption a{font-size:11px}footer{position:relative;left:auto;right:auto;bottom:auto}
+  }
+  @media(prefers-reduced-motion:reduce){.photo-space{transform:none;transition:none}}
+  @media(max-width:360px){.atlas-chapters{grid-template-columns:1fr}.atlas-chapters button{font-size:13px}.brand{font-size:20px}}
+</style>

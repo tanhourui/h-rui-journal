@@ -4,4 +4,4 @@ import Atlas from '../components/Atlas.astro';
 import { getJourneyNavigation } from '../data/journey-navigation';
 const { erasData, destinations } = await getJourneyNavigation();
 ---
-<BaseLayout title="H. Rui Journal / 旅の記録"><Atlas journeys={erasData} destinations={destinations} /></BaseLayout>
+<BaseLayout title="Living Atlas Preview | H. Rui Journal"><Atlas journeys={erasData} destinations={destinations} /></BaseLayout>

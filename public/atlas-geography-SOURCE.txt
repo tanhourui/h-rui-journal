@@ -1,0 +1,9 @@
+Atlas preview geography
+
+countries-50m.json from world-atlas 2.0.2:
+https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-50m.json
+https://github.com/topojson/world-atlas
+
+Natural Earth 1:50m countries redistributed as TopoJSON.
+The accompanying world-atlas ISC license is atlas-geography-LICENSE.txt.
+Served locally; visitors do not request geography from a third-party CDN.

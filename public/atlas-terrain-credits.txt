@@ -1,0 +1,23 @@
+Terrain geometry and shading sources
+
+Land elevation: NASA Earth Observatory / Blue Marble Next Generation.
+https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/topography-bathymetry-maps/
+Source credit: Jesse Allen, NASA Earth Observatory; GEBCO / British Oceanographic Data Centre.
+5400x2700 grayscale elevation resampled to 4096x2048 for rendering.
+
+Major rivers: Natural Earth, 1:50m rivers and lake centerlines (public domain).
+https://www.naturalearthdata.com/downloads/50m-physical-vectors/
+https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_50m_rivers_lake_centerlines.geojson
+
+Uniform journal colors, exaggerated relief and river widths for readability at globe scale.
+Not satellite color imagery, live data, or a precise navigation/terrain model.
+
+Night city lights: Solar System Scope / INOVE, Earth Night Map (2K).
+https://www.solarsystemscope.com/textures/
+License: Creative Commons Attribution 4.0 International.
+https://creativecommons.org/licenses/by/4.0/
+Retrieved from the Simple Space Data Mirror because the publisher's download returned 403:
+https://www.simplespacedata.org/texture/solarsystemscope/earth_nightmap/latest/2k_earth_nightmap.jpg
+Adaptation: background removed, luminance recolored using the journal accent,
+and masked to Japan, Malaysia, Thailand and Vietnam. Dusk palette only.
+Static artistic city-light distribution, not live electricity or current satellite observations.

@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Globe from '../components/Globe.astro';
+import { getJourneyNavigation } from '../data/journey-navigation';
+const { erasData, destinations } = await getJourneyNavigation();
+---
+
+<BaseLayout title="H. Rui Journal / 旅の記録">
+  <div class="landing-layout">
+    <Sidebar destinations={destinations} />
+    <main id="mainStage" class="main-stage">
+      <Globe journeysData={erasData} />
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .landing-layout {
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .main-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  @media (max-width: 1180px) {
+    .landing-layout {
+      flex-direction: column;
+    }
+
+    .main-stage {
+      overflow: visible;
+    }
+  }
+</style>
